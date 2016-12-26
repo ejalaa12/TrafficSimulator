@@ -1,6 +1,7 @@
 package entities;
 
-import entities.area.Area;
+import entities.zone.Zone;
+import entities.zone.ZonePreferences;
 import graph_network.Graph;
 
 import java.util.ArrayList;
@@ -9,16 +10,17 @@ import java.util.List;
 /**
  * Created by ejalaa on 25/12/2016.
  */
-public class RoadGraph extends Graph {
+public class RoadNetwork extends Graph {
 
     private List<Road> roads;
-    private List<Area> areas;
+    private List<Zone> zones;
     private List<Intersection> intersections;
+    private ZonePreferences zonePreferences;
 
-    public RoadGraph() {
+    public RoadNetwork() {
         super();
         roads = new ArrayList<>();
-        areas = new ArrayList<>();
+        zones = new ArrayList<>();
         intersections = new ArrayList<>();
     }
 
@@ -34,12 +36,12 @@ public class RoadGraph extends Graph {
     }
 
     /**
-     * Add the area to the list of areas and nodes
-     * @param area the area to add
+     * Add the zone to the list of zones and nodes
+     * @param zone the zone to add
      */
-    public void addArea(Area area) {
-        areas.add(area);
-        addNode(area);
+    public void addArea(Zone zone) {
+        zones.add(zone);
+        addNode(zone);
     }
 
     /**
@@ -52,4 +54,16 @@ public class RoadGraph extends Graph {
     }
 
 
+    public Zone getRandomZone() {
+        return null;
+    }
+
+    /**
+     *
+     * @param i the index of the zone to get
+     * @return the zone at the specified index
+     */
+    public Zone getZone(int i) {
+        return zones.get(i);
+    }
 }

@@ -21,6 +21,7 @@ public class DijkstraAlgorithm {
     private Set<Node> unSettledNodes;
     private Map<Node, Node> predecessors;
     private Map<Node, Integer> distance;
+    private Node source;
 
     public DijkstraAlgorithm(Graph graph) {
         // create a copy of the array so that we can operate on this array
@@ -29,6 +30,9 @@ public class DijkstraAlgorithm {
     }
 
     public void execute(Node source) {
+        // -- by me -- added by me to solve target == source
+        this.source = source;
+
         settledNodes = new HashSet<>();
         unSettledNodes = new HashSet<>();
         distance = new HashMap<>();
@@ -112,6 +116,11 @@ public class DijkstraAlgorithm {
     public LinkedList<Node> getPath(Node target) {
         LinkedList<Node> path = new LinkedList<>();
         Node step = target;
+        // -- by me -- if target and source are the same
+        if (target == source) {
+            path.add(source);
+            return path;
+        }
         // check if a path exists
         if (predecessors.get(step) == null) {
             return null;

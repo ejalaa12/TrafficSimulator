@@ -1,6 +1,5 @@
-import entities.RoadGraph;
-import entities.area.Area;
-import logging.Logger;
+import entities.CoruscantNetwork;
+import entities.car.CarGenerator;
 import simulation.SimEngine;
 
 import java.time.LocalDateTime;
@@ -13,26 +12,25 @@ public class Main {
         * Simulation times
         * ****************************************************************************************************************
         */
-        LocalDateTime startSim = LocalDateTime.of(2000, 1, 1, 10, 20);
+        LocalDateTime startSim = LocalDateTime.of(2000, 1, 1, 10, 00);
         LocalDateTime endSim = LocalDateTime.of(2000, 1, 1, 10, 40);
 
         SimEngine simEngine = new SimEngine(1, startSim, endSim);
+
         /*
         * ****************************************************************************************************************
-        * Area producing cars
+        * Carrefour Coruscant
         * ****************************************************************************************************************
         */
-//        Area area = new Area("zone 1", simEngine);
-//        area.init();
+        CoruscantNetwork carrefour = new CoruscantNetwork();
+
         /*
         * ****************************************************************************************************************
-        * Lane Network
+        * Car generator
         * ****************************************************************************************************************
         */
-//        RoadGraph roadGraph = new RoadGraph();
-//        roadGraph.init();
-
-
+        CarGenerator carGenerator = new CarGenerator(simEngine, carrefour);
+        carGenerator.init();
         /*
         * ****************************************************************************************************************
         * Simulation

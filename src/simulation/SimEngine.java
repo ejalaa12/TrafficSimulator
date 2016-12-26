@@ -27,6 +27,7 @@ public class SimEngine {
         this.currentSimTime = startSimTime;
         this.endSimTime = endSimTime;
         this.loops = 0;
+        Logger.getInstance().log(className, this.currentSimTime, "Simulation started !");
     }
 
     public void addEvent(Event newEvent) {

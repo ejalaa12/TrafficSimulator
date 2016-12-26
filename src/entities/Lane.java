@@ -1,6 +1,5 @@
 package entities;
 
-import entities.area.Area;
 import entities.car.Car;
 import graph_network.Edge;
 import graph_network.Node;

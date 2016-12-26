@@ -1,5 +1,6 @@
-package entities.area;
+package entities.zone;
 
+import entities.RoadNetwork;
 import graph_network.Node;
 import simulation.Entity;
 import simulation.SimEngine;
@@ -8,20 +9,17 @@ import simulation.SimEngine;
 /**
  * Created by ejalaa on 25/12/2016.
  */
-public class Area extends Node implements Entity{
+public class Zone extends Node implements Entity{
 
-    private SimEngine simEngine;
     private int numberOfProducedCars = 0;
 
-    public Area(String id, SimEngine simEngine) {
+    public Zone(String id) {
         super(id);
-        this.simEngine = simEngine;
     }
 
 
     @Override
     public void init() {
-        simEngine.addEvent(new NewCarEvent(this, simEngine.getCurrentSimTime()));
     }
 
     @Override
@@ -45,8 +43,5 @@ public class Area extends Node implements Entity{
         this.numberOfProducedCars = numberOfProducedCars;
     }
 
-    public SimEngine getSimEngine() {
-        return simEngine;
-    }
 
 }
