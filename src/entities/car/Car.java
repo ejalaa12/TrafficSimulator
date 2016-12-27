@@ -13,13 +13,14 @@ import java.util.LinkedList;
  */
 public class Car implements Entity {
 
-    private Zone source, destination;
     private static final int length = 4;
+    private Zone source, destination;
     private float speed;
     private LinkedList<Node> path;
     private String Id;
 
     public Car(String Id, Zone source, Zone destination, RoadNetwork roadNetwork) {
+        this.Id = Id;
         this.source = source;
         this.destination = destination;
         speed = 0;
@@ -41,6 +42,6 @@ public class Car implements Entity {
 
     @Override
     public String getName() {
-        return null;
+        return Id;
     }
 }

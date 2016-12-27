@@ -1,28 +1,31 @@
 package entities;
 
 import entities.zone.Zone;
-import entities.zone.ZonePreferences;
 import graph_network.Graph;
+import simulation.Entity;
+import simulation.SimEngine;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by ejalaa on 25/12/2016.
+ * This class models a road network based on a Graph.
  */
-public class RoadNetwork extends Graph {
+public class RoadNetwork extends Graph implements Entity {
 
-    private List<Road> roads;
-    private List<Zone> zones;
-    private List<Intersection> intersections;
-    private ZonePreferences zonePreferences;
+    protected List<Road> roads;
+    protected List<Zone> zones;
+    protected List<Intersection> intersections;
+    protected SimEngine simEngine;
 
-    public RoadNetwork() {
+    public RoadNetwork(SimEngine simEngine) {
         super();
+        this.simEngine = simEngine;
         roads = new ArrayList<>();
         zones = new ArrayList<>();
         intersections = new ArrayList<>();
     }
+
 
     /**
      * Add the road (and its corresponding lanes)
@@ -53,17 +56,22 @@ public class RoadNetwork extends Graph {
         addNode(intersection);
     }
 
+    @Override
+    public void init() {
 
-    public Zone getRandomZone() {
+    }
+
+    @Override
+    public void printStats() {
+
+    }
+
+    @Override
+    public String getName() {
         return null;
     }
 
-    /**
-     *
-     * @param i the index of the zone to get
-     * @return the zone at the specified index
-     */
-    public Zone getZone(int i) {
-        return zones.get(i);
+    public SimEngine getSimEngine() {
+        return simEngine;
     }
 }

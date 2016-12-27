@@ -1,35 +1,57 @@
 package entities;
 
+import entities.zone.TimeSlot;
 import entities.zone.Zone;
+import entities.zone.ZoneSchedule;
+import simulation.Entity;
+import simulation.SimEngine;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
- * Created by ejalaa on 26/12/2016.
+ * This class models Coruscant Carrefour
  */
-public class CoruscantNetwork extends RoadNetwork {
+public class CoruscantNetwork extends RoadNetwork implements Entity {
 
-    public CoruscantNetwork() {
-        super();
+    public CoruscantNetwork(SimEngine simEngine) {
+        super(simEngine);
         definition();
     }
 
-    public void definition() {
+    private void definition() {
 
-        ArrayList<Integer> timeTable = new ArrayList<>(Arrays.asList(0, 7, 9, 17, 19));
-        ArrayList<Integer> zone1freq = new ArrayList<>(Arrays.asList(40, 300, 20, 100, 20));
+        ArrayList<TimeSlot> timeSlots1 = new ArrayList<>();
+        timeSlots1.add(new TimeSlot(LocalTime.of(0, 0), LocalTime.of(7, 0), 40));
+        timeSlots1.add(new TimeSlot(LocalTime.of(7, 0), LocalTime.of(9, 0), 300));
+        timeSlots1.add(new TimeSlot(LocalTime.of(9, 0), LocalTime.of(17, 0), 20));
+        timeSlots1.add(new TimeSlot(LocalTime.of(17, 0), LocalTime.of(19, 0), 100));
+        timeSlots1.add(new TimeSlot(LocalTime.of(19, 0), LocalTime.of(23, 59, 59, 99999), 20));
+        ZoneSchedule zoneSchedule1 = new ZoneSchedule(timeSlots1);
 
-        ZoneSchedule zoneSchedule = new ZoneSchedule(timeTable, )
+        ArrayList<TimeSlot> timeSlots2 = new ArrayList<>();
+        timeSlots2.add(new TimeSlot(LocalTime.of(0, 0), LocalTime.of(7, 0), 50));
+        timeSlots2.add(new TimeSlot(LocalTime.of(7, 0), LocalTime.of(9, 0), 200));
+        timeSlots2.add(new TimeSlot(LocalTime.of(9, 0), LocalTime.of(17, 0), 30));
+        timeSlots2.add(new TimeSlot(LocalTime.of(17, 0), LocalTime.of(19, 0), 150));
+        timeSlots2.add(new TimeSlot(LocalTime.of(19, 0), LocalTime.of(23, 59, 59, 99999), 30));
+        ZoneSchedule zoneSchedule2 = new ZoneSchedule(timeSlots2);
 
-        createZoneFromPreferencesAndSchedule();
-        Zone zone1 = new Zone("zone1");
-        Zone zone2 = new Zone("zone2");
-        Zone zone3 = new Zone("zone3");
-        Zone zone4 = new Zone("zone4");
-        Zone zone5 = new Zone("zone5");
-        Zone zone6 = new Zone("zone6");
-        Zone zone7 = new Zone("zone7");
+        Zone zone1 = new Zone("zone1", zoneSchedule1, simEngine, this);
+        Zone zone2 = new Zone("zone2", zoneSchedule2, simEngine, this);
+        Zone zone3 = new Zone("zone3", zoneSchedule1, simEngine, this);
+        Zone zone4 = new Zone("zone4", zoneSchedule1, simEngine, this);
+        Zone zone5 = new Zone("zone5", zoneSchedule1, simEngine, this);
+        Zone zone6 = new Zone("zone6", zoneSchedule1, simEngine, this);
+        Zone zone7 = new Zone("zone7", zoneSchedule1, simEngine, this);
+
+        zone1.setPreferedDestination(zone4);
+        zone2.setPreferedDestination(zone5);
+        zone3.setPreferedDestination(zone6);
+        zone4.setPreferedDestination(zone1);
+        zone5.setPreferedDestination(zone7);
+        zone6.setPreferedDestination(zone3);
+        zone7.setPreferedDestination(zone2);
 
         Intersection intersection1 = new Intersection("intersection1");
         Intersection intersection2 = new Intersection("intersection2");
@@ -61,4 +83,27 @@ public class CoruscantNetwork extends RoadNetwork {
         addRoad(new Road("R10", intersection4, intersection3, 100, 50*1000/3600));
     }
 
+    @Override
+    public void init() {
+        zones.get(0).init();
+        zones.get(1).init();
+
+//        for (Zone zone : zones) {
+//            zone.init();
+//        }
+        // TODO: 26/12/2016 do same for intersection and roads
+    }
+
+    @Override
+    public void printStats() {
+        for (Zone zone : zones) {
+            zone.printStats();
+        }
+
+    }
+
+    @Override
+    public String getName() {
+        return null;
+    }
 }

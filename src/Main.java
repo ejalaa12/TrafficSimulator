@@ -1,19 +1,23 @@
 import entities.CoruscantNetwork;
-import entities.car.CarGenerator;
 import simulation.SimEngine;
 
 import java.time.LocalDateTime;
 
 public class Main {
 
+    public static void test() {
+
+    }
+
     public static void main(String[] args) {
+        test();
         /*
         * ****************************************************************************************************************
         * Simulation times
         * ****************************************************************************************************************
         */
-        LocalDateTime startSim = LocalDateTime.of(2000, 1, 1, 10, 00);
-        LocalDateTime endSim = LocalDateTime.of(2000, 1, 1, 10, 40);
+        LocalDateTime startSim = LocalDateTime.of(2000, 1, 1, 0, 0);
+        LocalDateTime endSim = LocalDateTime.of(2000, 1, 1, 16, 59);
 
         SimEngine simEngine = new SimEngine(1, startSim, endSim);
 
@@ -22,15 +26,9 @@ public class Main {
         * Carrefour Coruscant
         * ****************************************************************************************************************
         */
-        CoruscantNetwork carrefour = new CoruscantNetwork();
+        CoruscantNetwork carrefour = new CoruscantNetwork(simEngine);
+        carrefour.init();
 
-        /*
-        * ****************************************************************************************************************
-        * Car generator
-        * ****************************************************************************************************************
-        */
-        CarGenerator carGenerator = new CarGenerator(simEngine, carrefour);
-        carGenerator.init();
         /*
         * ****************************************************************************************************************
         * Simulation
@@ -39,5 +37,11 @@ public class Main {
         simEngine.loop();
 
 
+        /*
+        * ****************************************************************************************************************
+        * results
+        * ****************************************************************************************************************
+        */
+        carrefour.printStats();
     }
 }
