@@ -2,6 +2,7 @@ package entities;
 
 import entities.zone.Zone;
 import graph_network.Graph;
+import graph_network.Node;
 import simulation.Entity;
 import simulation.SimEngine;
 
@@ -54,6 +55,22 @@ public class RoadNetwork extends Graph implements Entity {
     public void addIntersection(Intersection intersection) {
         intersections.add(intersection);
         addNode(intersection);
+    }
+
+    /**
+     * Returns the lane between two nodes of the road network
+     *
+     * @param start start node
+     * @param end   end node
+     * @return the lane that connects both
+     */
+    public Lane getLaneBetween(Node start, Node end) {
+        for (Road road : roads) {
+            if (road.connects(start, end)) {
+                return road.getLaneWithSource(start);
+            }
+        }
+        throw new NoSuchFieldError("no lane between " + start.toString() + "and " + end.toString());
     }
 
     @Override

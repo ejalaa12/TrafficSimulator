@@ -1,5 +1,6 @@
 package simulation;
 
+import logging.LogLevel;
 import logging.Logger;
 
 import java.time.LocalDateTime;
@@ -27,15 +28,33 @@ public class SimEngine {
         this.currentSimTime = startSimTime;
         this.endSimTime = endSimTime;
         this.loops = 0;
-        Logger.getInstance().log(className, this.currentSimTime, "Simulation started !");
+        Logger.getInstance().log(className, this.currentSimTime, "Simulation started !", LogLevel.INFO);
     }
 
+    /**
+     * Add event to the event queue and sort it to have event in chronological order
+     *
+     * @param newEvent the event to add
+     */
     public void addEvent(Event newEvent) {
         if (!this.events.contains(newEvent)) {
             this.events.add(newEvent);
             Collections.sort(this.events);
         } else {
-            System.out.println("the event is already here I don't know what to do !");
+            Logger.getInstance().log(newEvent.getCreator(), currentSimTime, "Trying to add already existing event (dismissed)", LogLevel.WARNING);
+        }
+    }
+
+    /**
+     * Remove an event from the queue
+     *
+     * @param event
+     */
+    public void removeEvent(Event event) {
+        if (events.contains(event)) {
+            events.remove(event);
+        } else {
+            Logger.getInstance().log(className, currentSimTime, "Trying to remove non-existing event", LogLevel.WARNING);
         }
     }
 
@@ -43,7 +62,7 @@ public class SimEngine {
         while (!simHasEnded()) {
             simStep();
         }
-        Logger.getInstance().log(className, this.currentSimTime, "Simulation has ended !");
+        Logger.getInstance().log(className, this.currentSimTime, "Simulation has ended !", LogLevel.INFO);
     }
 
     private void simStep() {

@@ -8,15 +8,22 @@ import graph_network.Node;
 public class Road {
 
     private Lane lane1, lane2;
+    private Node connectedNode1, connectedNode2;
     private String id;
     private int length;
-    private float speed_limit;
+    private double speed_limit;
 
-    public Road(String id, Node node1, Node node2, int length, float speed_limit) {
+    public Road(String id, Node node1, Node node2, int length, double speed_limit) {
         lane1 = new Lane(id+"a", node1, node2, length, speed_limit);
         lane2 = new Lane(id+"b", node2, node1, length, speed_limit);
+        connectedNode1 = node1;
+        connectedNode2 = node2;
         this.length = length;
         this.speed_limit = speed_limit;
+    }
+
+    public boolean connects(Node node1, Node node2) {
+        return (node1 == connectedNode1 && node2 == connectedNode2) || (node2 == connectedNode1 && node1 == connectedNode2);
     }
 
     /*
@@ -31,5 +38,13 @@ public class Road {
 
     public Lane getLane2() {
         return lane2;
+    }
+
+    public Lane getLaneWithDestination(Node node) {
+        return lane1.getDestination().equals(node) ? lane1 : lane2;
+    }
+
+    public Lane getLaneWithSource(Node node) {
+        return lane1.getSource().equals(node) ? lane1 : lane2;
     }
 }

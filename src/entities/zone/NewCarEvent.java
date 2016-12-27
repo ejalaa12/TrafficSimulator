@@ -18,12 +18,12 @@ public class NewCarEvent extends Event {
         this.zone = zone;
         // Update description with car name
         String description = "Creation of ";
-        String carName = "Car" + zone.getName() + "-";
+        String carName = "Car-" + zone.getName() + "_";
         carName += zone.getNumberOfProducedCars();
-        description += carName;
+        description += carName + String.format("(%s -> %s)", zone.getName(), zone.getPreferedDestination().getName());
         setDescription(description);
         // Create the car
-        createdCar = new Car(carName, zone, zone.getPreferedDestination(), zone.getRoadNetwork());
+        createdCar = new Car(carName, zone, zone.getPreferedDestination(), zone.getRoadNetwork(), zone.getSimEngine());
     }
 
     @Override

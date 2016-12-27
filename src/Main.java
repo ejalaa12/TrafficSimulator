@@ -1,33 +1,37 @@
-import entities.CoruscantNetwork;
+import entities.SimpleNetwork;
+import logging.LogLevel;
+import logging.Logger;
 import simulation.SimEngine;
 
 import java.time.LocalDateTime;
 
 public class Main {
 
-    public static void test() {
 
+    public static void test() {
+        System.out.println(50 * 1000 / 3600.);
     }
 
     public static void main(String[] args) {
         test();
+        Logger.getInstance().setLogLevel(LogLevel.INFO);
         /*
         * ****************************************************************************************************************
         * Simulation times
         * ****************************************************************************************************************
         */
         LocalDateTime startSim = LocalDateTime.of(2000, 1, 1, 0, 0);
-        LocalDateTime endSim = LocalDateTime.of(2000, 1, 1, 16, 59);
+        LocalDateTime endSim = LocalDateTime.of(2000, 1, 1, 0, 30);
 
         SimEngine simEngine = new SimEngine(1, startSim, endSim);
 
         /*
         * ****************************************************************************************************************
-        * Carrefour Coruscant
+        * Junction
         * ****************************************************************************************************************
         */
-        CoruscantNetwork carrefour = new CoruscantNetwork(simEngine);
-        carrefour.init();
+        SimpleNetwork crossroads = new SimpleNetwork(simEngine);
+        crossroads.init();
 
         /*
         * ****************************************************************************************************************
@@ -42,6 +46,6 @@ public class Main {
         * results
         * ****************************************************************************************************************
         */
-        carrefour.printStats();
+//        crossroads.printStats();
     }
 }

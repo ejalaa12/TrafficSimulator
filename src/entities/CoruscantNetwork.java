@@ -71,16 +71,16 @@ public class CoruscantNetwork extends RoadNetwork implements Entity {
         addIntersection(intersection4);
 
 
-        addRoad(new Road("R1", zone1, intersection1, 100, 50*1000/3600));
-        addRoad(new Road("R2", intersection1, intersection2, 100, 50*1000/3600));
-        addRoad(new Road("R3", intersection1, intersection4, 100, 50*1000/3600));
-        addRoad(new Road("R4", zone2, intersection2, 100, 50*1000/3600));
-        addRoad(new Road("R5", zone3, intersection2, 100, 50*1000/3600));
-        addRoad(new Road("R6", zone5, intersection4, 100, 50*1000/3600));
-        addRoad(new Road("R7", zone6, intersection4, 100, 50*1000/3600));
-        addRoad(new Road("R8", zone7, intersection3, 100, 50*1000/3600));
-        addRoad(new Road("R9", zone4, intersection3, 100, 50*1000/3600));
-        addRoad(new Road("R10", intersection4, intersection3, 100, 50*1000/3600));
+        addRoad(new Road("R1.1", zone1, intersection1, 3000, 50 * 1000 / 3600.));
+        addRoad(new Road("R1.2", intersection1, intersection2, 1300, 50 * 1000 / 3600.));
+        addRoad(new Road("R1.3", zone3, intersection2, 2000, 50 * 1000 / 3600.));
+        addRoad(new Road("R2", zone2, intersection2, 4500, 50 * 1000 / 3600.));
+        addRoad(new Road("R2.1", zone5, intersection4, 4500, 50 * 1000 / 3600.));
+        addRoad(new Road("R2.2", intersection4, intersection3, 800, 50 * 1000 / 3600.));
+        addRoad(new Road("R2.3", zone4, intersection3, 1400, 50 * 1000 / 3600.));
+        addRoad(new Road("R3.1", intersection1, intersection4, 3500, 50 * 1000 / 3600.));
+        addRoad(new Road("R3.2", zone6, intersection4, 1000, 50 * 1000 / 3600.));
+        addRoad(new Road("R4", zone7, intersection3, 3000, 50 * 1000 / 3600.));
     }
 
     @Override
@@ -99,7 +99,11 @@ public class CoruscantNetwork extends RoadNetwork implements Entity {
         for (Zone zone : zones) {
             zone.printStats();
         }
-
+        for (Road road : roads) {
+            System.out.format("%s queue: %d -- ", road.getLane1().getId(), road.getLane1().getCarQueue().size());
+            System.out.format("%s queue: %d", road.getLane2().getId(), road.getLane2().getCarQueue().size());
+            System.out.println();
+        }
     }
 
     @Override
