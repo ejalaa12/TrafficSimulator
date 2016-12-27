@@ -38,6 +38,7 @@ public class SimEngine {
      */
     public void addEvent(Event newEvent) {
         if (!this.events.contains(newEvent)) {
+            newEvent.setPostedTime(currentSimTime);
             this.events.add(newEvent);
             Collections.sort(this.events);
         } else {
