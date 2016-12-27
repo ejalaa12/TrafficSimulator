@@ -69,13 +69,13 @@ public class SimEngine {
         // Get first element
         Event currentEvent = this.events.get(0);
         this.events.remove(0);
+        // break if the event is after endSimTime
+        if (currentEvent.getScheduledTime().isAfter(endSimTime)) {
+            return;
+        }
         Logger.getInstance().log(currentEvent);
         // Update simulation time with current event time
         currentSimTime = currentEvent.getScheduledTime();
-        // break if the event is after endSimTime
-        if (currentSimTime.isAfter(endSimTime)) {
-            return;
-        }
         // Do the action of this event and get all generated events
         currentEvent.doAction();
         // Increment loops
