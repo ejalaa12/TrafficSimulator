@@ -16,13 +16,12 @@ public abstract class Event implements Comparable<Event> {
     * ********************************************************************
     */
 
-    protected LocalDateTime scheduledTime;
+    protected LocalDateTime postedTime, scheduledTime;
     private String description, creator;
     /*
     Constructor
      */
     protected Event(String creator, LocalDateTime scheduledTime, String description) {
-        // TODO: 04/12/2016 add postedTime in parameters and attributes
         super();
         this.creator = creator;
         this.scheduledTime = scheduledTime;
@@ -73,4 +72,29 @@ public abstract class Event implements Comparable<Event> {
         return res;
     }
 
+    /**
+     * Return the time the event was posted
+     *
+     * @return the time the event was posted
+     */
+    public LocalDateTime getPostedTime() {
+        return postedTime;
+    }
+
+    /**
+     * PostedTime is set directly from simEngine (for simplicity and code clarification)
+     * from the method addEvent()
+     *
+     * @param postedTime the Time it is posted
+     */
+    public void setPostedTime(LocalDateTime postedTime) {
+        this.postedTime = postedTime;
+    }    /**
+     * Return the time the event was posted
+     *
+     * @return the time the event was posted
+     */
+    public LocalDateTime getPostedTime() {
+        return postedTime;
+    }
 }

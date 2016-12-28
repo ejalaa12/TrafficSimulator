@@ -10,7 +10,7 @@ import java.time.format.DateTimeFormatterBuilder;
 import java.util.Arrays;
 
 /**
- * A Logger which is a Singleton that allows to log all informations
+ * A Logger which is a Singleton that allows to log all messages
  */
 public class Logger {
 
@@ -20,8 +20,9 @@ public class Logger {
     private static Logger instance = null;
 
     static {
-        logicalTimeFormatter = DateTimeFormatter.ISO_TIME;
-        logicalDateFormatter = DateTimeFormatter.ofPattern("EEE dd, MMM yyyy");
+        logicalTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+        logicalDateFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy");
+//        logicalDateFormatter = DateTimeFormatter.ofPattern("EEE dd, MMM yyyy");
 
         DateTimeFormatterBuilder dtfb = new DateTimeFormatterBuilder();
         dtfb.parseCaseInsensitive();
@@ -31,6 +32,7 @@ public class Logger {
         logicalDateTimeFormatter = dtfb.toFormatter();
     }
 
+    private LogLevel mlogLevel;
     private boolean on;
 
     // File for csv
@@ -41,6 +43,7 @@ public class Logger {
     private Logger() {
         // exist only to defeat instanciation
         on = true;
+        mlogLevel = LogLevel.INFO;
         csvOn = false;
         csvFile = "./results/logs.csv";
         try {
@@ -74,19 +77,30 @@ public class Logger {
         csvOn = false;
     }
 
+    public void setLogLevel(LogLevel logLevel) {
+        mlogLevel = logLevel;
+    }
+
+    /*
+    * ****************************************************************************************************************
+    * Log methods
+    * ****************************************************************************************************************
+    */
     public void log(Event event) {
-        mlog(event.getCreator(), event.getScheduledTime(), event.getDescription());
+        mlog(event.getCreator(), event.getScheduledTime(), event.getDescription(), LogLevel.EVENT);
     }
 
-    public void log(String creatorName, LocalDateTime logTime, String message) {
-        mlog(creatorName, logTime, message);
+    public void log(String creatorName, LocalDateTime logTime, String message, LogLevel logLevel) {
+        mlog(creatorName, logTime, message, logLevel);
     }
 
-    private void mlog(String creatorName, LocalDateTime logTime, String message) {
+    private void mlog(String creatorName, LocalDateTime logTime, String message, LogLevel logLevel) {
         String timestamp = logicalDateTimeFormatter.format(logTime);
-        String res = String.format("[%s] %-20s: %s", timestamp, creatorName, message);
+        String res = String.format("%s[%-10s] [%s] %-20s: %s", logLevel.getColor(), logLevel, timestamp, creatorName, message);
         if (on) {
-            System.out.println(res);
+            if (logLevel.ordinal() >= mlogLevel.ordinal()) {
+                System.out.println(res);
+            }
         }
         if (csvOn) {
             try {

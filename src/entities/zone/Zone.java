@@ -41,8 +41,6 @@ public class Zone extends Node implements Entity{
 
     }
 
-    // TODO: 26/12/2016 scheduling car creation events
-
     /*
     * ****************************************************************************************************************
     * Getter and Setters
