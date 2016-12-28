@@ -83,12 +83,12 @@ public class Car implements Entity {
     }
 
     public void driveToFreeSpot() {
-        LocalDateTime nextStopTime = driveTo(currentLane.getFreeSpotPosition());
+        LocalDateTime nextStopTime = driveTo(currentLane.getFreeSpotPositionForCar(this));
         currentEvent = new StopEvent(this, nextStopTime);
         simEngine.addEvent(currentEvent);
 
         // Log info
-        String msg = "Driving to free spot: " + currentLane.getFreeSpotPosition();
+        String msg = "Driving to free spot: " + currentLane.getFreeSpotPositionForCar(this);
         msg += " on lane " + currentLane.getId();
         Logger.getInstance().log(getName(), simEngine.getCurrentSimTime(), msg, LogLevel.INFO);
     }
@@ -205,9 +205,9 @@ public class Car implements Entity {
             String msg = "Finished path but last node is not Zone...";
             Logger.getInstance().log(getName(), simEngine.getCurrentSimTime(), msg, LogLevel.WARNING);
         }
-        // removing car from the lane
+        // removing car from the last lane
         // commenting this line can be interesting (just to play with git)
-        currentLane.removeCar(this);
+//        currentLane.removeCar(this);
         // TODO: 28/12/2016 add arrived car to the count of arrived cars
 //        throw new NotImplementedException();
     }
