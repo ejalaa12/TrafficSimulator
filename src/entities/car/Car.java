@@ -206,6 +206,7 @@ public class Car implements Entity {
             Logger.getInstance().log(getName(), simEngine.getCurrentSimTime(), msg, LogLevel.WARNING);
         }
         // removing car from the lane
+        // commenting this line can be interesting (just to play with git)
         currentLane.removeCar(this);
         // TODO: 28/12/2016 add arrived car to the count of arrived cars
 //        throw new NotImplementedException();
