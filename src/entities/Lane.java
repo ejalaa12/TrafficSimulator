@@ -1,6 +1,7 @@
 package entities;
 
 import entities.car.Car;
+import entities.car.CarNotification;
 import graph_network.Edge;
 import graph_network.Node;
 
@@ -11,18 +12,17 @@ import java.util.List;
  * This class models a Lane which is an edge of the road network
  * A Lane has a list of car and a speed_limit
  */
-public class Lane extends Edge{
+public class Lane extends Edge {
 
     private final int distance_between_cars = 2;
     private List<Car> carQueue;
     private double speed_limit;
 
     /**
-     *
-     * @param id the lane unique id
-     * @param source source of the lane
+     * @param id          the lane unique id
+     * @param source      source of the lane
      * @param destination destination of the lane
-     * @param length lane's length
+     * @param length      lane's length
      */
     public Lane(String id, Node source, Node destination, int length, double speed_limit) {
         super(id, source, destination, length);
@@ -56,6 +56,20 @@ public class Lane extends Edge{
      */
     public void removeCar(Car car) {
         carQueue.remove(car);
+        notifyOtherCars();
+    }
+
+    /**
+     * Notifies all other cars in the Queue that a car has left the queue so they can update their behavior
+     */
+    private void notifyOtherCars() {
+        if (!carQueue.isEmpty()) {
+            carQueue.get(0).notifyCar(CarNotification.GoToEndOfLane);
+            int i;
+            for (i = 1; i < carQueue.size(); i++) {
+                carQueue.get(i).notifyCar(CarNotification.GoToNextFreeSpot);
+            }
+        }
     }
 
     /*
@@ -82,9 +96,13 @@ public class Lane extends Edge{
     }
 
     public int getFreeSpotPosition() {
-        // We assume that even if cars are driving, the free spot is going to be the one
-        // that is free when all cars are stopped in queue
-        // TODO: 27/12/2016 calculate free spot position
-        return getLength();
+        // - We assume that even if cars are driving, the free spot is going to be the one
+        //          that is free when all cars are stopped in queue
+        // - The free spot is the one to be taken by the last added car, thus the -1 (because the last added is already in the list)
+        return getLength() - (carQueue.size() - 1) * (distance_between_cars + Car.length);
+    }
+
+    public boolean isFree() {
+        return carQueue.isEmpty();
     }
 }

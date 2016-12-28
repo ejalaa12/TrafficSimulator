@@ -20,8 +20,9 @@ public class Logger {
     private static Logger instance = null;
 
     static {
-        logicalTimeFormatter = DateTimeFormatter.ISO_TIME;
-        logicalDateFormatter = DateTimeFormatter.ofPattern("EEE dd, MMM yyyy");
+        logicalTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+        logicalDateFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy");
+//        logicalDateFormatter = DateTimeFormatter.ofPattern("EEE dd, MMM yyyy");
 
         DateTimeFormatterBuilder dtfb = new DateTimeFormatterBuilder();
         dtfb.parseCaseInsensitive();
@@ -80,6 +81,11 @@ public class Logger {
         mlogLevel = logLevel;
     }
 
+    /*
+    * ****************************************************************************************************************
+    * Log methods
+    * ****************************************************************************************************************
+    */
     public void log(Event event) {
         mlog(event.getCreator(), event.getScheduledTime(), event.getDescription(), LogLevel.EVENT);
     }

@@ -73,6 +73,15 @@ public abstract class Event implements Comparable<Event> {
     }
 
     /**
+     * Return the time the event was posted
+     *
+     * @return the time the event was posted
+     */
+    public LocalDateTime getPostedTime() {
+        return postedTime;
+    }
+
+    /**
      * PostedTime is set directly from simEngine (for simplicity and code clarification)
      * from the method addEvent()
      *
@@ -80,5 +89,12 @@ public abstract class Event implements Comparable<Event> {
      */
     public void setPostedTime(LocalDateTime postedTime) {
         this.postedTime = postedTime;
+    }    /**
+     * Return the time the event was posted
+     *
+     * @return the time the event was posted
+     */
+    public LocalDateTime getPostedTime() {
+        return postedTime;
     }
 }

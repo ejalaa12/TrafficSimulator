@@ -22,7 +22,7 @@ public class SimpleNetwork extends RoadNetwork implements Entity {
     private void definition() {
 
         ArrayList<TimeSlot> timeSlots1 = new ArrayList<>();
-        timeSlots1.add(new TimeSlot(LocalTime.of(0, 0), LocalTime.of(7, 0), 1));
+        timeSlots1.add(new TimeSlot(LocalTime.of(0, 0), LocalTime.of(7, 0), 2000));
         timeSlots1.add(new TimeSlot(LocalTime.of(7, 0), LocalTime.of(9, 0), 3));
         timeSlots1.add(new TimeSlot(LocalTime.of(9, 0), LocalTime.of(17, 0), 1));
         timeSlots1.add(new TimeSlot(LocalTime.of(17, 0), LocalTime.of(19, 0), 3));
