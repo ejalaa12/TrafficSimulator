@@ -36,7 +36,7 @@ public class Car implements Entity {
     private Lane currentLane;
     private int step;
     // position in lane
-    private double position;// TODO: 28/12/2016 update position when needed (Event postedTime might help)
+    private double position;
 
     // keeping track currentEvent so we can remove it from simEngine
     private Event currentEvent;
