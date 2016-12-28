@@ -183,7 +183,7 @@ public class Car implements Entity {
 
     private void waitBecauseNextLaneFull() {
         stop();
-        Intersection currentIntersection = (Intersection) path.get(step + 1);
+        Intersection currentIntersection = (Intersection) path.get(step);
         String msg = "Waiting at intersection " + currentIntersection.getName();
         Logger.getInstance().log(getName(), simEngine.getCurrentSimTime(), msg, LogLevel.INFO);
     }

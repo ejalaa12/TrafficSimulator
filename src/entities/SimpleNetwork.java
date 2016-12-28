@@ -50,8 +50,8 @@ public class SimpleNetwork extends RoadNetwork implements Entity {
         addIntersection(intersection1);
 
 
-        addRoad(new Road("R1", zone1, intersection1, 3000, 50 * 1000 / 3600.));
-        addRoad(new Road("R2", zone2, intersection1, 3000, 50 * 1000 / 3600.));
+        addRoad(new Road("R1", zone1, intersection1, 100, 50 * 1000 / 3600.));
+        addRoad(new Road("R2", zone2, intersection1, 200, 50 * 1000 / 3600.));
     }
 
     @Override
