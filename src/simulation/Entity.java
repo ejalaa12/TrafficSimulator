@@ -13,7 +13,7 @@ public interface Entity {
     /**
      * Print statistics about the entity
      */
-    void printStats();
+    void logStats();
 
     /**
      * Each entity has a name

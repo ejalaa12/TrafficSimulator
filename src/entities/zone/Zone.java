@@ -35,7 +35,7 @@ public class Zone extends Node implements Entity{
     }
 
     @Override
-    public void printStats() {
+    public void logStats() {
         String string = String.format("%-20s: %d", getName(), getNumberOfProducedCars());
         System.out.println(string);
 

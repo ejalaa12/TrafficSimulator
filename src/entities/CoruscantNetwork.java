@@ -95,9 +95,9 @@ public class CoruscantNetwork extends RoadNetwork implements Entity {
     }
 
     @Override
-    public void printStats() {
+    public void logStats() {
         for (Zone zone : zones) {
-            zone.printStats();
+            zone.logStats();
         }
         for (Road road : roads) {
             System.out.format("%s queue: %d -- ", road.getLane1().getId(), road.getLane1().getCarQueue().size());

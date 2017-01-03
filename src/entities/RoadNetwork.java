@@ -79,7 +79,7 @@ public class RoadNetwork extends Graph implements Entity {
     }
 
     @Override
-    public void printStats() {
+    public void logStats() {
 
     }
 

@@ -224,7 +224,8 @@ public class Car implements Entity {
     */
 
     @Override
-    public void printStats() {
+    public void logStats() {
+        String stats = "";
 
     }
 

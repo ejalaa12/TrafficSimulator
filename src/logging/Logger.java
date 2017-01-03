@@ -1,5 +1,6 @@
 package logging;
 
+import simulation.Entity;
 import simulation.Event;
 
 import java.io.FileWriter;
@@ -115,10 +116,32 @@ public class Logger {
         System.out.println(logicalDateTimeFormatter.format(logTime));
     }
 
-    public void close() throws IOException {
+    public void close() {
         if (csvOn) {
-            writer.flush();
-            writer.close();
+            try {
+                writer.flush();
+                writer.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void logStat(Entity creator, String[] titles, String[] statistics) {
+        String csvStatFile = String.format("./results/logs_%s.csv", creator.getName());
+        String timestamp = logicalDateTimeFormatter.format(creator.get);
+        try {
+            writer = new FileWriter(csvFile);
+            CSVUtils.writeLine(writer, Arrays.asList("date", "creator", "message"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        CSVUtils.writeLine(writer, Arrays.asList(timestamp, creatorName, message));
+        try {
+            writer = new FileWriter(csvFile);
+            CSVUtils.writeLine(writer, Arrays.asList("date", "creator", "message"));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

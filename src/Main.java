@@ -15,6 +15,7 @@ public class Main {
     public static void main(String[] args) {
         test();
         Logger.getInstance().setLogLevel(LogLevel.INFO);
+        Logger.getInstance().turnCsvOn();
         /*
         * ****************************************************************************************************************
         * Simulation times
@@ -46,6 +47,8 @@ public class Main {
         * results
         * ****************************************************************************************************************
         */
-//        crossroads.printStats();
+//        crossroads.logStats();
+
+        Logger.getInstance().close();
     }
 }
