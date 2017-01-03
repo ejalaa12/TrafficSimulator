@@ -91,4 +91,8 @@ public class RoadNetwork extends Graph implements Entity {
     public SimEngine getSimEngine() {
         return simEngine;
     }
+
+    public List<Road> getRoads() {
+        return roads;
+    }
 }

@@ -26,5 +26,8 @@ public class ChangeColorEvent extends Event {
             case RED:
                 trafficLight.setState(TrafficLight.State.GREEN);
         }
+        // next changing state event
+        LocalDateTime nextTime = trafficLight.getSimEngine().getCurrentSimTime().plus(trafficLight.getFrequency());
+        trafficLight.getSimEngine().addEvent(new ChangeColorEvent(trafficLight, nextTime));
     }
 }

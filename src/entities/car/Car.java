@@ -112,6 +112,7 @@ public class Car implements Entity {
      */
     public void goToNextLane() {
         if (step < path.size() - 1) {
+//            if (currentLane.getLight().getState() == )
             Lane nextLane = roadNetwork.getLaneBetween(path.get(step), path.get(step + 1));
             if (nextLane.isFree()) {
                 switchToLane(nextLane);
