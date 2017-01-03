@@ -127,19 +127,17 @@ public class Logger {
         }
     }
 
-    public void logStat(Entity creator, String[] titles, String[] statistics) {
-        String csvStatFile = String.format("./results/logs_%s.csv", creator.getName());
-        String timestamp = logicalDateTimeFormatter.format(creator.get);
+    public void logStat(Entity creator, String[] statisticsMessages) {
+        String csvStatFile = String.format("./results/logs_%s.csv", creator.getClass().getName());
+        String timestamp = logicalDateTimeFormatter.format(creator.getSimEngine().getCurrentSimTime());
+        FileWriter stat_writer;
         try {
-            writer = new FileWriter(csvFile);
-            CSVUtils.writeLine(writer, Arrays.asList("date", "creator", "message"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        CSVUtils.writeLine(writer, Arrays.asList(timestamp, creatorName, message));
-        try {
-            writer = new FileWriter(csvFile);
-            CSVUtils.writeLine(writer, Arrays.asList("date", "creator", "message"));
+            stat_writer = new FileWriter(csvStatFile, true);
+            for (String msg : statisticsMessages) {
+                CSVUtils.writeLine(stat_writer, Arrays.asList(timestamp, creator.getName(), msg));
+            }
+            stat_writer.flush();
+            stat_writer.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

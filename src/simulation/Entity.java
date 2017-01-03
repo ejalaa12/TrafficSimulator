@@ -22,5 +22,12 @@ public interface Entity {
      */
     String getName();
 
+    /**
+     * Each entity must have a reference to the Simulator engine so that it can post events
+     *
+     * @return
+     */
+    SimEngine getSimEngine();
+
 
 }
