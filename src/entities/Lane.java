@@ -96,7 +96,6 @@ public class Lane extends Edge {
      * @return the list of cars on this lane
      */
     public List<Car> getCarQueue() {
-        // TODO: 04/01/2017 write doc
         return carQueue;
     }
 
@@ -105,7 +104,6 @@ public class Lane extends Edge {
      * @return the speed limit of the lane
      */
     public double getSpeed_limit() {
-        // TODO: 04/01/2017 write doc
         return speed_limit;
     }
 
@@ -143,7 +141,7 @@ public class Lane extends Edge {
     /**
      * Sets the traffic sign on this lane
      *
-     * @param trafficSign
+     * @param trafficSign the trafficSign to set for this lane
      */
     public void setTrafficSign(TrafficSign trafficSign) {
         this.trafficSign = trafficSign;

@@ -41,7 +41,6 @@ public class TrafficLight extends TrafficSign implements Entity {
 
     @Override
     public SimEngine getSimEngine() {
-        // FIXME: 01/01/2017 maybe find a cleaner to get the simEngine because lane don't always have cars
         return simEngine;
     }
 

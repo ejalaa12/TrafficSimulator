@@ -1,5 +1,4 @@
 import entities.SimpleNetwork;
-import entities.traffic_light.TrafficLight;
 import logging.LogLevel;
 import logging.Logger;
 import simulation.SimEngine;
@@ -16,16 +15,16 @@ public class Main {
     public static void main(String[] args) {
         test();
         Logger.getInstance().setLogLevel(LogLevel.INFO);
-        Logger.getInstance().turnCsvOn();
         /*
-        * ****************************************************************************************************************
+        * ##############################################################################################################
         * Simulation times
-        * ****************************************************************************************************************
+        * ##############################################################################################################
         */
         LocalDateTime startSim = LocalDateTime.of(2000, 1, 1, 0, 0);
         LocalDateTime endSim = LocalDateTime.of(2000, 1, 1, 0, 30);
 
         SimEngine simEngine = new SimEngine(1, startSim, endSim);
+
 
         /*
         * ****************************************************************************************************************
@@ -34,14 +33,6 @@ public class Main {
         */
         SimpleNetwork crossroads = new SimpleNetwork(simEngine);
         crossroads.init();
-
-        /*
-        * ****************************************************************************************************************
-        * Trying some entities
-        * ****************************************************************************************************************
-        */
-        TrafficLight tl1 = new TrafficLight(crossroads.getRoads().get(0).getLane1(), simEngine);
-        tl1.init();
 
         /*
         * ****************************************************************************************************************

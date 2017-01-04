@@ -76,10 +76,18 @@ public class RoadNetwork extends Graph implements Entity {
     }
 
     /**
-     * Loop through all roads and initiate the traffic lights if any
+     * Initiate all zones and traffic lights
      */
     @Override
     public void init() {
+        initZones();
+        initTrafficLights();
+    }
+
+    /**
+     * Loops through all roads to get the traffic lights and init them
+     */
+    protected void initTrafficLights() {
         for (Road road : roads) {
             // traffic light on lane 1
             TrafficSign tfs = road.getLane1().getTrafficSign();
@@ -87,6 +95,15 @@ public class RoadNetwork extends Graph implements Entity {
             // traffic light on lane 2
             tfs = road.getLane2().getTrafficSign();
             if (tfs instanceof TrafficLight) ((TrafficLight) tfs).init();
+        }
+    }
+
+    /**
+     * Loops through all zones and init them
+     */
+    protected void initZones() {
+        for (Zone zone : zones) {
+            zone.init();
         }
     }
 
