@@ -81,7 +81,9 @@ public abstract class Event implements Comparable<Event> {
      */
     public void setPostedTime(LocalDateTime postedTime) {
         this.postedTime = postedTime;
-    }    /**
+    }
+
+    /**
      * Return the time the event was posted
      *
      * @return the time the event was posted

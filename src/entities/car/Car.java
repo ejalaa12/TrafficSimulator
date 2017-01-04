@@ -36,7 +36,7 @@ public class Car implements Entity {
     private Lane currentLane;
     private int step;
     // position in lane
-    private double position;// TODO: 28/12/2016 update position when needed (Event postedTime might help)
+    private double position;
 
     // keeping track currentEvent so we can remove it from simEngine
     private Event currentEvent;
@@ -83,12 +83,12 @@ public class Car implements Entity {
     }
 
     public void driveToFreeSpot() {
-        LocalDateTime nextStopTime = driveTo(currentLane.getFreeSpotPosition());
+        LocalDateTime nextStopTime = driveTo(currentLane.getFreeSpotPositionForCar(this));
         currentEvent = new StopEvent(this, nextStopTime);
         simEngine.addEvent(currentEvent);
 
         // Log info
-        String msg = "Driving to free spot: " + currentLane.getFreeSpotPosition();
+        String msg = "Driving to free spot: " + currentLane.getFreeSpotPositionForCar(this);
         msg += " on lane " + currentLane.getId();
         Logger.getInstance().log(getName(), simEngine.getCurrentSimTime(), msg, LogLevel.INFO);
     }
@@ -183,7 +183,7 @@ public class Car implements Entity {
 
     private void waitBecauseNextLaneFull() {
         stop();
-        Intersection currentIntersection = (Intersection) path.get(step + 1);
+        Intersection currentIntersection = (Intersection) path.get(step);
         String msg = "Waiting at intersection " + currentIntersection.getName();
         Logger.getInstance().log(getName(), simEngine.getCurrentSimTime(), msg, LogLevel.INFO);
     }
@@ -205,9 +205,9 @@ public class Car implements Entity {
             String msg = "Finished path but last node is not Zone...";
             Logger.getInstance().log(getName(), simEngine.getCurrentSimTime(), msg, LogLevel.WARNING);
         }
-        // removing car from the lane
         // TODO: 28/12/2016 TRY without this line so that cars accumulate and we can see if algorithm works
         currentLane.removeCar(this);
+        // removing car from the lane
         // TODO: 28/12/2016 add arrived car to the count of arrived cars
 //        throw new NotImplementedException();
     }

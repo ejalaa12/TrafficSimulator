@@ -95,11 +95,14 @@ public class Lane extends Edge {
         return speed_limit;
     }
 
-    public int getFreeSpotPosition() {
+    public int getFreeSpotPositionForCar(Car car) {
         // - We assume that even if cars are driving, the free spot is going to be the one
         //          that is free when all cars are stopped in queue
-        // - The free spot is the one to be taken by the last added car, thus the -1 (because the last added is already in the list)
-        return getLength() - (carQueue.size() - 1) * (distance_between_cars + Car.length);
+
+        // Let's calculate the car spot according to it's position in the queue
+        int positionInQueue = carQueue.indexOf(car);
+        return getLength() - positionInQueue * (distance_between_cars + Car.length);
+//        return getLength() - (carQueue.size() - 1) * (distance_between_cars + Car.length);
     }
 
     public boolean isFree() {
