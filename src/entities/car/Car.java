@@ -205,9 +205,9 @@ public class Car implements Entity {
             String msg = "Finished path but last node is not Zone...";
             Logger.getInstance().log(getName(), simEngine.getCurrentSimTime(), msg, LogLevel.WARNING);
         }
+        // removing car from the lane
         // TODO: 28/12/2016 TRY without this line so that cars accumulate and we can see if algorithm works
         currentLane.removeCar(this);
-        // removing car from the lane
         // TODO: 28/12/2016 add arrived car to the count of arrived cars
 //        throw new NotImplementedException();
     }

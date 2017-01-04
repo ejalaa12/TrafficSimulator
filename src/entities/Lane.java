@@ -102,7 +102,6 @@ public class Lane extends Edge {
         // Let's calculate the car spot according to it's position in the queue
         int positionInQueue = carQueue.indexOf(car);
         return getLength() - positionInQueue * (distance_between_cars + Car.length);
-//        return getLength() - (carQueue.size() - 1) * (distance_between_cars + Car.length);
     }
 
     public boolean isFree() {
