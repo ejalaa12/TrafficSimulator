@@ -9,7 +9,7 @@ import java.time.Duration;
 /**
  * Created by ejalaa on 01/01/2017.
  */
-public class TrafficLight implements Entity {
+public class TrafficLight extends TrafficSign implements Entity {
 
     private State state;
     // TODO: 01/01/2017 change frequency so that green and red light don't have same duration

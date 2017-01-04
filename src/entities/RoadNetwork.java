@@ -1,5 +1,7 @@
 package entities;
 
+import entities.traffic_light.TrafficLight;
+import entities.traffic_light.TrafficSign;
 import entities.zone.Zone;
 import graph_network.Graph;
 import graph_network.Node;
@@ -73,9 +75,19 @@ public class RoadNetwork extends Graph implements Entity {
         throw new NoSuchFieldError("no lane between " + start.toString() + "and " + end.toString());
     }
 
+    /**
+     * Loop through all roads and initiate the traffic lights if any
+     */
     @Override
     public void init() {
-
+        for (Road road : roads) {
+            // traffic light on lane 1
+            TrafficSign tfs = road.getLane1().getTrafficSign();
+            if (tfs instanceof TrafficLight) ((TrafficLight) tfs).init();
+            // traffic light on lane 2
+            tfs = road.getLane2().getTrafficSign();
+            if (tfs instanceof TrafficLight) ((TrafficLight) tfs).init();
+        }
     }
 
     @Override

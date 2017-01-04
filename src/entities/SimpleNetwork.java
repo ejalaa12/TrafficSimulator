@@ -10,7 +10,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 
 /**
- * This class models Coruscant Carrefour
+ * This class models the Coruscant crossroads
  */
 public class SimpleNetwork extends RoadNetwork implements Entity {
 

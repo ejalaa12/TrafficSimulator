@@ -2,6 +2,7 @@ package entities;
 
 import entities.car.Car;
 import entities.car.CarNotification;
+import entities.traffic_light.TrafficSign;
 import graph_network.Edge;
 import graph_network.Node;
 
@@ -17,6 +18,7 @@ public class Lane extends Edge {
     private final int distance_between_cars = 2;
     private List<Car> carQueue;
     private double speed_limit;
+    private TrafficSign trafficSign;
 
     /**
      * @param id          the lane unique id
@@ -28,6 +30,7 @@ public class Lane extends Edge {
         super(id, source, destination, length);
         carQueue = new ArrayList<>();
         this.speed_limit = speed_limit;
+        this.trafficSign = null;    // trafficSign is null if not set
     }
 
     /**
@@ -87,24 +90,62 @@ public class Lane extends Edge {
         return getWeight();
     }
 
+    /**
+     * Returns the list of cars on this lane
+     *
+     * @return the list of cars on this lane
+     */
     public List<Car> getCarQueue() {
+        // TODO: 04/01/2017 write doc
         return carQueue;
     }
 
+    /**
+     * Returns the speed limit of the lane
+     * @return the speed limit of the lane
+     */
     public double getSpeed_limit() {
+        // TODO: 04/01/2017 write doc
         return speed_limit;
     }
 
+    /**
+     * Calculates and returns the next free spot on the lane
+     * We assume that even if cars are driving, the free spot is going to be the one
+     * that is free when all cars are stopped in queue.
+     *
+     * We calculate the car spot according to it's position in the queue
+     *
+     * @return an integer corresponding to the position (in meters) where the free spot is
+     */
     public int getFreeSpotPositionForCar(Car car) {
-        // - We assume that even if cars are driving, the free spot is going to be the one
-        //          that is free when all cars are stopped in queue
-
-        // Let's calculate the car spot according to it's position in the queue
         int positionInQueue = carQueue.indexOf(car);
         return getLength() - positionInQueue * (distance_between_cars + Car.length);
     }
 
+    /**
+     * Returns true if the lane has no car on it
+     * @return true if carQueue is empty
+     */
     public boolean isFree() {
         return carQueue.isEmpty();
+    }
+
+    /**
+     * Returns the traffic sign that is on the end of this lane
+     *
+     * @return the traffic sign that is on the end of this lane
+     */
+    public TrafficSign getTrafficSign() {
+        return trafficSign;
+    }
+
+    /**
+     * Sets the traffic sign on this lane
+     *
+     * @param trafficSign
+     */
+    public void setTrafficSign(TrafficSign trafficSign) {
+        this.trafficSign = trafficSign;
     }
 }
