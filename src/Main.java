@@ -1,4 +1,6 @@
 import entities.SimpleNetwork;
+import entities.zone.NewCarEvent;
+import entities.zone.Zone;
 import logging.LogLevel;
 import logging.Logger;
 import simulation.SimEngine;
@@ -21,7 +23,7 @@ public class Main {
         * ##############################################################################################################
         */
         LocalDateTime startSim = LocalDateTime.of(2000, 1, 1, 0, 0);
-        LocalDateTime endSim = LocalDateTime.of(2000, 1, 1, 0, 30);
+        LocalDateTime endSim = LocalDateTime.of(2000, 1, 1, 1, 30);
 
         SimEngine simEngine = new SimEngine(1, startSim, endSim);
 
@@ -34,6 +36,12 @@ public class Main {
         SimpleNetwork crossroads = new SimpleNetwork(simEngine);
         crossroads.init();
 
+        /*
+        * ##############################################################################################################
+        * add some entities/event to test
+        * ##############################################################################################################
+        */
+//        simEngine.addEvent(new NewCarEvent((Zone) crossroads.getNodes().get(0), LocalDateTime.of(2000, 1, 1, 0, 21, 20)));
         /*
         * ****************************************************************************************************************
         * Simulation

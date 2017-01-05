@@ -13,7 +13,7 @@ public class NewCarEvent extends Event {
     private Zone zone;
     private Car createdCar;
 
-    NewCarEvent(Zone zone, LocalDateTime scheduledTime) {
+    public NewCarEvent(Zone zone, LocalDateTime scheduledTime) {
         super(zone.getName(), scheduledTime, "Creation of new car");
         this.zone = zone;
         // Update description with car name

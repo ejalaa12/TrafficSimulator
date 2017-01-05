@@ -3,6 +3,9 @@ package entities.car;
 import entities.Intersection;
 import entities.Lane;
 import entities.RoadNetwork;
+import entities.traffic_light.TrafficLight;
+import entities.traffic_light.TrafficLightState;
+import entities.traffic_light.TrafficSign;
 import entities.zone.Zone;
 import graph_network.DijkstraAlgorithm;
 import graph_network.Node;
@@ -16,6 +19,8 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
+
+// TODO: 05/01/2017 write methods documentation
 
 /**
  * This class models a car that moves in a roadNetwork
@@ -105,14 +110,22 @@ public class Car implements Entity {
 
     /**
      * While car has not reached path.last()
-     * if possible (next lane is not full)
+     * if possible (next lane is not full and light is green)
      * >>>>> car is added to the next lane queue
      * else:
      * >>>>> the car is dismissed (if it just started) or waits
      */
     public void goToNextLane() {
         if (step < path.size() - 1) {
-//            if (currentLane.getLight().getState() == )
+            if (currentLane != null) {
+                TrafficSign currentLaneTrafficSign = currentLane.getTrafficSign();
+                if (currentLaneTrafficSign != null && currentLaneTrafficSign instanceof TrafficLight) {
+                    if (((TrafficLight) currentLaneTrafficSign).getState() == TrafficLightState.RED) {
+                        waitBecauseRedLight();
+                        return;
+                    }
+                }
+            }
             Lane nextLane = roadNetwork.getLaneBetween(path.get(step), path.get(step + 1));
             if (nextLane.isFree()) {
                 switchToLane(nextLane);
@@ -132,7 +145,6 @@ public class Car implements Entity {
         }
     }
 
-
     private void updatePosition() {
         // for right after initialisation
         if (currentEvent == null) {
@@ -144,26 +156,38 @@ public class Car implements Entity {
         }
     }
 
+
     /*
     * ****************************************************************************************************************
     * State changing
     * ****************************************************************************************************************
     */
 
+    /**
+     * Give the car a notification and the car behaves accordingly
+     * 1. Log notification
+     * 2. Un-post next event, if any (if the car has stopped its waiting for an event, so no next event)
+     * 3. switch case:
+     *  + if @GoToEndOfLane: @driveToEnd
+     *  + if @GoToNextFreeSpot: @driveToFreeSpot
+     *  + if @GreenLightSoChangeLane: @goToNextLane
+     * @param notification
+     */
     public void notifyCar(CarNotification notification) {
         String msg = "update: " + notification;
+        Logger.getInstance().log(getName(), simEngine.getCurrentSimTime(), msg, LogLevel.INFO);
+        if (currentEvent != null) {
+            simEngine.removeEvent(currentEvent);
+        }
         switch (notification) {
             case GoToEndOfLane:
-                Logger.getInstance().log(getName(), simEngine.getCurrentSimTime(), msg, LogLevel.INFO);
-                // unpost current event
-                simEngine.removeEvent(currentEvent);
                 driveToEnd();
                 break;
             case GoToNextFreeSpot:
-                Logger.getInstance().log(getName(), simEngine.getCurrentSimTime(), msg, LogLevel.INFO);
-                // unpost current event
-                simEngine.removeEvent(currentEvent);
                 driveToFreeSpot();
+                break;
+            case GreenLightSoChangeLane:
+                goToNextLane();
                 break;
         }
     }
@@ -189,10 +213,19 @@ public class Car implements Entity {
         Logger.getInstance().log(getName(), simEngine.getCurrentSimTime(), msg, LogLevel.INFO);
     }
 
+    private void waitBecauseRedLight() {
+        stop();
+        Intersection currentIntersection = (Intersection) path.get(step);
+        String msg = "Waiting at red light " + currentIntersection.getName();
+        Logger.getInstance().log(getName(), simEngine.getCurrentSimTime(), msg, LogLevel.INFO);
+    }
+
     public void stop() {
         updatePosition();
         speed = 0;
         carState = CarState.STOPPED;
+        // now that the car is stopped, it should not have any planned next event so:
+        currentEvent = null;
         // Log info
         String msg = "Stop: " + position;
         Logger.getInstance().log(getName(), simEngine.getCurrentSimTime(), msg, LogLevel.INFO);
@@ -216,7 +249,8 @@ public class Car implements Entity {
 
     private void carDismissed() {
         // TODO: 27/12/2016 remove it from any list that contains it and do some stats
-        throw new NotImplementedException();
+        Logger.getInstance().log(getName(), simEngine.getCurrentSimTime(), "Car dismissed but not implemented", LogLevel.WARNING);
+//        throw new NotImplementedException();
     }
 
     /*
@@ -253,5 +287,13 @@ public class Car implements Entity {
 
     public Lane getCurrentLane() {
         return currentLane;
+    }
+
+    public CarState getCarState() {
+        return carState;
+    }
+
+    public boolean isStopped() {
+        return carState == CarState.STOPPED;
     }
 }

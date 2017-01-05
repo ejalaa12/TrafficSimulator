@@ -13,18 +13,17 @@ public class ChangeColorEvent extends Event {
 
     protected ChangeColorEvent(TrafficLight trafficLight, LocalDateTime scheduledTime) {
         super(trafficLight.getName(), scheduledTime, "Changing Light color");
+        String description = getDescription();
+        description += " > " + trafficLight.getState().getNextState();
+        setDescription(description);
         this.trafficLight = trafficLight;
     }
 
     @Override
     public void doAction() {
-        switch (trafficLight.getState()) {
-            case GREEN:
-                trafficLight.setState(TrafficLight.State.RED);
-            case ORANGE:
-                break;
-            case RED:
-                trafficLight.setState(TrafficLight.State.GREEN);
+        trafficLight.setState(trafficLight.getState().getNextState());
+        if (trafficLight.getState() == TrafficLightState.GREEN) {
+            trafficLight.notifyFirstCarInLaneToChangeLane();
         }
         // next changing state event
         LocalDateTime nextTime = trafficLight.getSimEngine().getCurrentSimTime().plus(trafficLight.getFrequency());

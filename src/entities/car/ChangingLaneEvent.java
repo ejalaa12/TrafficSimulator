@@ -11,7 +11,7 @@ public class ChangingLaneEvent extends Event {
 
     private Car car;
 
-    protected ChangingLaneEvent(Car car, LocalDateTime scheduledTime) {
+    public ChangingLaneEvent(Car car, LocalDateTime scheduledTime) {
         super(car.getName(), scheduledTime, "Changing Lane");
         this.car = car;
     }
