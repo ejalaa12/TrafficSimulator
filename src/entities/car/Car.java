@@ -14,7 +14,6 @@ import logging.Logger;
 import simulation.Entity;
 import simulation.Event;
 import simulation.SimEngine;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -261,9 +260,6 @@ public class Car implements Entity {
 
     @Override
     public void logStats() {
-        String[] stats = new String[1];
-        stats[0] = "hello";
-        Logger.getInstance().logStat(this, stats);
 
     }
 

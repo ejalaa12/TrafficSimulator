@@ -1,15 +1,12 @@
 package logging;
 
-import simulation.Entity;
 import simulation.Event;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -41,7 +38,6 @@ public class Logger {
     // File for csv
     private boolean csvOn;
     private String csvFile;
-    private ArrayList<String> statFiles;
     private FileWriter writer;
 
     private Logger() {
@@ -50,7 +46,6 @@ public class Logger {
         mlogLevel = LogLevel.INFO;
         csvOn = false;
         csvFile = "./results/logs.csv";
-        statFiles = new ArrayList<>();
         try {
             writer = new FileWriter(csvFile);
             CSVUtils.writeLine(writer, Arrays.asList("date", "creator", "message"));
@@ -131,25 +126,4 @@ public class Logger {
         }
     }
 
-    public void logStat(Entity creator, String[] statisticsMessages) {
-        String csvStatFile = String.format("./results/logs_%s.csv", creator.getClass().getName());
-        if (!statFiles.contains(csvStatFile))
-            statFiles.add(csvStatFile);
-        String timestamp = logicalDateTimeFormatter.format(creator.getSimEngine().getCurrentSimTime());
-        FileWriter stat_writer;
-        File stat_writer_file = new File(csvStatFile);
-        try {
-            // FIXME: 03/01/2017 filewriter either overrides a file with an empty or append to an old file
-            if (!statFiles.contains(stat_writer_file)) {
-                stat_writer = new FileWriter(csvStatFile, false);
-            } else {
-                stat_writer = new FileWriter(csvStatFile, true);
-            }
-            for (String msg : statisticsMessages) {
-                CSVUtils.writeLine(stat_writer, Arrays.asList(timestamp, creator.getName(), msg));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 }

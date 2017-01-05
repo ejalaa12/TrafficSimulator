@@ -3,7 +3,6 @@ package entities.traffic_light;
 import entities.Lane;
 import entities.car.Car;
 import entities.car.CarNotification;
-import entities.car.ChangingLaneEvent;
 import logging.LogLevel;
 import logging.Logger;
 import simulation.Entity;
@@ -48,9 +47,10 @@ public class TrafficLight extends TrafficSign implements Entity {
     }
 
     @Override
-    public void printStats() {
+    public void logStats() {
 
     }
+
 
     @Override
     public String getName() {
