@@ -34,7 +34,7 @@ public class SimpleNetwork extends RoadNetwork implements Entity {
 
         // Zone 1 schedule
         ArrayList<TimeSlot> timeSlots1 = new ArrayList<>();
-        timeSlots1.add(new TimeSlot(LocalTime.of(0, 0), LocalTime.of(7, 0), 2000));
+        timeSlots1.add(new TimeSlot(LocalTime.of(0, 0), LocalTime.of(7, 0), 1000));
         timeSlots1.add(new TimeSlot(LocalTime.of(7, 0), LocalTime.of(9, 0), 3));
         timeSlots1.add(new TimeSlot(LocalTime.of(9, 0), LocalTime.of(17, 0), 1));
         timeSlots1.add(new TimeSlot(LocalTime.of(17, 0), LocalTime.of(19, 0), 3));
@@ -93,7 +93,7 @@ public class SimpleNetwork extends RoadNetwork implements Entity {
         */
 
 
-        addRoad(new Road("R1", zone1, intersection1, 3000, 50 * 1000 / 3600.));
+        addRoad(new Road("R1", zone1, intersection1, 200, 50 * 1000 / 3600.));
         addRoad(new Road("R2", zone2, intersection1, 3000, 50 * 1000 / 3600.));
 
         /*
