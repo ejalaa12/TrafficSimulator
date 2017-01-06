@@ -1,9 +1,12 @@
 package entities.zone;
 
 import entities.RoadNetwork;
+import entities.car.Car;
 import graph_network.Node;
 import simulation.Entity;
 import simulation.SimEngine;
+
+import java.time.Duration;
 
 
 /**
@@ -12,10 +15,11 @@ import simulation.SimEngine;
 public class Zone extends Node implements Entity{
 
     private int numberOfProducedCars = 0;
+    private int numberOfCarArrived = 0;
     private SimEngine simEngine;
     private ZoneSchedule zoneSchedule;
     // TODO: 27/12/2016 Do preferences (for the moment only one destination per zone)
-    private Zone preferedDestination;
+    private Zone preferredDestination;
     private RoadNetwork roadNetwork;
 
     public Zone(String id, ZoneSchedule zoneSchedule, SimEngine simEngine, RoadNetwork roadNetwork) {
@@ -28,10 +32,12 @@ public class Zone extends Node implements Entity{
 
     @Override
     public void init() {
-        if (preferedDestination == null) {
-            throw new IllegalStateException("preferedDestination was not set");
+        if (preferredDestination == null) {
+            throw new IllegalStateException("preferredDestination was not set");
         }
-        simEngine.addEvent(new NewCarEvent(this, simEngine.getCurrentSimTime()));
+        // time of the first car depends on the frequency
+        Duration firstCarOffset = getZoneSchedule().getCurrentFrequency(simEngine.getCurrentSimTime().toLocalTime());
+        simEngine.addEvent(new NewCarEvent(this, simEngine.getCurrentSimTime().plus(firstCarOffset)));
     }
 
     @Override
@@ -55,6 +61,10 @@ public class Zone extends Node implements Entity{
         this.numberOfProducedCars = numberOfProducedCars;
     }
 
+    public int getNumberOfCarArrived() {
+        return numberOfCarArrived;
+    }
+
     public SimEngine getSimEngine() {
         return simEngine;
     }
@@ -63,15 +73,19 @@ public class Zone extends Node implements Entity{
         return zoneSchedule;
     }
 
-    public Zone getPreferedDestination() {
-        return preferedDestination;
+    public Zone getPreferredDestination() {
+        return preferredDestination;
     }
 
-    public void setPreferedDestination(Zone preferedDestination) {
-        this.preferedDestination = preferedDestination;
+    public void setPreferredDestination(Zone preferredDestination) {
+        this.preferredDestination = preferredDestination;
     }
 
     public RoadNetwork getRoadNetwork() {
         return roadNetwork;
+    }
+
+    public void addNewArrivedCar(Car car) {
+        numberOfCarArrived += 1;
     }
 }

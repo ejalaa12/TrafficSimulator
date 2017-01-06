@@ -20,10 +20,10 @@ public class NewCarEvent extends Event {
         String description = "Creation of ";
         String carName = "Car-" + zone.getName() + "_";
         carName += zone.getNumberOfProducedCars();
-        description += carName + String.format("(%s -> %s)", zone.getName(), zone.getPreferedDestination().getName());
+        description += carName + String.format("(%s -> %s)", zone.getName(), zone.getPreferredDestination().getName());
         setDescription(description);
         // Create the car
-        createdCar = new Car(carName, zone, zone.getPreferedDestination(), zone.getRoadNetwork(), zone.getSimEngine());
+        createdCar = new Car(carName, zone, zone.getPreferredDestination(), zone.getRoadNetwork(), zone.getSimEngine());
     }
 
     @Override
