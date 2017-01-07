@@ -10,9 +10,11 @@ import java.time.LocalDateTime;
 public abstract class CarEvent extends Event {
 
     protected boolean processed;
+    protected Car car;
 
-    protected CarEvent(String creator, LocalDateTime scheduledTime, String description) {
-        super(creator, scheduledTime, description);
+    protected CarEvent(Car car, LocalDateTime scheduledTime, String description) {
+        super(car.getName(), scheduledTime, description);
+        this.car = car;
         processed = false;
     }
 

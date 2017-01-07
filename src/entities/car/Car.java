@@ -76,6 +76,7 @@ public class Car implements Entity {
     }
 
     private void drive() {
+        // update the position using the current event posted time and current speed
         if (currentEvent != null && !currentEvent.wasProcessed()) {
             Logger.getInstance().logDebug(getName(), simEngine.getCurrentSimTime(), "there was a previous event not processed");
             Duration sinceLastPostedEvent = Duration.between(currentEvent.getPostedTime(), simEngine.getCurrentSimTime());
@@ -84,9 +85,11 @@ public class Car implements Entity {
             addTravel(distance);
             simEngine.removeEvent(currentEvent);
         }
+        // then we can calculate the next period of driving
         speed = currentLane.getSpeed_limit();
         destinationInLane = currentLane.getFreeSpotPositionForCar(this);
         Duration timeToArrive = calculateTravelTime(positionInLane, destinationInLane);
+        Logger.getInstance().logInfo(getName(), simEngine.getCurrentSimTime(), "set destination: " + destinationInLane);
         currentEvent = new ExpectedStopEvent(this, simEngine.getCurrentSimTime().plus(timeToArrive));
         simEngine.addEvent(currentEvent);
         setCarState(CarState.DRIVING);
@@ -97,18 +100,19 @@ public class Car implements Entity {
         setCarState(CarState.STOPPED);
     }
 
-
     public void update() {
         if (positionInLane == currentLane.getLength()) {
-            Logger.getInstance().logInfo(getName(), simEngine.getCurrentSimTime(), "arrived at end of lane -> do next step");
+            // do next step of the path if we arrived at the end of the current lane
+            Logger.getInstance().logInfo(getName(), simEngine.getCurrentSimTime(), "i am at end of lane -> do next step");
             nextStep();
         } else if (positionInLane == currentLane.getFreeSpotPositionForCar(this)) {
+            // if arrived at the free spot then stop
             Logger.getInstance().logInfo(getName(), simEngine.getCurrentSimTime(), "arrived at free spot -> stop");
             Logger.getInstance().logDebug(getName(), simEngine.getCurrentSimTime(), "number of car in lane (including me): " + String.valueOf(currentLane.getCarQueue().size()));
             stop();
         } else {
-            Logger.getInstance().logInfo(getName(), simEngine.getCurrentSimTime(), "car not arrived yet, updating ");
-            // Let's correct it anyway, by driving to the real free spot
+            // Else we must update the destination and the driving period
+            Logger.getInstance().logInfo(getName(), simEngine.getCurrentSimTime(), "updating new destination: " + currentLane.getFreeSpotPositionForCar(this));
             drive();
         }
     }
@@ -118,11 +122,18 @@ public class Car implements Entity {
      */
     private void nextStep() {
         Node nextStep = currentLane.getDestination();
+        /*
+        * ##############################################################################################################
+        * The next step might be an intersection, or a zone
+        * ##############################################################################################################
+        */
+        
         if (nextStep instanceof Intersection) {
             // TODO: 07/01/2017 after we can create a method trafficSign.isOpen()
             /*
             * **********************************************************************************************************
             * 1. Check TrafficLight status
+            *
             * if green go to next section
             * if red stop and return
             */
@@ -137,6 +148,9 @@ public class Car implements Entity {
             /*
             * **********************************************************************************************************
             * 2. Try to go to next lane
+            *
+            * if has space change lane and drive
+            * else wait on lane
             */
 
             int indexOfNextNodeInPath = path.indexOf(currentLane.getDestination()) + 1;
@@ -155,6 +169,7 @@ public class Car implements Entity {
             if (nextStep == destination) {
                 Logger.getInstance().logInfo(getName(), simEngine.getCurrentSimTime(), "I arrived at " + nextStep.getId());
                 currentLane.removeCar(this);
+                updateNextCar();
                 stop();
                 ((Zone) nextStep).addNewArrivedCar(this);
                 setCarState(CarState.ARRIVED);
@@ -167,14 +182,23 @@ public class Car implements Entity {
     private void changeLane(Lane nextLane) {
         currentLane.removeCar(this);
         // notify the previous car on the current lane before changing
-        if (currentLane.getNextCar(this) != null) {
-            Logger.getInstance().logInfo(getName(), simEngine.getCurrentSimTime(), "Updating next car");
-            currentLane.getNextCar(this).update();
-        }
+        updateNextCar();
         nextLane.addCar(this);
         currentLane = nextLane;
         Logger.getInstance().logInfo(getName(), simEngine.getCurrentSimTime(), "Changing Lane");
         positionInLane = 0;
+    }
+
+    private void updateNextCar() {
+        Car nextCar = currentLane.getNextCar(this);
+        if (nextCar != null) {
+            Logger.getInstance().logInfo(getName(), simEngine.getCurrentSimTime(), "Updating next car: " + nextCar.getName());
+            if (nextCar.isStopped()) {
+                simEngine.addEvent(new DelayedReactionEvent(nextCar, Duration.ofSeconds(2)));
+            } else if (nextCar.isDriving()) {
+                nextCar.update();
+            }
+        }
     }
 
     private Duration calculateTravelTime(double position, double destination) {
@@ -218,6 +242,14 @@ public class Car implements Entity {
     * Getter and Setters
     * ##############################################################################################################
     */
+
+    private boolean isDriving() {
+        return carState == CarState.DRIVING;
+    }
+
+    private boolean isStopped() {
+        return carState == CarState.STOPPED;
+    }
 
     public double getSpeed() {
         return speed;
