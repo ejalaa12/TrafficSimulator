@@ -13,7 +13,7 @@ public class ExpectedStopEvent extends CarEvent {
     private Car car;
 
     protected ExpectedStopEvent(Car car, LocalDateTime scheduledTime) {
-        super(car.getName(), scheduledTime, "Car was supposed to stop now");
+        super(car.getName(), scheduledTime, "Car is supposed to do something now");
         this.car = car;
     }
 

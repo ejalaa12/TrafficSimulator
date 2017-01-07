@@ -15,8 +15,7 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        test();
-        Logger.getInstance().setLogLevel(LogLevel.DEBUG);
+        Logger.getInstance().setLogLevel(LogLevel.INFO);
         /*
         * ##############################################################################################################
         * Simulation times

@@ -82,6 +82,7 @@ public class Car implements Entity {
             double elapsed = sinceLastPostedEvent.getSeconds() + sinceLastPostedEvent.getNano() * 1e-9;
             double distance = Math.round(elapsed * speed);
             addTravel(distance);
+            simEngine.removeEvent(currentEvent);
         }
         speed = currentLane.getSpeed_limit();
         destinationInLane = currentLane.getFreeSpotPositionForCar(this);
@@ -106,7 +107,7 @@ public class Car implements Entity {
             Logger.getInstance().logDebug(getName(), simEngine.getCurrentSimTime(), "number of car in lane (including me): " + String.valueOf(currentLane.getCarQueue().size()));
             stop();
         } else {
-            Logger.getInstance().logWarning(getName(), simEngine.getCurrentSimTime(), "car not arrived yet, updating ");
+            Logger.getInstance().logInfo(getName(), simEngine.getCurrentSimTime(), "car not arrived yet, updating ");
             // Let's correct it anyway, by driving to the real free spot
             drive();
         }
@@ -164,12 +165,12 @@ public class Car implements Entity {
     }
 
     private void changeLane(Lane nextLane) {
+        currentLane.removeCar(this);
         // notify the previous car on the current lane before changing
         if (currentLane.getNextCar(this) != null) {
             Logger.getInstance().logInfo(getName(), simEngine.getCurrentSimTime(), "Updating next car");
             currentLane.getNextCar(this).update();
         }
-        currentLane.removeCar(this);
         nextLane.addCar(this);
         currentLane = nextLane;
         Logger.getInstance().logInfo(getName(), simEngine.getCurrentSimTime(), "Changing Lane");
