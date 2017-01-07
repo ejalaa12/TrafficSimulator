@@ -1,5 +1,6 @@
 package entities.car;
 
+import logging.Logger;
 import simulation.Event;
 
 import java.time.Duration;
@@ -22,7 +23,9 @@ public class ExpectedStopEvent extends Event {
         // because of the car has only be doing the current event (which is this one)
         Duration eventDuration = Duration.between(postedTime, scheduledTime);
         double elapsed = eventDuration.getSeconds() + eventDuration.getNano() * 1e-9;
-        car.addTravel(Math.round(elapsed * car.getSpeed()));
+        double distance = Math.round(elapsed * car.getSpeed());
+        Logger.getInstance().logDebug("ExectedStopEvent", scheduledTime, "adding distance: " + distance);
+        car.addTravel(distance);
         // If this event finally happens, then we check what to do next
         car.update();
     }

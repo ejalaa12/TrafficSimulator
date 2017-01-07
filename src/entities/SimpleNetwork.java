@@ -1,6 +1,5 @@
 package entities;
 
-import entities.traffic_light.TrafficLight;
 import entities.zone.TimeSlot;
 import entities.zone.Zone;
 import entities.zone.ZoneSchedule;
@@ -102,8 +101,8 @@ public class SimpleNetwork extends RoadNetwork implements Entity {
         * ##############################################################################################################
         */
 
-        Lane laneWithTrafficLight = roads.get(0).getLaneWithDestination(intersection1);
-        laneWithTrafficLight.setTrafficSign(new TrafficLight(laneWithTrafficLight, simEngine));
+//        Lane laneWithTrafficLight = roads.get(0).getLaneWithDestination(intersection1);
+//        laneWithTrafficLight.setTrafficSign(new TrafficLight(laneWithTrafficLight, simEngine));
     }
 
     /**

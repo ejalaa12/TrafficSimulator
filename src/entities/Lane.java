@@ -58,17 +58,8 @@ public class Lane extends Edge {
      */
     public void removeCar(Car car) {
         carQueue.remove(car);
-        notifyOtherCars();
     }
 
-    /**
-     * Notifies all other cars in the Queue that a car has left the queue so they can update their behavior
-     */
-    private void notifyOtherCars() {
-        for (Car car : carQueue) {
-            car.update();
-        }
-    }
 
     /*
     * ****************************************************************************************************************
