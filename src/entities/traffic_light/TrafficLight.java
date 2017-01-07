@@ -1,8 +1,8 @@
 package entities.traffic_light;
 
 import entities.Lane;
-import entities.car.Car;
 import entities.car.CarNotification;
+import entities.car.CarState;
 import logging.LogLevel;
 import logging.Logger;
 import simulation.Entity;
@@ -34,12 +34,13 @@ public class TrafficLight extends TrafficSign implements Entity {
     }
 
     public void notifyFirstCarInLaneToChangeLane() {
-        long nocs = lane.getCarQueue().stream().filter(Car::isStopped).count();
+        long nocs = lane.getCarQueue().stream().filter(car -> car.getCarState() == CarState.STOPPED).count();
         Logger.getInstance().log(getName(), simEngine.getCurrentSimTime(), "car stopped: "+nocs, LogLevel.INFO);
         if (lane.getCarQueue().isEmpty()) {
             String msg = lane.getId() + "'s car queue is empty, no car to notify";
             Logger.getInstance().log(getName(), simEngine.getCurrentSimTime(), msg, LogLevel.INFO);
         } else {
+
             lane.getCarQueue().get(0).notifyCar(CarNotification.GreenLightSoChangeLane);
 //            simEngine.addEvent(new ChangingLaneEvent(lane.getCarQueue().get(0), simEngine.getCurrentSimTime()));
         }

@@ -57,9 +57,9 @@ public class Car implements Entity {
     }
 
     /*
-    * ****************************************************************************************************************
+    * ##############################################################################################################
     * Behaviors
-    * ****************************************************************************************************************
+    * ##############################################################################################################
     */
 
     @Override
@@ -77,6 +77,7 @@ public class Car implements Entity {
     }
 
     private void drive() {
+        speed = currentLane.getSpeed_limit();
         destinationInLane = currentLane.getFreeSpotPositionForCar(this);
         Duration timeToArrive = calculateTravelTime(positionInLane, destinationInLane);
         currentEvent = new ExpectedStopEvent(this, simEngine.getCurrentSimTime().plus(timeToArrive));
@@ -185,5 +186,9 @@ public class Car implements Entity {
 
     public double getSpeed() {
         return speed;
+    }
+
+    public CarState getCarState() {
+        return carState;
     }
 }

@@ -1,7 +1,6 @@
 package entities;
 
 import entities.car.Car;
-import entities.car.CarNotification;
 import entities.traffic_light.TrafficSign;
 import graph_network.Edge;
 import graph_network.Node;
@@ -66,12 +65,8 @@ public class Lane extends Edge {
      * Notifies all other cars in the Queue that a car has left the queue so they can update their behavior
      */
     private void notifyOtherCars() {
-        if (!carQueue.isEmpty()) {
-            carQueue.get(0).notifyCar(CarNotification.GoToEndOfLane);
-            int i;
-            for (i = 1; i < carQueue.size(); i++) {
-                carQueue.get(i).notifyCar(CarNotification.GoToNextFreeSpot);
-            }
+        for (Car car : carQueue) {
+            car.update();
         }
     }
 
@@ -119,14 +114,6 @@ public class Lane extends Edge {
     public int getFreeSpotPositionForCar(Car car) {
         int positionInQueue = carQueue.indexOf(car);
         return getLength() - positionInQueue * (distance_between_cars + Car.length);
-    }
-
-    /**
-     * Returns true if the lane has no car on it
-     * @return true if carQueue is empty
-     */
-    public boolean isFree() {
-        return carQueue.isEmpty();
     }
 
     /**
