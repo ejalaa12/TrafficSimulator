@@ -16,14 +16,14 @@ public class Main {
 
     public static void main(String[] args) {
         test();
-        Logger.getInstance().setLogLevel(LogLevel.INFO);
+        Logger.getInstance().setLogLevel(LogLevel.DEBUG);
         /*
         * ##############################################################################################################
         * Simulation times
         * ##############################################################################################################
         */
         LocalDateTime startSim = LocalDateTime.of(2000, 1, 1, 0, 0);
-        LocalDateTime endSim = LocalDateTime.of(2000, 1, 1, 1, 30);
+        LocalDateTime endSim = LocalDateTime.of(2000, 1, 1, 0, 30);
 
         SimEngine simEngine = new SimEngine(1, startSim, endSim);
 
@@ -34,6 +34,7 @@ public class Main {
         * ****************************************************************************************************************
         */
         SimpleNetwork crossroads = new SimpleNetwork(simEngine);
+//        OneRoadNetwork crossroads = new OneRoadNetwork(simEngine,1000, 10, 10);
         crossroads.init();
 
         /*
@@ -41,7 +42,9 @@ public class Main {
         * add some entities/event to test
         * ##############################################################################################################
         */
-//        simEngine.addEvent(new NewCarEvent((Zone) crossroads.getNodes().get(0), LocalDateTime.of(2000, 1, 1, 0, 21, 20)));
+        for (int i = 0; i < 50; i++) {
+            simEngine.addEvent(new NewCarEvent((Zone) crossroads.getNodes().get(0), LocalDateTime.of(2000, 1, 1, 0, 21, 20)));
+        }
         /*
         * ****************************************************************************************************************
         * Simulation

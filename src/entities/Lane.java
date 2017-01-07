@@ -35,12 +35,12 @@ public class Lane extends Edge {
 
     /**
      * Check if there is enough space for a new car on the road using the following formula:
-     * Road_length - #Cars * (car_length + distance_between_cars) > (car_length + distance_between_cars)
+     * Road_length - #Cars * (car_length + distance_between_cars) >= (car_length + distance_between_cars)
      *
      * @return true if enough space
      */
     public boolean hasSpace() {
-        return getLength() - (carQueue.size() + 1) * (Car.length + distance_between_cars) > 0;
+        return getLength() - (carQueue.size() + 1) * (Car.length + distance_between_cars) >= 0;
     }
 
     /**

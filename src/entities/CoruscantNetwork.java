@@ -45,13 +45,13 @@ public class CoruscantNetwork extends RoadNetwork implements Entity {
         Zone zone6 = new Zone("zone6", zoneSchedule1, simEngine, this);
         Zone zone7 = new Zone("zone7", zoneSchedule1, simEngine, this);
 
-        zone1.setPreferedDestination(zone4);
-        zone2.setPreferedDestination(zone5);
-        zone3.setPreferedDestination(zone6);
-        zone4.setPreferedDestination(zone1);
-        zone5.setPreferedDestination(zone7);
-        zone6.setPreferedDestination(zone3);
-        zone7.setPreferedDestination(zone2);
+        zone1.setPreferredDestination(zone4);
+        zone2.setPreferredDestination(zone5);
+        zone3.setPreferredDestination(zone6);
+        zone4.setPreferredDestination(zone1);
+        zone5.setPreferredDestination(zone7);
+        zone6.setPreferredDestination(zone3);
+        zone7.setPreferredDestination(zone2);
 
         Intersection intersection1 = new Intersection("intersection1");
         Intersection intersection2 = new Intersection("intersection2");

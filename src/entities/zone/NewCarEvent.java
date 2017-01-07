@@ -16,6 +16,10 @@ public class NewCarEvent extends Event {
     public NewCarEvent(Zone zone, LocalDateTime scheduledTime) {
         super(zone.getName(), scheduledTime, "Creation of new car");
         this.zone = zone;
+
+    }
+
+    private void updateDescription(Zone zone) {
         // Update description with car name
         String description = "Creation of ";
         String carName = "Car-" + zone.getName() + "_";
@@ -28,6 +32,7 @@ public class NewCarEvent extends Event {
 
     @Override
     public void doAction() {
+        updateDescription(this.zone);
         createdCar.init();
         zone.setNumberOfProducedCars(zone.getNumberOfProducedCars() + 1);
         // next car event

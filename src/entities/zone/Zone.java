@@ -3,6 +3,8 @@ package entities.zone;
 import entities.RoadNetwork;
 import entities.car.Car;
 import graph_network.Node;
+import logging.LogLevel;
+import logging.Logger;
 import simulation.Entity;
 import simulation.SimEngine;
 
@@ -16,6 +18,7 @@ public class Zone extends Node implements Entity{
 
     private int numberOfProducedCars = 0;
     private int numberOfCarArrived = 0;
+    private int numberOfDismissedCar = 0;
     private SimEngine simEngine;
     private ZoneSchedule zoneSchedule;
     // TODO: 27/12/2016 Do preferences (for the moment only one destination per zone)
@@ -86,6 +89,15 @@ public class Zone extends Node implements Entity{
     }
 
     public void addNewArrivedCar(Car car) {
+        Logger.getInstance().log(getName(), simEngine.getCurrentSimTime(), "New Car arrived " + car.getName(), LogLevel.INFO);
         numberOfCarArrived += 1;
+    }
+
+    public void addDismissedCar(Car car) {
+        numberOfDismissedCar += 1;
+    }
+
+    public int getNumberOfDismissedCar() {
+        return numberOfDismissedCar;
     }
 }

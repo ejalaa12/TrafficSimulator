@@ -34,7 +34,6 @@ public class TrafficLight extends TrafficSign implements Entity {
     }
 
     public void notifyFirstCarInLaneToChangeLane() {
-        // TODO: 05/01/2017 log number of car stopped in lane
         long nocs = lane.getCarQueue().stream().filter(Car::isStopped).count();
         Logger.getInstance().log(getName(), simEngine.getCurrentSimTime(), "car stopped: "+nocs, LogLevel.INFO);
         if (lane.getCarQueue().isEmpty()) {

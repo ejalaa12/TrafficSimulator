@@ -12,7 +12,7 @@ public class ChangingLaneEvent extends Event {
     private Car car;
 
     public ChangingLaneEvent(Car car, LocalDateTime scheduledTime) {
-        super(car.getName(), scheduledTime, "Changing Lane");
+        super(car.getName(), scheduledTime, "Trying to change Lane");
         this.car = car;
     }
 

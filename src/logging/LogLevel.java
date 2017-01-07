@@ -17,6 +17,7 @@ public enum LogLevel {
 
 
     // !! WORKS ONLY IF THE TERMINAL SUPPORT COLORING !!
+    DEBUG("\u001B[32m"),
     INFO("\u001B[37m"),
     EVENT("\u001B[0m"),
     WARNING("\u001B[33m"),
