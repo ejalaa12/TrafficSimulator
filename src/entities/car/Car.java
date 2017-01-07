@@ -5,18 +5,14 @@ import entities.Lane;
 import entities.RoadNetwork;
 import entities.traffic_light.TrafficLight;
 import entities.traffic_light.TrafficLightState;
-import entities.traffic_light.TrafficSign;
 import entities.zone.Zone;
 import graph_network.DijkstraAlgorithm;
 import graph_network.Node;
-import logging.LogLevel;
 import logging.Logger;
 import simulation.Entity;
-import simulation.Event;
 import simulation.SimEngine;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.LinkedList;
 
 // TODO: 05/01/2017 write methods documentation
@@ -36,18 +32,17 @@ public class Car implements Entity {
     // A car has a knowledge of the roadNetwork
     private RoadNetwork roadNetwork;
     private LinkedList<Node> path;
-    // position in network
+    // positionInLane in network
     private Lane currentLane;
-    private int step;
-    // position in lane
-    private double position;
+    private int destinationInLane; // destination in currentLane
+    private double totalTravelledDistance;
+    private double positionInLane;
 
     // keeping track currentEvent so we can remove it from simEngine
-    private Event currentEvent;
-
+    private CarEvent currentEvent;
 
     public Car(String Id, Zone source, Zone destination, RoadNetwork roadNetwork, SimEngine simEngine) {
-        carState = CarState.CREATED;
+        setCarState(CarState.CREATED);
         this.Id = Id;
         this.source = source;
         this.destination = destination;
@@ -58,204 +53,173 @@ public class Car implements Entity {
         DijkstraAlgorithm dijkstraAlgorithm = new DijkstraAlgorithm(roadNetwork);
         dijkstraAlgorithm.execute(source);
         path = dijkstraAlgorithm.getPath(destination);
-        // Position in network
-        step = 0;
     }
 
     /*
-    * ****************************************************************************************************************
+    * ##############################################################################################################
     * Behaviors
-    * ****************************************************************************************************************
+    * ##############################################################################################################
     */
 
     @Override
     public void init() {
-        goToNextLane();
-    }
-
-    private LocalDateTime driveTo(int destination) {
-        updatePosition();
-        speed = currentLane.getSpeed_limit();
-        carState = CarState.DRIVING;
-        double drivingDistance = destination - position;
-        // To avoid the rounding problem that leads to incorrect position and durations
-        double time = drivingDistance / speed;
-        int timeSec = (int) time;
-        long timeNano = (long) ((time - timeSec) * 1e9);
-        Duration timeToArrive = Duration.ofSeconds(timeSec, timeNano);
-        return simEngine.getCurrentSimTime().plus(timeToArrive);
-    }
-
-    public void driveToFreeSpot() {
-        LocalDateTime nextStopTime = driveTo(currentLane.getFreeSpotPositionForCar(this));
-        currentEvent = new StopEvent(this, nextStopTime);
-        simEngine.addEvent(currentEvent);
-
-        // Log info
-        String msg = "Driving to free spot: " + currentLane.getFreeSpotPositionForCar(this);
-        msg += " on lane " + currentLane.getId();
-        Logger.getInstance().log(getName(), simEngine.getCurrentSimTime(), msg, LogLevel.INFO);
-    }
-
-    public void driveToEnd() {
-        LocalDateTime nextChangeLaneTime = driveTo(currentLane.getLength());
-        currentEvent = new ChangingLaneEvent(this, nextChangeLaneTime);
-        simEngine.addEvent(currentEvent);
-
-        // Log info
-        String msg = "Driving to end of lane " + currentLane.getId();
-        Logger.getInstance().log(getName(), simEngine.getCurrentSimTime(), msg, LogLevel.INFO);
-    }
-
-    /**
-     * While car has not reached path.last()
-     * if possible (next lane is not full and light is green)
-     * >>>>> car is added to the next lane queue
-     * else:
-     * >>>>> the car is dismissed (if it just started) or waits
-     */
-    public void goToNextLane() {
-        if (step < path.size() - 1) {
-            if (currentLane != null) {
-                TrafficSign currentLaneTrafficSign = currentLane.getTrafficSign();
-                if (currentLaneTrafficSign != null && currentLaneTrafficSign instanceof TrafficLight) {
-                    if (((TrafficLight) currentLaneTrafficSign).getState() == TrafficLightState.RED) {
-                        waitBecauseRedLight();
-                        return;
-                    }
-                }
-            }
-            Lane nextLane = roadNetwork.getLaneBetween(path.get(step), path.get(step + 1));
-            if (nextLane.isFree()) {
-                switchToLane(nextLane);
-                driveToEnd();
-            } else if (nextLane.hasSpace()) {
-                switchToLane(nextLane);
-                driveToFreeSpot();
-            } else {
-                if (currentLane == null) {
-                    carDismissed();
-                } else {
-                    waitBecauseNextLaneFull();
-                }
-            }
+        Lane firstLane = roadNetwork.getLaneBetween(path.get(0), path.get(1));
+        if (firstLane.hasSpace()) {
+            firstLane.addCar(this);
+            currentLane = firstLane;
+            positionInLane = 0;
+            speed = 0;
+            drive();
         } else {
-            arrived();
+            source.addDismissedCar(this);
         }
     }
 
-    private void updatePosition() {
-        // for right after initialisation
-        if (currentEvent == null) {
-            position = 0;
-        } else {
-            Duration sinceLastInstruction = Duration.between(currentEvent.getPostedTime(), simEngine.getCurrentSimTime());
-            double elapsed = sinceLastInstruction.getSeconds() + sinceLastInstruction.getNano() * 1e-9;
-            position += Math.round(elapsed * speed);
-        }
-    }
-
-
-    /*
-    * ****************************************************************************************************************
-    * State changing
-    * ****************************************************************************************************************
-    */
-
-    /**
-     * Give the car a notification and the car behaves accordingly
-     * 1. Log notification
-     * 2. Un-post next event, if any (if the car has stopped its waiting for an event, so no next event)
-     * 3. switch case:
-     *  + if @GoToEndOfLane: @driveToEnd
-     *  + if @GoToNextFreeSpot: @driveToFreeSpot
-     *  + if @GreenLightSoChangeLane: @goToNextLane
-     * @param notification
-     */
-    public void notifyCar(CarNotification notification) {
-        String msg = "update: " + notification;
-        Logger.getInstance().log(getName(), simEngine.getCurrentSimTime(), msg, LogLevel.INFO);
-        if (currentEvent != null) {
+    private void drive() {
+        // update the position using the current event posted time and current speed
+        if (currentEvent != null && !currentEvent.wasProcessed()) {
+            Logger.getInstance().logDebug(getName(), simEngine.getCurrentSimTime(), "there was a previous event not processed");
+            Duration sinceLastPostedEvent = Duration.between(currentEvent.getPostedTime(), simEngine.getCurrentSimTime());
+            double elapsed = sinceLastPostedEvent.getSeconds() + sinceLastPostedEvent.getNano() * 1e-9;
+            double distance = Math.round(elapsed * speed);
+            addTravel(distance);
             simEngine.removeEvent(currentEvent);
         }
-        switch (notification) {
-            case GoToEndOfLane:
-                driveToEnd();
-                break;
-            case GoToNextFreeSpot:
-                driveToFreeSpot();
-                break;
-            case GreenLightSoChangeLane:
-                goToNextLane();
-                break;
-        }
-    }
-
-    private void switchToLane(Lane nextLane) {
-        if (currentLane != null) // for first time
-            currentLane.removeCar(this);
-        nextLane.addCar(this);
-        currentLane = nextLane;
-        step += 1;
-        // Because the car has just arrived on the lane
-        position = 0;
-        speed = 0;
-        // Log info
-        String msg = "Arrived on lane: " + currentLane.getId();
-        Logger.getInstance().log(getName(), simEngine.getCurrentSimTime(), msg, LogLevel.INFO);
-    }
-
-    private void waitBecauseNextLaneFull() {
-        stop();
-        Intersection currentIntersection = (Intersection) path.get(step);
-        String msg = "Waiting at intersection " + currentIntersection.getName();
-        Logger.getInstance().log(getName(), simEngine.getCurrentSimTime(), msg, LogLevel.INFO);
-    }
-
-    private void waitBecauseRedLight() {
-        stop();
-        Intersection currentIntersection = (Intersection) path.get(step);
-        String msg = "Waiting at red light " + currentIntersection.getName();
-        Logger.getInstance().log(getName(), simEngine.getCurrentSimTime(), msg, LogLevel.INFO);
+        // then we can calculate the next period of driving
+        speed = currentLane.getSpeed_limit();
+        destinationInLane = currentLane.getFreeSpotPositionForCar(this);
+        Duration timeToArrive = calculateTravelTime(positionInLane, destinationInLane);
+        Logger.getInstance().logInfo(getName(), simEngine.getCurrentSimTime(), "set destination: " + destinationInLane);
+        currentEvent = new ExpectedStopEvent(this, simEngine.getCurrentSimTime().plus(timeToArrive));
+        simEngine.addEvent(currentEvent);
+        setCarState(CarState.DRIVING);
     }
 
     public void stop() {
-        updatePosition();
         speed = 0;
-        carState = CarState.STOPPED;
-        // now that the car is stopped, it should not have any planned next event so:
-        currentEvent = null;
-        // Log info
-        String msg = "Stop: " + position;
-        Logger.getInstance().log(getName(), simEngine.getCurrentSimTime(), msg, LogLevel.INFO);
+        setCarState(CarState.STOPPED);
     }
 
-    private void arrived() {
-        carState = CarState.ARRIVED;
-        if (path.getLast() instanceof Zone) {
-            Logger.getInstance().log(getName(), simEngine.getCurrentSimTime(), "Car arrived", LogLevel.INFO);
+    public void update() {
+        if (positionInLane == currentLane.getLength()) {
+            // do next step of the path if we arrived at the end of the current lane
+            Logger.getInstance().logInfo(getName(), simEngine.getCurrentSimTime(), "i am at end of lane -> do next step");
+            nextStep();
+        } else if (positionInLane == currentLane.getFreeSpotPositionForCar(this)) {
+            // if arrived at the free spot then stop
+            Logger.getInstance().logInfo(getName(), simEngine.getCurrentSimTime(), "arrived at free spot -> stop");
+            Logger.getInstance().logDebug(getName(), simEngine.getCurrentSimTime(), "number of car in lane (including me): " + String.valueOf(currentLane.getCarQueue().size()));
+            stop();
         } else {
-            String msg = "Finished path but last node is not Zone...";
-            Logger.getInstance().log(getName(), simEngine.getCurrentSimTime(), msg, LogLevel.WARNING);
+            // Else we must update the destination and the driving period
+            Logger.getInstance().logInfo(getName(), simEngine.getCurrentSimTime(), "updating new destination: " + currentLane.getFreeSpotPositionForCar(this));
+            drive();
         }
-        logStats();
-        // removing car from the lane
-        // TODO: 28/12/2016 TRY without this line so that cars accumulate and we can see if algorithm works
-        currentLane.removeCar(this);
-        // TODO: 28/12/2016 add arrived car to the count of arrived cars
-//        throw new NotImplementedException();
     }
 
-    private void carDismissed() {
-        // TODO: 27/12/2016 remove it from any list that contains it and do some stats
-        Logger.getInstance().log(getName(), simEngine.getCurrentSimTime(), "Car dismissed but not implemented", LogLevel.WARNING);
-//        throw new NotImplementedException();
+    /**
+     * Next is a method that defines what a car does when it is at the end of one lane
+     */
+    private void nextStep() {
+        Node nextStep = currentLane.getDestination();
+        /*
+        * ##############################################################################################################
+        * The next step might be an intersection, or a zone
+        * ##############################################################################################################
+        */
+        
+        if (nextStep instanceof Intersection) {
+            // TODO: 07/01/2017 after we can create a method trafficSign.isOpen()
+            /*
+            * **********************************************************************************************************
+            * 1. Check TrafficLight status
+            *
+            * if green go to next section
+            * if red stop and return
+            */
+
+            if (currentLane.getTrafficSign() != null &&
+                    currentLane.getTrafficSign() instanceof TrafficLight &&
+                    ((TrafficLight) currentLane.getTrafficSign()).getState() == TrafficLightState.RED) {
+                stop();
+                Logger.getInstance().logInfo(getName(), simEngine.getCurrentSimTime(), "Stopping at RedLight");
+                return;
+            }
+            /*
+            * **********************************************************************************************************
+            * 2. Try to go to next lane
+            *
+            * if has space change lane and drive
+            * else wait on lane
+            */
+
+            int indexOfNextNodeInPath = path.indexOf(currentLane.getDestination()) + 1;
+            Lane nextLane = roadNetwork.getLaneBetween(currentLane.getDestination(), path.get(indexOfNextNodeInPath));
+            if (nextLane.hasSpace()) {
+                changeLane(nextLane);
+                drive();
+            } else {
+                Intersection currentIntersection = (Intersection) currentLane.getDestination();
+                String msg = "Next lane is full, waiting at intersection " + currentIntersection.getName();
+                Logger.getInstance().logInfo(getName(), simEngine.getCurrentSimTime(), msg);
+                stop();
+            }
+        } else if (nextStep instanceof Zone) {
+            // this should mean the car arrived, we'll check anyway
+            if (nextStep == destination) {
+                Logger.getInstance().logInfo(getName(), simEngine.getCurrentSimTime(), "I arrived at " + nextStep.getId());
+                currentLane.removeCar(this);
+                updateNextCar();
+                stop();
+                ((Zone) nextStep).addNewArrivedCar(this);
+                setCarState(CarState.ARRIVED);
+            }
+        } else {
+            Logger.getInstance().logWarning(getName(), simEngine.getCurrentSimTime(), "NextStep is nor an Intersection nor a Zone");
+        }
+    }
+
+    private void changeLane(Lane nextLane) {
+        currentLane.removeCar(this);
+        // notify the previous car on the current lane before changing
+        updateNextCar();
+        nextLane.addCar(this);
+        currentLane = nextLane;
+        Logger.getInstance().logInfo(getName(), simEngine.getCurrentSimTime(), "Changing Lane");
+        positionInLane = 0;
+    }
+
+    private void updateNextCar() {
+        Car nextCar = currentLane.getNextCar(this);
+        if (nextCar != null) {
+            Logger.getInstance().logInfo(getName(), simEngine.getCurrentSimTime(), "Updating next car: " + nextCar.getName());
+            if (nextCar.isStopped()) {
+                simEngine.addEvent(new DelayedReactionEvent(nextCar, Duration.ofSeconds(2)));
+            } else if (nextCar.isDriving()) {
+                nextCar.update();
+            }
+        }
+    }
+
+    private Duration calculateTravelTime(double position, double destination) {
+        double distance = destination - position;
+        double time = distance / speed;
+        int timeSec = (int) time;
+        long timeNano = (long) ((time - timeSec) * 1e9);
+        return Duration.ofSeconds(timeSec, timeNano);
+    }
+
+    public void addTravel(double distanceTraveled) {
+        positionInLane += distanceTraveled;
+        Logger.getInstance().logDebug(getName(), simEngine.getCurrentSimTime(), "position in lane: " + positionInLane);
+        // update total travelled distance
+        totalTravelledDistance += distanceTraveled;
     }
 
     /*
-    * ****************************************************************************************************************
-    * getter and setters
-    * ****************************************************************************************************************
+    * ##############################################################################################################
+    * Entity methods
+    * ##############################################################################################################
     */
 
     @Override
@@ -273,23 +237,35 @@ public class Car implements Entity {
         return simEngine;
     }
 
-    public int getStep() {
-        return step;
+    /*
+    * ##############################################################################################################
+    * Getter and Setters
+    * ##############################################################################################################
+    */
+
+    private boolean isDriving() {
+        return carState == CarState.DRIVING;
     }
 
-    public LinkedList<Node> getPath() {
-        return path;
+    private boolean isStopped() {
+        return carState == CarState.STOPPED;
     }
 
-    public Lane getCurrentLane() {
-        return currentLane;
+    public double getSpeed() {
+        return speed;
     }
 
     public CarState getCarState() {
         return carState;
     }
 
-    public boolean isStopped() {
-        return carState == CarState.STOPPED;
+    public void setCarState(CarState newCarState) {
+        if (newCarState == carState)
+            Logger.getInstance().logWarning(getName(), simEngine.getCurrentSimTime(), "Changing state to the same: " + carState);
+        carState = newCarState;
+    }
+
+    public double getTotalTravelledDistance() {
+        return totalTravelledDistance;
     }
 }

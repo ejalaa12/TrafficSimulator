@@ -17,7 +17,7 @@ public abstract class Event implements Comparable<Event> {
     */
 
     protected LocalDateTime postedTime, scheduledTime;
-    private String description, creator;
+    protected String description, creator;
     /*
     Constructor
      */

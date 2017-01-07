@@ -61,6 +61,8 @@ public class Logger {
         return instance;
     }
 
+    // TODO: 07/01/2017 addSimEngine to logger to avoid doing simEngine.getCurrentSimTime everywhere when logging
+
     public void turnOff() {
         on = false;
     }
@@ -79,6 +81,27 @@ public class Logger {
 
     public void setLogLevel(LogLevel logLevel) {
         mlogLevel = logLevel;
+    }
+
+    /*
+    * ##############################################################################################################
+    * Log method with level of warning
+    * ##############################################################################################################
+    */
+    public void logDebug(String creatorName, LocalDateTime logTime, String message) {
+        log(creatorName, logTime, message, LogLevel.DEBUG);
+    }
+
+    public void logInfo(String creatorName, LocalDateTime logTime, String message) {
+        log(creatorName, logTime, message, LogLevel.INFO);
+    }
+
+    public void logWarning(String creatorName, LocalDateTime logTime, String message) {
+        log(creatorName, logTime, message, LogLevel.WARNING);
+    }
+
+    public void logFatal(String creatorName, LocalDateTime logTime, String message) {
+        log(creatorName, logTime, message, LogLevel.FATAL);
     }
 
     /*
