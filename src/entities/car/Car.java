@@ -10,7 +10,6 @@ import graph_network.DijkstraAlgorithm;
 import graph_network.Node;
 import logging.Logger;
 import simulation.Entity;
-import simulation.Event;
 import simulation.SimEngine;
 
 import java.time.Duration;
@@ -40,7 +39,7 @@ public class Car implements Entity {
     private double positionInLane;
 
     // keeping track currentEvent so we can remove it from simEngine
-    private Event currentEvent;
+    private CarEvent currentEvent;
 
     public Car(String Id, Zone source, Zone destination, RoadNetwork roadNetwork, SimEngine simEngine) {
         setCarState(CarState.CREATED);
@@ -77,6 +76,13 @@ public class Car implements Entity {
     }
 
     private void drive() {
+        if (currentEvent != null && !currentEvent.wasProcessed()) {
+            Logger.getInstance().logDebug(getName(), simEngine.getCurrentSimTime(), "there was a previous event not processed");
+            Duration sinceLastPostedEvent = Duration.between(currentEvent.getPostedTime(), simEngine.getCurrentSimTime());
+            double elapsed = sinceLastPostedEvent.getSeconds() + sinceLastPostedEvent.getNano() * 1e-9;
+            double distance = Math.round(elapsed * speed);
+            addTravel(distance);
+        }
         speed = currentLane.getSpeed_limit();
         destinationInLane = currentLane.getFreeSpotPositionForCar(this);
         Duration timeToArrive = calculateTravelTime(positionInLane, destinationInLane);
@@ -100,7 +106,7 @@ public class Car implements Entity {
             Logger.getInstance().logDebug(getName(), simEngine.getCurrentSimTime(), "number of car in lane (including me): " + String.valueOf(currentLane.getCarQueue().size()));
             stop();
         } else {
-            Logger.getInstance().logWarning(getName(), simEngine.getCurrentSimTime(), "arrived at free spot BUT not the real free spot >> Shouldn't happen");
+            Logger.getInstance().logWarning(getName(), simEngine.getCurrentSimTime(), "car not arrived yet, updating ");
             // Let's correct it anyway, by driving to the real free spot
             drive();
         }
@@ -135,12 +141,7 @@ public class Car implements Entity {
             int indexOfNextNodeInPath = path.indexOf(currentLane.getDestination()) + 1;
             Lane nextLane = roadNetwork.getLaneBetween(currentLane.getDestination(), path.get(indexOfNextNodeInPath));
             if (nextLane.hasSpace()) {
-                currentLane.removeCar(this);
-                nextLane.addCar(this);
-                currentLane = nextLane;
-                Logger.getInstance().logInfo(getName(), simEngine.getCurrentSimTime(), "Changing Lane");
-                positionInLane = 0;
-                speed = 0;
+                changeLane(nextLane);
                 drive();
             } else {
                 Intersection currentIntersection = (Intersection) currentLane.getDestination();
@@ -160,6 +161,19 @@ public class Car implements Entity {
         } else {
             Logger.getInstance().logWarning(getName(), simEngine.getCurrentSimTime(), "NextStep is nor an Intersection nor a Zone");
         }
+    }
+
+    private void changeLane(Lane nextLane) {
+        // notify the previous car on the current lane before changing
+        if (currentLane.getNextCar(this) != null) {
+            Logger.getInstance().logInfo(getName(), simEngine.getCurrentSimTime(), "Updating next car");
+            currentLane.getNextCar(this).update();
+        }
+        currentLane.removeCar(this);
+        nextLane.addCar(this);
+        currentLane = nextLane;
+        Logger.getInstance().logInfo(getName(), simEngine.getCurrentSimTime(), "Changing Lane");
+        positionInLane = 0;
     }
 
     private Duration calculateTravelTime(double position, double destination) {
@@ -215,11 +229,6 @@ public class Car implements Entity {
     public void setCarState(CarState newCarState) {
         if (newCarState == carState)
             Logger.getInstance().logWarning(getName(), simEngine.getCurrentSimTime(), "Changing state to the same: " + carState);
-//        if (carState == CarState.STOPPED && newCarState == CarState.DRIVING) {
-//            notifyNextCar(CarNotification.FrontCarStarted);
-//        } else if (carState == CarState.DRIVING && newCarState == CarState.STOPPED) {
-//            notifyNextCar(CarNotification.FrontCarStopped); // there should be no notification
-//        }
         carState = newCarState;
     }
 

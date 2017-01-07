@@ -124,4 +124,12 @@ public class Lane extends Edge {
     public void setTrafficSign(TrafficSign trafficSign) {
         this.trafficSign = trafficSign;
     }
+
+    public Car getNextCar(Car car) {
+        if (carQueue.indexOf(car) == carQueue.size() - 1) {
+            return null;
+        } else {
+            return carQueue.get(carQueue.indexOf(car) + 1);
+        }
+    }
 }
