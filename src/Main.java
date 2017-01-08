@@ -1,6 +1,4 @@
-import entities.SimpleNetwork;
-import entities.zone.NewCarEvent;
-import entities.zone.Zone;
+import entities.CoruscantNetwork;
 import logging.LogLevel;
 import logging.Logger;
 import simulation.SimEngine;
@@ -32,7 +30,8 @@ public class Main {
         * Junction
         * ****************************************************************************************************************
         */
-        SimpleNetwork crossroads = new SimpleNetwork(simEngine);
+        CoruscantNetwork crossroads = new CoruscantNetwork(simEngine);
+//        SimpleNetwork crossroads = new SimpleNetwork(simEngine);
 //        OneRoadNetwork crossroads = new OneRoadNetwork(simEngine,1000, 10, 10);
         crossroads.init();
 
@@ -41,9 +40,9 @@ public class Main {
         * add some entities/event to test
         * ##############################################################################################################
         */
-        simEngine.addEvent(new NewCarEvent((Zone) crossroads.getNodes().get(0), LocalDateTime.of(2000, 1, 1, 0, 2, 1), "Car1"));
-        simEngine.addEvent(new NewCarEvent((Zone) crossroads.getNodes().get(0), LocalDateTime.of(2000, 1, 1, 0, 2, 10), "Car2"));
-        simEngine.addEvent(new NewCarEvent((Zone) crossroads.getNodes().get(0), LocalDateTime.of(2000, 1, 1, 0, 3, 53), "Car3"));
+//        simEngine.addEvent(new NewCarEvent((Zone) crossroads.getNodes().get(0), LocalDateTime.of(2000, 1, 1, 0, 2, 1), "Car1"));
+//        simEngine.addEvent(new NewCarEvent((Zone) crossroads.getNodes().get(0), LocalDateTime.of(2000, 1, 1, 0, 2, 10), "Car2"));
+//        simEngine.addEvent(new NewCarEvent((Zone) crossroads.getNodes().get(0), LocalDateTime.of(2000, 1, 1, 0, 3, 53), "Car3"));
 //        for (int i = 0; i < 50; i++) {
 //            simEngine.addEvent(new NewCarEvent((Zone) crossroads.getNodes().get(0), LocalDateTime.of(2000, 1, 1, 0, 21, 20)));
 //        }
