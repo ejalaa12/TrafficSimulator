@@ -11,7 +11,7 @@ public class ChangeColorEvent extends Event {
 
     private TrafficLight trafficLight;
 
-    protected ChangeColorEvent(TrafficLight trafficLight, LocalDateTime scheduledTime) {
+    public ChangeColorEvent(TrafficLight trafficLight, LocalDateTime scheduledTime) {
         super(trafficLight.getName(), scheduledTime, "Changing Light color");
         String description = getDescription();
         description += " > " + trafficLight.getState().getNextState();
@@ -26,7 +26,7 @@ public class ChangeColorEvent extends Event {
             trafficLight.notifyFirstCarInLaneToChangeLane();
         }
         // next changing state event
-        LocalDateTime nextTime = trafficLight.getSimEngine().getCurrentSimTime().plus(trafficLight.getFrequency());
-        trafficLight.getSimEngine().addEvent(new ChangeColorEvent(trafficLight, nextTime));
+//        LocalDateTime nextTime = trafficLight.getSimEngine().getCurrentSimTime().plus(trafficLight.getFrequency());
+//        trafficLight.getSimEngine().addEvent(new ChangeColorEvent(trafficLight, nextTime));
     }
 }

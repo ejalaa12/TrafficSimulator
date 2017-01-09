@@ -1,7 +1,7 @@
 package entities;
 
 import entities.traffic_light.TrafficLight;
-import entities.zone.TimeSlot;
+import entities.zone.TimePeriod;
 import entities.zone.Zone;
 import entities.zone.ZoneSchedule;
 import simulation.Entity;
@@ -32,20 +32,20 @@ public class CoruscantNetwork extends RoadNetwork implements Entity {
         * ##############################################################################################################
         */
 
-        ArrayList<TimeSlot> timeSlots1 = new ArrayList<>();
-        timeSlots1.add(new TimeSlot(LocalTime.of(0, 0), LocalTime.of(7, 0), 40));
-        timeSlots1.add(new TimeSlot(LocalTime.of(7, 0), LocalTime.of(9, 0), 300));
-        timeSlots1.add(new TimeSlot(LocalTime.of(9, 0), LocalTime.of(17, 0), 20));
-        timeSlots1.add(new TimeSlot(LocalTime.of(17, 0), LocalTime.of(19, 0), 100));
-        timeSlots1.add(new TimeSlot(LocalTime.of(19, 0), LocalTime.of(23, 59, 59, 99999), 20));
+        ArrayList<TimePeriod> timeSlots1 = new ArrayList<>();
+        timeSlots1.add(new TimePeriod(LocalTime.of(0, 0), LocalTime.of(7, 0), 40));
+        timeSlots1.add(new TimePeriod(LocalTime.of(7, 0), LocalTime.of(9, 0), 300));
+        timeSlots1.add(new TimePeriod(LocalTime.of(9, 0), LocalTime.of(17, 0), 20));
+        timeSlots1.add(new TimePeriod(LocalTime.of(17, 0), LocalTime.of(19, 0), 100));
+        timeSlots1.add(new TimePeriod(LocalTime.of(19, 0), LocalTime.of(23, 59, 59, 99999), 20));
         ZoneSchedule zoneSchedule1 = new ZoneSchedule(timeSlots1);
 
-        ArrayList<TimeSlot> timeSlots2 = new ArrayList<>();
-        timeSlots2.add(new TimeSlot(LocalTime.of(0, 0), LocalTime.of(7, 0), 50));
-        timeSlots2.add(new TimeSlot(LocalTime.of(7, 0), LocalTime.of(9, 0), 200));
-        timeSlots2.add(new TimeSlot(LocalTime.of(9, 0), LocalTime.of(17, 0), 30));
-        timeSlots2.add(new TimeSlot(LocalTime.of(17, 0), LocalTime.of(19, 0), 150));
-        timeSlots2.add(new TimeSlot(LocalTime.of(19, 0), LocalTime.of(23, 59, 59, 99999), 30));
+        ArrayList<TimePeriod> timeSlots2 = new ArrayList<>();
+        timeSlots2.add(new TimePeriod(LocalTime.of(0, 0), LocalTime.of(7, 0), 50));
+        timeSlots2.add(new TimePeriod(LocalTime.of(7, 0), LocalTime.of(9, 0), 200));
+        timeSlots2.add(new TimePeriod(LocalTime.of(9, 0), LocalTime.of(17, 0), 30));
+        timeSlots2.add(new TimePeriod(LocalTime.of(17, 0), LocalTime.of(19, 0), 150));
+        timeSlots2.add(new TimePeriod(LocalTime.of(19, 0), LocalTime.of(23, 59, 59, 99999), 30));
         ZoneSchedule zoneSchedule2 = new ZoneSchedule(timeSlots2);
 
         Zone zone1 = new Zone("zone1", zoneSchedule1, simEngine, this);

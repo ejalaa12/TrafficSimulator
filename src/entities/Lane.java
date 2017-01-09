@@ -18,7 +18,7 @@ public class Lane extends Edge {
     private List<Car> carQueue;
     private double speed_limit;
     private TrafficSign trafficSign;
-
+    private LaneState state;
     /**
      * @param id          the lane unique id
      * @param source      source of the lane
@@ -30,6 +30,7 @@ public class Lane extends Edge {
         carQueue = new ArrayList<>();
         this.speed_limit = speed_limit;
         this.trafficSign = null;    // trafficSign is null if not set
+        state = LaneState.empty;
     }
 
     /**
@@ -49,6 +50,7 @@ public class Lane extends Edge {
      */
     public void addCar(Car car) {
         carQueue.add(car);
+        state = hasSpace() ? LaneState.free : LaneState.full;
     }
 
     /**
@@ -58,14 +60,27 @@ public class Lane extends Edge {
      */
     public void removeCar(Car car) {
         carQueue.remove(car);
+        state = carQueue.isEmpty() ? LaneState.empty : LaneState.free;
     }
 
+    /**
+     * Returns true if this car is the last one in the list of cars
+     *
+     * @param car the car to check
+     * @return true if car is last
+     */
+    public boolean isLastCar(Car car) {
+        return (carQueue.get(carQueue.size() - 1) == car);
+    }
 
-    /*
-    * ****************************************************************************************************************
-    * GETTER AND SETTER
-    * ****************************************************************************************************************
-    */
+    /**
+     * Return the maximum number of car possible on this lane
+     *
+     * @return the maximum number of car possible on this lane
+     */
+    public int maxQueue() {
+        return getLength() / (Car.length + distance_between_cars);
+    }
 
     /**
      * Returns the length of the road, which is the weight of the node
@@ -75,6 +90,13 @@ public class Lane extends Edge {
     public int getLength() {
         return getWeight();
     }
+
+
+    /*
+    * ****************************************************************************************************************
+    * GETTER AND SETTER
+    * ****************************************************************************************************************
+    */
 
     /**
      * Returns the list of cars on this lane
@@ -131,5 +153,13 @@ public class Lane extends Edge {
         } else {
             return carQueue.get(carQueue.indexOf(car) + 1);
         }
+    }
+
+    private enum LaneState {
+        empty,  // when there is no car
+        free,   // when there is room
+        full    // when there is no room for more cars
+
+
     }
 }

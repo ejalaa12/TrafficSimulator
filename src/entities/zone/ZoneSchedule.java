@@ -10,18 +10,18 @@ import java.util.ArrayList;
  */
 public class ZoneSchedule {
 
-    private ArrayList<TimeSlot> timeSlots;
+    private ArrayList<TimePeriod> timePeriods;
 
-    public ZoneSchedule(ArrayList<TimeSlot> timeSlots) {
-        this.timeSlots = timeSlots;
+    public ZoneSchedule(ArrayList<TimePeriod> timePeriods) {
+        this.timePeriods = timePeriods;
     }
 
     Duration getCurrentFrequency(LocalTime currentTime) {
         return getCurrentTimeSlot(currentTime).getFrequency();
     }
 
-    private TimeSlot getCurrentTimeSlot(LocalTime currentTime) {
-        return timeSlots.stream().filter(x -> x.inTimeSlot(currentTime)).findFirst().orElse(null);
+    private TimePeriod getCurrentTimeSlot(LocalTime currentTime) {
+        return timePeriods.stream().filter(x -> x.inTimeSlot(currentTime)).findFirst().orElse(null);
     }
 
 
