@@ -1,5 +1,6 @@
 package logging;
 
+import com.sun.tools.javac.util.FatalError;
 import simulation.Event;
 
 import java.io.FileWriter;
@@ -102,6 +103,7 @@ public class Logger {
 
     public void logFatal(String creatorName, LocalDateTime logTime, String message) {
         log(creatorName, logTime, message, LogLevel.FATAL);
+        throw new FatalError("Something went wrong");
     }
 
     /*

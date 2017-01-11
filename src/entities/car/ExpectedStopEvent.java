@@ -10,11 +10,8 @@ import java.time.LocalDateTime;
  */
 public class ExpectedStopEvent extends CarEvent {
 
-    private Car car;
-
     protected ExpectedStopEvent(Car car, LocalDateTime scheduledTime) {
-        super(car.getName(), scheduledTime, "Car was supposed to stop now");
-        this.car = car;
+        super(car, scheduledTime, car.getName() + " is supposed to do something now");
     }
 
     @Override
@@ -24,7 +21,7 @@ public class ExpectedStopEvent extends CarEvent {
         Duration eventDuration = Duration.between(postedTime, scheduledTime);
         double elapsed = eventDuration.getSeconds() + eventDuration.getNano() * 1e-9;
         double distance = Math.round(elapsed * car.getSpeed());
-        Logger.getInstance().logDebug("ExectedStopEvent", scheduledTime, "adding distance: " + distance);
+        Logger.getInstance().logDebug("ExpectedStopEvent", scheduledTime, "adding distance: " + distance);
         car.addTravel(distance);
         // If this event finally happens, then we check what to do next
         car.update();
