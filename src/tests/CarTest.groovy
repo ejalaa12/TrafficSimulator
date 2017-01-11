@@ -1,6 +1,6 @@
 package tests
 
-import entities.OneRoadNetwork
+import entities.CustomRoadNetwork0
 import logging.Logger
 import simulation.SimEngine
 
@@ -14,7 +14,7 @@ class CarTest extends groovy.util.GroovyTestCase {
     static LocalDateTime endSim = LocalDateTime.of(2000, 1, 2, 0, 0)
 
     static SimEngine simEngine = new SimEngine(1, startSim, endSim)
-    OneRoadNetwork network = new OneRoadNetwork(simEngine, 1000, 10, 12)
+    CustomRoadNetwork0 network = new CustomRoadNetwork0(simEngine, 1000, 10, 12)
 
 
     void testCar() {

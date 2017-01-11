@@ -40,8 +40,6 @@ public class TrafficLight extends TrafficSign implements Entity {
             Logger.getInstance().log(getName(), simEngine.getCurrentSimTime(), msg, LogLevel.INFO);
         } else {
             lane.getCarQueue().get(0).update();
-//            lane.getCarQueue().get(0).notifyCar(CarNotification.GreenLightSoChangeLane);
-//            simEngine.addEvent(new ChangingLaneEvent(lane.getCarQueue().get(0), simEngine.getCurrentSimTime()));
         }
     }
 

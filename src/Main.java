@@ -1,4 +1,4 @@
-import entities.CoruscantNetwork;
+import entities.CustomRoadNetwork0b3;
 import logging.LogLevel;
 import logging.Logger;
 import simulation.SimEngine;
@@ -20,7 +20,7 @@ public class Main {
         * ##############################################################################################################
         */
         LocalDateTime startSim = LocalDateTime.of(2000, 1, 1, 0, 0);
-        LocalDateTime endSim = LocalDateTime.of(2000, 1, 1, 0, 30);
+        LocalDateTime endSim = LocalDateTime.of(2000, 1, 2, 0, 30);
 
         SimEngine simEngine = new SimEngine(1, startSim, endSim);
 
@@ -30,9 +30,10 @@ public class Main {
         * Junction
         * ****************************************************************************************************************
         */
-        CoruscantNetwork crossroads = new CoruscantNetwork(simEngine);
-//        SimpleNetwork crossroads = new SimpleNetwork(simEngine);
-//        OneRoadNetwork crossroads = new OneRoadNetwork(simEngine,1000, 10, 10);
+//        CoruscantNetwork crossroads = new CoruscantNetwork(simEngine);
+//        CustomRoadNetwork1 crossroads = new CustomRoadNetwork1(simEngine);
+        CustomRoadNetwork0b3 crossroads = new CustomRoadNetwork0b3(simEngine);
+//        CustomRoadNetwork0 crossroads = new CustomRoadNetwork0(simEngine,1000, 10, 10);
         crossroads.init();
 
         /*
@@ -40,6 +41,10 @@ public class Main {
         * add some entities/event to test
         * ##############################################################################################################
         */
+//        Lane laneWithTrafficLight = crossroads.R2.getLaneWithDestination(crossroads.intersection2);
+//        laneWithTrafficLight.setTrafficSign(new TrafficLight(laneWithTrafficLight, simEngine));
+//        simEngine.addEvent(new ChangeColorEvent((TrafficLight) laneWithTrafficLight.getTrafficSign(), LocalDateTime.of(2000, 1, 1, 0, 0, 10)));
+//        simEngine.addEvent(new ChangeColorEvent((TrafficLight) laneWithTrafficLight.getTrafficSign(), LocalDateTime.of(2000, 1, 1, 19, 0, 0)));
 //        simEngine.addEvent(new NewCarEvent((Zone) crossroads.getNodes().get(0), LocalDateTime.of(2000, 1, 1, 0, 2, 1), "Car1"));
 //        simEngine.addEvent(new NewCarEvent((Zone) crossroads.getNodes().get(0), LocalDateTime.of(2000, 1, 1, 0, 2, 10), "Car2"));
 //        simEngine.addEvent(new NewCarEvent((Zone) crossroads.getNodes().get(0), LocalDateTime.of(2000, 1, 1, 0, 3, 53), "Car3"));
