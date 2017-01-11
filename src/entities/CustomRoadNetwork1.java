@@ -1,7 +1,6 @@
 package entities;
 
-import entities.traffic_light.TrafficLight;
-import entities.zone.TimeSlot;
+import entities.zone.TimePeriod;
 import entities.zone.Zone;
 import entities.zone.ZoneSchedule;
 import simulation.Entity;
@@ -13,9 +12,13 @@ import java.util.ArrayList;
 /**
  * This class models the Coruscant crossroads
  */
-public class SimpleNetwork extends RoadNetwork implements Entity {
+public class CustomRoadNetwork1 extends RoadNetwork implements Entity {
 
-    public SimpleNetwork(SimEngine simEngine) {
+    public Zone zone1, zone2;
+    public Intersection intersection1;
+    public Road R1, R2;
+
+    public CustomRoadNetwork1(SimEngine simEngine) {
         super(simEngine);
         definition();
     }
@@ -33,16 +36,16 @@ public class SimpleNetwork extends RoadNetwork implements Entity {
         */
 
         // Zone 1 schedule
-        ArrayList<TimeSlot> timeSlots1 = new ArrayList<>();
-        timeSlots1.add(new TimeSlot(LocalTime.of(0, 0), LocalTime.of(7, 0), 2));
-        timeSlots1.add(new TimeSlot(LocalTime.of(7, 0), LocalTime.of(9, 0), 3));
-        timeSlots1.add(new TimeSlot(LocalTime.of(9, 0), LocalTime.of(17, 0), 1));
-        timeSlots1.add(new TimeSlot(LocalTime.of(17, 0), LocalTime.of(19, 0), 3));
-        timeSlots1.add(new TimeSlot(LocalTime.of(19, 0), LocalTime.of(23, 59, 59, 99999), 1));
+        ArrayList<TimePeriod> timeSlots1 = new ArrayList<>();
+        timeSlots1.add(new TimePeriod(LocalTime.of(0, 0), LocalTime.of(7, 0), 2000));
+        timeSlots1.add(new TimePeriod(LocalTime.of(7, 0), LocalTime.of(9, 0), 3));
+        timeSlots1.add(new TimePeriod(LocalTime.of(9, 0), LocalTime.of(17, 0), 1));
+        timeSlots1.add(new TimePeriod(LocalTime.of(17, 0), LocalTime.of(19, 0), 3));
+        timeSlots1.add(new TimePeriod(LocalTime.of(19, 0), LocalTime.of(23, 59, 59, 99999), 1));
         ZoneSchedule zoneSchedule1 = new ZoneSchedule(timeSlots1);
 
         // Zone 1
-        Zone zone1 = new Zone("zone1", zoneSchedule1, simEngine, this);
+        zone1 = new Zone("zone1", zoneSchedule1, simEngine, this);
 
         /*
         * **************************************************************************************************************
@@ -50,15 +53,15 @@ public class SimpleNetwork extends RoadNetwork implements Entity {
         */
 
         // Zone 2 schedule
-        ArrayList<TimeSlot> timeSlots2 = new ArrayList<>();
-        timeSlots2.add(new TimeSlot(LocalTime.of(0, 0), LocalTime.of(7, 0), 500));
-        timeSlots2.add(new TimeSlot(LocalTime.of(7, 0), LocalTime.of(9, 0), 200));
-        timeSlots2.add(new TimeSlot(LocalTime.of(9, 0), LocalTime.of(17, 0), 30));
-        timeSlots2.add(new TimeSlot(LocalTime.of(17, 0), LocalTime.of(19, 0), 150));
-        timeSlots2.add(new TimeSlot(LocalTime.of(19, 0), LocalTime.of(23, 59, 59, 99999), 30));
+        ArrayList<TimePeriod> timeSlots2 = new ArrayList<>();
+        timeSlots2.add(new TimePeriod(LocalTime.of(0, 0), LocalTime.of(7, 0), 500));
+        timeSlots2.add(new TimePeriod(LocalTime.of(7, 0), LocalTime.of(9, 0), 200));
+        timeSlots2.add(new TimePeriod(LocalTime.of(9, 0), LocalTime.of(17, 0), 30));
+        timeSlots2.add(new TimePeriod(LocalTime.of(17, 0), LocalTime.of(19, 0), 150));
+        timeSlots2.add(new TimePeriod(LocalTime.of(19, 0), LocalTime.of(23, 59, 59, 99999), 30));
         ZoneSchedule zoneSchedule2 = new ZoneSchedule(timeSlots2);
         // zone 2
-        Zone zone2 = new Zone("zone2", zoneSchedule2, simEngine, this);
+        zone2 = new Zone("zone2", zoneSchedule2, simEngine, this);
 
         /*
         * **************************************************************************************************************
@@ -82,7 +85,7 @@ public class SimpleNetwork extends RoadNetwork implements Entity {
         * ##############################################################################################################
         */
 
-        Intersection intersection1 = new Intersection("intersection1");
+        intersection1 = new Intersection("intersection1");
 
         addIntersection(intersection1);
 
@@ -92,9 +95,10 @@ public class SimpleNetwork extends RoadNetwork implements Entity {
         * ##############################################################################################################
         */
 
-
-        addRoad(new Road("R1", zone1, intersection1, 200, 50 * 1000 / 3600.));
-        addRoad(new Road("R2", zone2, intersection1, 300, 50 * 1000 / 3600.));
+        R1 = new Road("R1", zone1, intersection1, 200, 50 * 1000 / 3600.);
+        R2 = new Road("R2", zone2, intersection1, 300, 50 * 1000 / 3600.);
+        addRoad(R1);
+        addRoad(R2);
 
         /*
         * ##############################################################################################################
@@ -102,8 +106,8 @@ public class SimpleNetwork extends RoadNetwork implements Entity {
         * ##############################################################################################################
         */
 
-        Lane laneWithTrafficLight = roads.get(0).getLaneWithDestination(intersection1);
-        laneWithTrafficLight.setTrafficSign(new TrafficLight(laneWithTrafficLight, simEngine));
+//        Lane laneWithTrafficLight = roads.get(0).getLaneWithDestination(intersection1);
+//        laneWithTrafficLight.setTrafficSign(new TrafficLight(laneWithTrafficLight, simEngine));
     }
 
     /**

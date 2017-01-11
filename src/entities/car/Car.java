@@ -7,6 +7,7 @@ import entities.traffic_light.TrafficLight;
 import entities.traffic_light.TrafficLightState;
 import entities.zone.Zone;
 import graph_network.DijkstraAlgorithm;
+import graph_network.Edge;
 import graph_network.Node;
 import logging.Logger;
 import simulation.Entity;
@@ -37,6 +38,7 @@ public class Car implements Entity {
     private int destinationInLane; // destination in currentLane
     private double totalTravelledDistance;
     private double positionInLane;
+
 
     // keeping track currentEvent so we can remove it from simEngine
     private CarEvent currentEvent;
@@ -71,6 +73,7 @@ public class Car implements Entity {
             speed = 0;
             drive();
         } else {
+            Logger.getInstance().logInfo(getName(), simEngine.getCurrentSimTime(), "I was dismissed");
             source.addDismissedCar(this);
         }
     }
@@ -89,7 +92,7 @@ public class Car implements Entity {
         speed = currentLane.getSpeed_limit();
         destinationInLane = currentLane.getFreeSpotPositionForCar(this);
         Duration timeToArrive = calculateTravelTime(positionInLane, destinationInLane);
-        Logger.getInstance().logInfo(getName(), simEngine.getCurrentSimTime(), "set destination: " + destinationInLane);
+        Logger.getInstance().logInfo(getName(), simEngine.getCurrentSimTime(), "set destination: " + destinationInLane + " on lane " + currentLane.getId());
         currentEvent = new ExpectedStopEvent(this, simEngine.getCurrentSimTime().plus(timeToArrive));
         simEngine.addEvent(currentEvent);
         setCarState(CarState.DRIVING);
@@ -101,6 +104,18 @@ public class Car implements Entity {
     }
 
     public void update() {
+        // if car was stopped before updating, and this car is the last one (and there is other cars) and one place just
+        // got freed up
+        if (isStopped() && currentLane.isLastCar(this) && currentLane.getCarQueue().size() == currentLane.maxQueue() - 1) {
+            Logger.getInstance().logWarning(getName(), simEngine.getCurrentSimTime(), "I was the last car blocking the lane");
+            for (Edge connection : roadNetwork.getConnectionsThatArriveAt(currentLane.getSource())) {
+                if (!((Lane) connection).getCarQueue().isEmpty()) {
+                    Car waitingCar = ((Lane) connection).getCarQueue().get(0);
+                    if (waitingCar.isLaneNextStep(currentLane)) waitingCar.update();
+                }
+                // FIXME: 10/01/2017 only select cars which next step is the current lane
+            }
+        }
         if (positionInLane == currentLane.getLength()) {
             // do next step of the path if we arrived at the end of the current lane
             Logger.getInstance().logInfo(getName(), simEngine.getCurrentSimTime(), "i am at end of lane -> do next step");
@@ -199,6 +214,12 @@ public class Car implements Entity {
                 nextCar.update();
             }
         }
+    }
+
+    public boolean isLaneNextStep(Lane lane) {
+        int indexOfNextNodeInPath = path.indexOf(currentLane.getDestination()) + 1;
+        Lane nextLane = roadNetwork.getLaneBetween(currentLane.getDestination(), path.get(indexOfNextNodeInPath));
+        return nextLane == lane;
     }
 
     private Duration calculateTravelTime(double position, double destination) {
