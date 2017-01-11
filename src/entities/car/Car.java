@@ -78,6 +78,10 @@ public class Car implements Entity {
         }
     }
 
+    /**
+     * This method force a car to drive to the next free spot.
+     * It creates an event when the car is supposed to stop.
+     */
     private void drive() {
         // update the position using the current event posted time and current speed
         if (currentEvent != null && !currentEvent.wasProcessed()) {
