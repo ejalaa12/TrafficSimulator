@@ -26,7 +26,7 @@ public class ChangeColorEvent extends Event {
             trafficLight.notifyFirstCarInLaneToChangeLane();
         }
         // next changing state event
-//        LocalDateTime nextTime = trafficLight.getSimEngine().getCurrentSimTime().plus(trafficLight.getFrequency());
-//        trafficLight.getSimEngine().addEvent(new ChangeColorEvent(trafficLight, nextTime));
+        LocalDateTime nextTime = trafficLight.getSimEngine().getCurrentSimTime().plus(trafficLight.getFrequency());
+        trafficLight.getSimEngine().addEvent(new ChangeColorEvent(trafficLight, nextTime));
     }
 }

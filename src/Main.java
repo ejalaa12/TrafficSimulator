@@ -1,7 +1,4 @@
 import entities.CustomRoadNetwork0b3;
-import entities.Lane;
-import entities.traffic_light.ChangeColorEvent;
-import entities.traffic_light.TrafficLight;
 import logging.LogLevel;
 import logging.Logger;
 import simulation.SimEngine;
@@ -44,10 +41,10 @@ public class Main {
         * add some entities/event to test
         * ##############################################################################################################
         */
-        Lane laneWithTrafficLight = crossroads.R2.getLaneWithDestination(crossroads.intersection2);
-        laneWithTrafficLight.setTrafficSign(new TrafficLight(laneWithTrafficLight, simEngine));
-        simEngine.addEvent(new ChangeColorEvent((TrafficLight) laneWithTrafficLight.getTrafficSign(), LocalDateTime.of(2000, 1, 1, 0, 0, 10)));
-        simEngine.addEvent(new ChangeColorEvent((TrafficLight) laneWithTrafficLight.getTrafficSign(), LocalDateTime.of(2000, 1, 1, 19, 0, 0)));
+//        Lane laneWithTrafficLight = crossroads.R2.getLaneWithDestination(crossroads.intersection2);
+//        laneWithTrafficLight.setTrafficSign(new TrafficLight(laneWithTrafficLight, simEngine));
+//        simEngine.addEvent(new ChangeColorEvent((TrafficLight) laneWithTrafficLight.getTrafficSign(), LocalDateTime.of(2000, 1, 1, 0, 0, 10)));
+//        simEngine.addEvent(new ChangeColorEvent((TrafficLight) laneWithTrafficLight.getTrafficSign(), LocalDateTime.of(2000, 1, 1, 19, 0, 0)));
 //        simEngine.addEvent(new NewCarEvent((Zone) crossroads.getNodes().get(0), LocalDateTime.of(2000, 1, 1, 0, 2, 1), "Car1"));
 //        simEngine.addEvent(new NewCarEvent((Zone) crossroads.getNodes().get(0), LocalDateTime.of(2000, 1, 1, 0, 2, 10), "Car2"));
 //        simEngine.addEvent(new NewCarEvent((Zone) crossroads.getNodes().get(0), LocalDateTime.of(2000, 1, 1, 0, 3, 53), "Car3"));
