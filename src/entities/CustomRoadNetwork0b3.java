@@ -43,8 +43,10 @@ public class CustomRoadNetwork0b3 extends RoadNetwork implements Entity {
         // zone 2
         zone2 = new Zone("zone2", zoneSchedule2, simEngine, this);
         // Preferences
-        zone1.setPreferredDestination(zone2);
-        zone2.setPreferredDestination(zone1);
+
+
+//        zone1.setPreferredDestination(zone2);
+//        zone2.setPreferredDestination(zone1);
 
         addArea(zone1);
         addArea(zone2);

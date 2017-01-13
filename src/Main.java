@@ -1,4 +1,4 @@
-import entities.CustomRoadNetwork0b3;
+import entities.CoruscantNetwork;
 import logging.LogLevel;
 import logging.Logger;
 import simulation.SimEngine;
@@ -30,9 +30,9 @@ public class Main {
         * Junction
         * ****************************************************************************************************************
         */
-//        CoruscantNetwork crossroads = new CoruscantNetwork(simEngine);
+        CoruscantNetwork crossroads = new CoruscantNetwork(simEngine);
 //        CustomRoadNetwork1 crossroads = new CustomRoadNetwork1(simEngine);
-        CustomRoadNetwork0b3 crossroads = new CustomRoadNetwork0b3(simEngine);
+//        CustomRoadNetwork0b3 crossroads = new CustomRoadNetwork0b3(simEngine);
 //        CustomRoadNetwork0 crossroads = new CustomRoadNetwork0(simEngine,1000, 10, 10);
         crossroads.init();
 

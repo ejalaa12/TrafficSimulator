@@ -28,7 +28,7 @@ public class SimEngine {
         this.currentSimTime = startSimTime;
         this.endSimTime = endSimTime;
         this.loops = 0;
-        Logger.getInstance().log(className, this.currentSimTime, "Simulation started !", LogLevel.INFO);
+        Logger.getInstance().log(className, this.currentSimTime, "Simulation initialized !", LogLevel.INFO);
     }
 
     /**
@@ -63,6 +63,7 @@ public class SimEngine {
      * Simulation loop
      */
     public void loop() {
+        Logger.getInstance().log(className, this.currentSimTime, "Simulation started !", LogLevel.INFO);
         while (!simHasEnded()) {
             simStep();
         }
