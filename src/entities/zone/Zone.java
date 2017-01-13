@@ -1,9 +1,14 @@
 package entities.zone;
 
 import entities.RoadNetwork;
+import entities.car.Car;
 import graph_network.Node;
+import logging.LogLevel;
+import logging.Logger;
 import simulation.Entity;
 import simulation.SimEngine;
+
+import java.time.Duration;
 
 
 /**
@@ -11,11 +16,11 @@ import simulation.SimEngine;
  */
 public class Zone extends Node implements Entity{
 
-    private int numberOfProducedCars = 0;
+    private ZoneStats stats;
+
     private SimEngine simEngine;
     private ZoneSchedule zoneSchedule;
-    // TODO: 27/12/2016 Do preferences (for the moment only one destination per zone)
-    private Zone preferedDestination;
+    private ZonePreference zonePreference;
     private RoadNetwork roadNetwork;
 
     public Zone(String id, ZoneSchedule zoneSchedule, SimEngine simEngine, RoadNetwork roadNetwork) {
@@ -23,15 +28,19 @@ public class Zone extends Node implements Entity{
         this.zoneSchedule = zoneSchedule;
         this.simEngine = simEngine;
         this.roadNetwork = roadNetwork;
+        stats = new ZoneStats();
     }
 
 
     @Override
     public void init() {
-        if (preferedDestination == null) {
-            throw new IllegalStateException("preferedDestination was not set");
+        if (zonePreference == null) {
+            throw new IllegalStateException("zonePreferences was not set");
         }
-        simEngine.addEvent(new NewCarEvent(this, simEngine.getCurrentSimTime()));
+        // time of the first car depends on the frequency
+        // (we offset it by half so that the last car is still produced in the correct time period
+        Duration firstCarOffset = getZoneSchedule().getCurrentFrequency(simEngine.getCurrentSimTime().toLocalTime()).dividedBy(2);
+        simEngine.addEvent(new NewCarEvent(this, simEngine.getCurrentSimTime().plus(firstCarOffset)));
     }
 
     @Override
@@ -48,11 +57,15 @@ public class Zone extends Node implements Entity{
     */
 
     public int getNumberOfProducedCars() {
-        return numberOfProducedCars;
+        return stats.numberOfProducedCars;
     }
 
     public void setNumberOfProducedCars(int numberOfProducedCars) {
-        this.numberOfProducedCars = numberOfProducedCars;
+        this.stats.numberOfProducedCars = numberOfProducedCars;
+    }
+
+    public int getNumberOfCarArrived() {
+        return stats.numberOfCarArrived;
     }
 
     public SimEngine getSimEngine() {
@@ -63,15 +76,33 @@ public class Zone extends Node implements Entity{
         return zoneSchedule;
     }
 
-    public Zone getPreferedDestination() {
-        return preferedDestination;
+    public ZonePreference getZonePreference() {
+        return zonePreference;
     }
 
-    public void setPreferedDestination(Zone preferedDestination) {
-        this.preferedDestination = preferedDestination;
+    public void setZonePreference(ZonePreference zonePreference) {
+        this.zonePreference = zonePreference;
     }
 
     public RoadNetwork getRoadNetwork() {
         return roadNetwork;
+    }
+
+    public void addNewArrivedCar(Car car) {
+        Logger.getInstance().log(getName(), simEngine.getCurrentSimTime(), "New Car arrived " + car.getName(), LogLevel.INFO);
+        stats.numberOfCarArrived += 1;
+        stats.totalDistanceTravelledByAllCars += car.getTotalTravelledDistance();
+    }
+
+    public void addDismissedCar(Car car) {
+        stats.numberOfDismissedCar += 1;
+    }
+
+    public int getNumberOfDismissedCar() {
+        return stats.numberOfDismissedCar;
+    }
+
+    public ZoneStats getStats() {
+        return stats;
     }
 }
