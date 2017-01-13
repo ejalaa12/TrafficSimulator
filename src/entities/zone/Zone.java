@@ -20,8 +20,7 @@ public class Zone extends Node implements Entity{
 
     private SimEngine simEngine;
     private ZoneSchedule zoneSchedule;
-    // TODO: 27/12/2016 Do preferences (for the moment only one destination per zone)
-    private Zone preferredDestination;
+    private ZonePreference zonePreference;
     private RoadNetwork roadNetwork;
 
     public Zone(String id, ZoneSchedule zoneSchedule, SimEngine simEngine, RoadNetwork roadNetwork) {
@@ -35,11 +34,12 @@ public class Zone extends Node implements Entity{
 
     @Override
     public void init() {
-        if (preferredDestination == null) {
-            throw new IllegalStateException("preferredDestination was not set");
+        if (zonePreference == null) {
+            throw new IllegalStateException("zonePreferences was not set");
         }
         // time of the first car depends on the frequency
-        Duration firstCarOffset = getZoneSchedule().getCurrentFrequency(simEngine.getCurrentSimTime().toLocalTime());
+        // (we offset it by half so that the last car is still produced in the correct time period
+        Duration firstCarOffset = getZoneSchedule().getCurrentFrequency(simEngine.getCurrentSimTime().toLocalTime()).dividedBy(2);
         simEngine.addEvent(new NewCarEvent(this, simEngine.getCurrentSimTime().plus(firstCarOffset)));
     }
 
@@ -76,12 +76,12 @@ public class Zone extends Node implements Entity{
         return zoneSchedule;
     }
 
-    public Zone getPreferredDestination() {
-        return preferredDestination;
+    public ZonePreference getZonePreference() {
+        return zonePreference;
     }
 
-    public void setPreferredDestination(Zone preferredDestination) {
-        this.preferredDestination = preferredDestination;
+    public void setZonePreference(ZonePreference zonePreference) {
+        this.zonePreference = zonePreference;
     }
 
     public RoadNetwork getRoadNetwork() {
