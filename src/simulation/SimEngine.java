@@ -59,6 +59,9 @@ public class SimEngine {
         }
     }
 
+    /**
+     * Simulation loop
+     */
     public void loop() {
         while (!simHasEnded()) {
             simStep();

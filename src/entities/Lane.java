@@ -1,7 +1,6 @@
 package entities;
 
 import entities.car.Car;
-import entities.car.CarNotification;
 import entities.traffic_light.TrafficSign;
 import graph_network.Edge;
 import graph_network.Node;
@@ -19,7 +18,7 @@ public class Lane extends Edge {
     private List<Car> carQueue;
     private double speed_limit;
     private TrafficSign trafficSign;
-
+    private LaneState state;
     /**
      * @param id          the lane unique id
      * @param source      source of the lane
@@ -31,16 +30,17 @@ public class Lane extends Edge {
         carQueue = new ArrayList<>();
         this.speed_limit = speed_limit;
         this.trafficSign = null;    // trafficSign is null if not set
+        state = LaneState.empty;
     }
 
     /**
      * Check if there is enough space for a new car on the road using the following formula:
-     * Road_length - #Cars * (car_length + distance_between_cars) > (car_length + distance_between_cars)
+     * Road_length - #Cars * (car_length + distance_between_cars) >= (car_length + distance_between_cars)
      *
      * @return true if enough space
      */
     public boolean hasSpace() {
-        return getLength() - (carQueue.size() + 1) * (Car.length + distance_between_cars) > 0;
+        return getLength() - (carQueue.size() + 1) * (Car.length + distance_between_cars) >= 0;
     }
 
     /**
@@ -50,6 +50,7 @@ public class Lane extends Edge {
      */
     public void addCar(Car car) {
         carQueue.add(car);
+        state = hasSpace() ? LaneState.free : LaneState.full;
     }
 
     /**
@@ -59,27 +60,27 @@ public class Lane extends Edge {
      */
     public void removeCar(Car car) {
         carQueue.remove(car);
-        notifyOtherCars();
+        state = carQueue.isEmpty() ? LaneState.empty : LaneState.free;
     }
 
     /**
-     * Notifies all other cars in the Queue that a car has left the queue so they can update their behavior
+     * Returns true if this car is the last one in the list of cars
+     *
+     * @param car the car to check
+     * @return true if car is last
      */
-    private void notifyOtherCars() {
-        if (!carQueue.isEmpty()) {
-            carQueue.get(0).notifyCar(CarNotification.GoToEndOfLane);
-            int i;
-            for (i = 1; i < carQueue.size(); i++) {
-                carQueue.get(i).notifyCar(CarNotification.GoToNextFreeSpot);
-            }
-        }
+    public boolean isLastCar(Car car) {
+        return (carQueue.get(carQueue.size() - 1) == car);
     }
 
-    /*
-    * ****************************************************************************************************************
-    * GETTER AND SETTER
-    * ****************************************************************************************************************
-    */
+    /**
+     * Return the maximum number of car possible on this lane
+     *
+     * @return the maximum number of car possible on this lane
+     */
+    public int maxQueue() {
+        return getLength() / (Car.length + distance_between_cars);
+    }
 
     /**
      * Returns the length of the road, which is the weight of the node
@@ -89,6 +90,13 @@ public class Lane extends Edge {
     public int getLength() {
         return getWeight();
     }
+
+
+    /*
+    * ****************************************************************************************************************
+    * GETTER AND SETTER
+    * ****************************************************************************************************************
+    */
 
     /**
      * Returns the list of cars on this lane
@@ -122,14 +130,6 @@ public class Lane extends Edge {
     }
 
     /**
-     * Returns true if the lane has no car on it
-     * @return true if carQueue is empty
-     */
-    public boolean isFree() {
-        return carQueue.isEmpty();
-    }
-
-    /**
      * Returns the traffic sign that is on the end of this lane
      *
      * @return the traffic sign that is on the end of this lane
@@ -145,5 +145,21 @@ public class Lane extends Edge {
      */
     public void setTrafficSign(TrafficSign trafficSign) {
         this.trafficSign = trafficSign;
+    }
+
+    public Car getNextCar(Car car) {
+        if (carQueue.indexOf(car) == carQueue.size() - 1) {
+            return null;
+        } else {
+            return carQueue.get(carQueue.indexOf(car) + 1);
+        }
+    }
+
+    private enum LaneState {
+        empty,  // when there is no car
+        free,   // when there is room
+        full    // when there is no room for more cars
+
+
     }
 }
