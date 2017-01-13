@@ -293,4 +293,12 @@ public class Car implements Entity {
     public double getTotalTravelledDistance() {
         return totalTravelledDistance;
     }
+
+    public Zone getSource() {
+        return source;
+    }
+
+    public Zone getDestination() {
+        return destination;
+    }
 }
