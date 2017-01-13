@@ -2,12 +2,14 @@ package entities;
 
 import entities.zone.TimePeriod;
 import entities.zone.Zone;
+import entities.zone.ZonePreference;
 import entities.zone.ZoneSchedule;
 import simulation.Entity;
 import simulation.SimEngine;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * This class models the Coruscant crossroads
@@ -45,8 +47,19 @@ public class CustomRoadNetwork0 extends RoadNetwork implements Entity {
         // zone 2
         Zone zone2 = new Zone("zone2", zoneSchedule2, simEngine, this);
         // Preferences
-        zone1.setPreferredDestination(zone2);
-        zone2.setPreferredDestination(zone1);
+        // Preferences Zone1
+        ZonePreference zonePreference1 = new ZonePreference(simEngine.getRandom());
+        ArrayList<Zone> zones1 = new ArrayList<>(Arrays.asList(new Zone[]{zone2}));
+        ArrayList<Double> percentages1 = new ArrayList<>(Arrays.asList(new Double[]{1.}));
+        zonePreference1.addPreferences(zones1, percentages1);
+        zone1.setZonePreference(zonePreference1);
+
+        // Preferences Zone2
+        ZonePreference zonePreference2 = new ZonePreference(simEngine.getRandom());
+        ArrayList<Zone> zones2 = new ArrayList<>(Arrays.asList(new Zone[]{zone1}));
+        ArrayList<Double> percentages2 = new ArrayList<>(Arrays.asList(new Double[]{1.}));
+        zonePreference2.addPreferences(zones2, percentages2);
+        zone2.setZonePreference(zonePreference2);
 
         addArea(zone1);
         addArea(zone2);

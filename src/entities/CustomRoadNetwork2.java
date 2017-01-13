@@ -68,8 +68,9 @@ public class CustomRoadNetwork2 extends RoadNetwork implements Entity {
         * Preferences
         */
 
-        zone1.setPreferredDestination(zone2);
-        zone2.setPreferredDestination(zone1);
+
+//        zone1.setPreferredDestination(zone2);
+//        zone2.setPreferredDestination(zone1);
 
         /*
         * **************************************************************************************************************

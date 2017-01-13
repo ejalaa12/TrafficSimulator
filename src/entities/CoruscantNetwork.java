@@ -3,12 +3,14 @@ package entities;
 import entities.traffic_light.TrafficLight;
 import entities.zone.TimePeriod;
 import entities.zone.Zone;
+import entities.zone.ZonePreference;
 import entities.zone.ZoneSchedule;
 import simulation.Entity;
 import simulation.SimEngine;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * This class models Coruscant Carrefour
@@ -56,13 +58,55 @@ public class CoruscantNetwork extends RoadNetwork implements Entity {
         Zone zone6 = new Zone("zone6", zoneSchedule1, simEngine, this);
         Zone zone7 = new Zone("zone7", zoneSchedule1, simEngine, this);
 
-        zone1.setPreferredDestination(zone4);
-        zone2.setPreferredDestination(zone5);
-        zone3.setPreferredDestination(zone6);
-        zone4.setPreferredDestination(zone1);
-        zone5.setPreferredDestination(zone7);
-        zone6.setPreferredDestination(zone3);
-        zone7.setPreferredDestination(zone2);
+        // Preferences Zone1
+        ZonePreference zonePreference1 = new ZonePreference(simEngine.getRandom());
+        ArrayList<Zone> zones1 = new ArrayList<>(Arrays.asList(new Zone[]{zone2, zone3, zone4, zone5, zone6, zone7}));
+        ArrayList<Double> percentages1 = new ArrayList<>(Arrays.asList(new Double[]{0.05, 0.1, 0.1, 0.05, 0.35, 0.35}));
+        zonePreference1.addPreferences(zones1, percentages1);
+        zone1.setZonePreference(zonePreference1);
+
+        // Preferences Zone2
+        ZonePreference zonePreference2 = new ZonePreference(simEngine.getRandom());
+        ArrayList<Zone> zones2 = new ArrayList<>(Arrays.asList(new Zone[]{zone1, zone3, zone4, zone5, zone6, zone7}));
+        ArrayList<Double> percentages2 = new ArrayList<>(Arrays.asList(new Double[]{0.1, 0.05, 0.2, 0.2, 0.25, 0.20}));
+        zonePreference2.addPreferences(zones2, percentages2);
+        zone2.setZonePreference(zonePreference2);
+
+        // Preferences Zone3
+        ZonePreference zonePreference3 = new ZonePreference(simEngine.getRandom());
+        ArrayList<Zone> zones3 = new ArrayList<>(Arrays.asList(new Zone[]{zone1, zone2, zone4, zone5, zone6, zone7}));
+        ArrayList<Double> percentages3 = new ArrayList<>(Arrays.asList(new Double[]{0.15, 0.15, 0.2, 0.2, 0.2, 0.1}));
+        zonePreference3.addPreferences(zones3, percentages3);
+        zone3.setZonePreference(zonePreference3);
+
+        // Preferences Zone4
+        ZonePreference zonePreference4 = new ZonePreference(simEngine.getRandom());
+        ArrayList<Zone> zones4 = new ArrayList<>(Arrays.asList(new Zone[]{zone1, zone2, zone3, zone5, zone6, zone7}));
+        ArrayList<Double> percentages4 = new ArrayList<>(Arrays.asList(new Double[]{0.15, 0.1, 0.1, 0.2, 0.4, 0.05}));
+        zonePreference4.addPreferences(zones4, percentages4);
+        zone4.setZonePreference(zonePreference4);
+
+        // Preferences Zone5
+        ZonePreference zonePreference5 = new ZonePreference(simEngine.getRandom());
+        ArrayList<Zone> zones5 = new ArrayList<>(Arrays.asList(new Zone[]{zone1, zone2, zone3, zone4, zone6, zone7}));
+        ArrayList<Double> percentages5 = new ArrayList<>(Arrays.asList(new Double[]{0.1, 0.3, 0.1, 0.1, 0.1, 0.3}));
+        zonePreference5.addPreferences(zones5, percentages5);
+        zone5.setZonePreference(zonePreference5);
+
+        // Preferences Zone6
+        ZonePreference zonePreference6 = new ZonePreference(simEngine.getRandom());
+        ArrayList<Zone> zones6 = new ArrayList<>(Arrays.asList(new Zone[]{zone1, zone2, zone3, zone4, zone5, zone7}));
+        ArrayList<Double> percentages6 = new ArrayList<>(Arrays.asList(new Double[]{0.2, 0.1, 0.4, 0.1, 0.1, 0.1}));
+        zonePreference6.addPreferences(zones6, percentages6);
+        zone6.setZonePreference(zonePreference6);
+
+        // Preferences Zone7
+        ZonePreference zonePreference7 = new ZonePreference(simEngine.getRandom());
+        ArrayList<Zone> zones7 = new ArrayList<>(Arrays.asList(new Zone[]{zone1, zone2, zone3, zone4, zone5, zone6}));
+        ArrayList<Double> percentages7 = new ArrayList<>(Arrays.asList(new Double[]{0.2, 0.2, 0.2, 0.2, 0.1, 0.1}));
+        zonePreference7.addPreferences(zones7, percentages7);
+        zone7.setZonePreference(zonePreference7);
+
 
         addArea(zone1);
         addArea(zone2);

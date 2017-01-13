@@ -124,4 +124,8 @@ public class RoadNetwork extends Graph implements Entity {
     public List<Road> getRoads() {
         return roads;
     }
+
+    public List<Zone> getZones() {
+        return zones;
+    }
 }
