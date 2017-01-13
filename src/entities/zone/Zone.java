@@ -16,9 +16,8 @@ import java.time.Duration;
  */
 public class Zone extends Node implements Entity{
 
-    private int numberOfProducedCars = 0;
-    private int numberOfCarArrived = 0;
-    private int numberOfDismissedCar = 0;
+    private ZoneStats stats;
+
     private SimEngine simEngine;
     private ZoneSchedule zoneSchedule;
     // TODO: 27/12/2016 Do preferences (for the moment only one destination per zone)
@@ -30,6 +29,7 @@ public class Zone extends Node implements Entity{
         this.zoneSchedule = zoneSchedule;
         this.simEngine = simEngine;
         this.roadNetwork = roadNetwork;
+        stats = new ZoneStats();
     }
 
 
@@ -57,15 +57,15 @@ public class Zone extends Node implements Entity{
     */
 
     public int getNumberOfProducedCars() {
-        return numberOfProducedCars;
+        return stats.numberOfProducedCars;
     }
 
     public void setNumberOfProducedCars(int numberOfProducedCars) {
-        this.numberOfProducedCars = numberOfProducedCars;
+        this.stats.numberOfProducedCars = numberOfProducedCars;
     }
 
     public int getNumberOfCarArrived() {
-        return numberOfCarArrived;
+        return stats.numberOfCarArrived;
     }
 
     public SimEngine getSimEngine() {
@@ -90,14 +90,19 @@ public class Zone extends Node implements Entity{
 
     public void addNewArrivedCar(Car car) {
         Logger.getInstance().log(getName(), simEngine.getCurrentSimTime(), "New Car arrived " + car.getName(), LogLevel.INFO);
-        numberOfCarArrived += 1;
+        stats.numberOfCarArrived += 1;
+        stats.totalDistanceTravelledByAllCars += car.getTotalTravelledDistance();
     }
 
     public void addDismissedCar(Car car) {
-        numberOfDismissedCar += 1;
+        stats.numberOfDismissedCar += 1;
     }
 
     public int getNumberOfDismissedCar() {
-        return numberOfDismissedCar;
+        return stats.numberOfDismissedCar;
+    }
+
+    public ZoneStats getStats() {
+        return stats;
     }
 }

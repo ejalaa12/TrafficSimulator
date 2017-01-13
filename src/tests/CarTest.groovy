@@ -17,7 +17,7 @@ class CarTest extends groovy.util.GroovyTestCase {
     CustomRoadNetwork0 network = new CustomRoadNetwork0(simEngine, 1000, 10, 12)
 
 
-    void testCar() {
+    void test() {
         Logger.instance.turnOff()
         network.init()
         simEngine.loop()
