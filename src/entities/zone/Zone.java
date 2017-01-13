@@ -92,6 +92,7 @@ public class Zone extends Node implements Entity{
         Logger.getInstance().log(getName(), simEngine.getCurrentSimTime(), "New Car arrived " + car.getName(), LogLevel.INFO);
         stats.numberOfCarArrived += 1;
         stats.totalDistanceTravelledByAllCars += car.getTotalTravelledDistance();
+        stats.addCarFromZone(car.getSource());
     }
 
     public void addDismissedCar(Car car) {
