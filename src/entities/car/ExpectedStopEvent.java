@@ -11,13 +11,14 @@ import java.time.LocalDateTime;
 public class ExpectedStopEvent extends CarEvent {
 
     protected ExpectedStopEvent(Car car, LocalDateTime scheduledTime) {
-        super(car, scheduledTime, car.getName() + " is supposed to do something now");
+        super(car, scheduledTime, car.getName() + " was supposed to do something now");
     }
 
     @Override
     public void doAction() {
         super.doAction();
         // because of the car has only be doing the current event (which is this one)
+        // update the car position by adding the calculated travelled distance during since this event was posted
         Duration eventDuration = Duration.between(postedTime, scheduledTime);
         double elapsed = eventDuration.getSeconds() + eventDuration.getNano() * 1e-9;
         double distance = Math.round(elapsed * car.getSpeed());
