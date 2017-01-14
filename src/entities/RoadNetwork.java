@@ -91,10 +91,10 @@ public class RoadNetwork extends Graph implements Entity {
         for (Road road : roads) {
             // traffic light on lane 1
             TrafficSign tfs = road.getLane1().getTrafficSign();
-            if (tfs instanceof TrafficLight) ((TrafficLight) tfs).init();
+            if (tfs instanceof TrafficLight) tfs.init();
             // traffic light on lane 2
             tfs = road.getLane2().getTrafficSign();
-            if (tfs instanceof TrafficLight) ((TrafficLight) tfs).init();
+            if (tfs instanceof TrafficLight) tfs.init();
         }
     }
 
@@ -127,5 +127,9 @@ public class RoadNetwork extends Graph implements Entity {
 
     public List<Zone> getZones() {
         return zones;
+    }
+
+    public List<Intersection> getIntersections() {
+        return intersections;
     }
 }

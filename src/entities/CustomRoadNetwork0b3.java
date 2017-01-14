@@ -1,13 +1,17 @@
 package entities;
 
+import entities.traffic_light.TrafficLight;
+import entities.traffic_light.TrafficLightState;
 import entities.zone.TimePeriod;
 import entities.zone.Zone;
+import entities.zone.ZonePreference;
 import entities.zone.ZoneSchedule;
 import simulation.Entity;
 import simulation.SimEngine;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * This class models the Coruscant crossroads
@@ -17,10 +21,18 @@ public class CustomRoadNetwork0b3 extends RoadNetwork implements Entity {
     public Zone zone1, zone2;
     public Intersection intersection1, intersection2;
     public Road R1, R2, R3;
+    public TrafficLight tl;
 
     public CustomRoadNetwork0b3(SimEngine simEngine) {
         super(simEngine);
         definition();
+        connectIntersections();
+    }
+
+    private void connectIntersections() {
+        for (Intersection intersection : intersections) {
+            intersection.addConnectedLanes(getConnections(intersection));
+        }
     }
 
     private void definition() {
@@ -32,7 +44,7 @@ public class CustomRoadNetwork0b3 extends RoadNetwork implements Entity {
 
         // Zone 1 schedule
         ArrayList<TimePeriod> timeSlots1 = new ArrayList<>();
-        timeSlots1.add(new TimePeriod(LocalTime.of(0, 0), LocalTime.of(23, 59, 59, 9999999), 4));
+        timeSlots1.add(new TimePeriod(LocalTime.of(0, 0), LocalTime.of(23, 59, 59, 9999999), 4000));
         ZoneSchedule zoneSchedule1 = new ZoneSchedule(timeSlots1);
         // Zone 1
         zone1 = new Zone("zone1", zoneSchedule1, simEngine, this);
@@ -44,9 +56,19 @@ public class CustomRoadNetwork0b3 extends RoadNetwork implements Entity {
         zone2 = new Zone("zone2", zoneSchedule2, simEngine, this);
         // Preferences
 
+        // Preferences Zone1
+        ZonePreference zonePreference1 = new ZonePreference(simEngine.getRandom());
+        ArrayList<Zone> zones1 = new ArrayList<>(Arrays.asList(new Zone[]{zone2}));
+        ArrayList<Double> percentages1 = new ArrayList<>(Arrays.asList(new Double[]{1.}));
+        zonePreference1.addPreferences(zones1, percentages1);
+        zone1.setZonePreference(zonePreference1);
 
-//        zone1.setPreferredDestination(zone2);
-//        zone2.setPreferredDestination(zone1);
+        // Preferences Zone2
+        ZonePreference zonePreference2 = new ZonePreference(simEngine.getRandom());
+        ArrayList<Zone> zones2 = new ArrayList<>(Arrays.asList(new Zone[]{zone1}));
+        ArrayList<Double> percentages2 = new ArrayList<>(Arrays.asList(new Double[]{1.}));
+        zonePreference2.addPreferences(zones2, percentages2);
+        zone2.setZonePreference(zonePreference2);
 
         addArea(zone1);
         addArea(zone2);
@@ -74,7 +96,16 @@ public class CustomRoadNetwork0b3 extends RoadNetwork implements Entity {
         addRoad(R1);
         addRoad(R2);
         addRoad(R3);
+        
+        /*
+        * ##############################################################################################################
+        * TrafficLights
+        * ##############################################################################################################
+        */
 
+        tl = new TrafficLight(R2.getLaneWithDestination(intersection2), simEngine);
+        tl.setState(TrafficLightState.RED);
+        R2.getLaneWithDestination(intersection2).setTrafficSign(tl);
     }
 
     /**

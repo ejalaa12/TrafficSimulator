@@ -29,6 +29,7 @@ public class SimEngine {
         this.endSimTime = endSimTime;
         this.loops = 0;
         Logger.getInstance().log(className, this.currentSimTime, "Simulation initialized !", LogLevel.INFO);
+        Logger.getInstance().setSimEngine(this);
     }
 
     /**

@@ -1,10 +1,6 @@
 package entities.traffic_light;
 
 import entities.Lane;
-import entities.car.CarState;
-import logging.LogLevel;
-import logging.Logger;
-import simulation.Entity;
 import simulation.SimEngine;
 
 import java.time.Duration;
@@ -12,7 +8,7 @@ import java.time.Duration;
 /**
  * Created by ejalaa on 01/01/2017.
  */
-public class TrafficLight extends TrafficSign implements Entity {
+public class TrafficLight extends TrafficSign {
 
     private TrafficLightState state;
     // TODO: 01/01/2017 change frequency so that green and red light don't have same duration
@@ -24,7 +20,7 @@ public class TrafficLight extends TrafficSign implements Entity {
         this.state = TrafficLightState.GREEN;
         this.lane = lane;
         this.simEngine = simEngine;
-        this.frequency = Duration.ofMinutes(2);
+        this.frequency = Duration.ofMinutes(20);
     }
 
     @Override
@@ -32,22 +28,10 @@ public class TrafficLight extends TrafficSign implements Entity {
         getSimEngine().addEvent(new ChangeColorEvent(this, getSimEngine().getCurrentSimTime().plus(frequency)));
     }
 
-    public void notifyFirstCarInLaneToChangeLane() {
-        long nocs = lane.getCarQueue().stream().filter(car -> car.getCarState() == CarState.STOPPED).count();
-        Logger.getInstance().logDebug(getName(), simEngine.getCurrentSimTime(), "car in lane that are stopped: " + nocs);
-        if (lane.getCarQueue().isEmpty()) {
-            String msg = lane.getId() + "'s car queue is empty, no car to notify";
-            Logger.getInstance().log(getName(), simEngine.getCurrentSimTime(), msg, LogLevel.INFO);
-        } else {
-            lane.getCarQueue().get(0).update();
-        }
-    }
-
     @Override
     public void logStats() {
 
     }
-
 
     @Override
     public String getName() {
@@ -69,5 +53,9 @@ public class TrafficLight extends TrafficSign implements Entity {
 
     public Duration getFrequency() {
         return frequency;
+    }
+
+    public Lane getLane() {
+        return lane;
     }
 }

@@ -20,6 +20,13 @@ public class CoruscantNetwork extends RoadNetwork implements Entity {
     public CoruscantNetwork(SimEngine simEngine) {
         super(simEngine);
         definition();
+        connectIntersections();
+    }
+
+    private void connectIntersections() {
+        for (Intersection intersection : intersections) {
+            intersection.addConnectedLanes(getConnections(intersection));
+        }
     }
 
     private void createZones() {
@@ -49,6 +56,8 @@ public class CoruscantNetwork extends RoadNetwork implements Entity {
         timeSlots2.add(new TimePeriod(LocalTime.of(17, 0), LocalTime.of(19, 0), 150));
         timeSlots2.add(new TimePeriod(LocalTime.of(19, 0), LocalTime.of(23, 59, 59, 99999), 30));
         ZoneSchedule zoneSchedule2 = new ZoneSchedule(timeSlots2);
+
+        // TODO: 14/01/2017 time slots for zones 3 to 7
 
         Zone zone1 = new Zone("zone1", zoneSchedule1, simEngine, this);
         Zone zone2 = new Zone("zone2", zoneSchedule2, simEngine, this);
@@ -184,7 +193,6 @@ public class CoruscantNetwork extends RoadNetwork implements Entity {
     @Override
     public void init() {
         super.init();
-
     }
 
     @Override
