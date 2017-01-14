@@ -83,6 +83,7 @@ public class RoadNetwork extends Graph implements Entity {
     public void init() {
         initZones();
         initTrafficLights();
+        // no need to init stops, they only create events when cars arrive
     }
 
     /**

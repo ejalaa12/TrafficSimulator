@@ -1,6 +1,7 @@
 package entities;
 
 import entities.intersection.Intersection;
+import entities.traffic_light.StopSign;
 import entities.traffic_light.TrafficLight;
 import entities.traffic_light.TrafficLightState;
 import entities.zone.TimePeriod;
@@ -23,6 +24,7 @@ public class CustomRoadNetwork0b3 extends RoadNetwork implements Entity {
     public Intersection intersection1, intersection2;
     public Road R1, R2, R3;
     public TrafficLight tl;
+    public StopSign stop;
 
     public CustomRoadNetwork0b3(SimEngine simEngine) {
         super(simEngine);
@@ -107,6 +109,9 @@ public class CustomRoadNetwork0b3 extends RoadNetwork implements Entity {
         tl = new TrafficLight(R2.getLaneWithDestination(intersection2), simEngine);
         tl.setState(TrafficLightState.RED);
         R2.getLaneWithDestination(intersection2).setTrafficSign(tl);
+
+        stop = new StopSign(R1.getLaneWithDestination(intersection1), simEngine);
+        R1.getLaneWithDestination(intersection1).setTrafficSign(stop);
     }
 
     /**
