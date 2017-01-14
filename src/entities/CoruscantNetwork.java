@@ -20,6 +20,13 @@ public class CoruscantNetwork extends RoadNetwork implements Entity {
     public CoruscantNetwork(SimEngine simEngine) {
         super(simEngine);
         definition();
+        connectIntersections();
+    }
+
+    private void connectIntersections() {
+        for (Intersection intersection : intersections) {
+            intersection.addConnectedLanes(getConnections(intersection));
+        }
     }
 
     private void createZones() {
@@ -184,7 +191,6 @@ public class CoruscantNetwork extends RoadNetwork implements Entity {
     @Override
     public void init() {
         super.init();
-
     }
 
     @Override

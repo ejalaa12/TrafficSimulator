@@ -1,10 +1,13 @@
 package entities;
 
 import entities.car.Car;
+import entities.car.DelayedReactionEvent;
 import entities.traffic_light.TrafficSign;
 import graph_network.Edge;
 import graph_network.Node;
+import logging.Logger;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,6 +64,25 @@ public class Lane extends Edge {
     public void removeCar(Car car) {
         carQueue.remove(car);
         state = carQueue.isEmpty() ? LaneState.empty : LaneState.free;
+        // Since a car is removed from the lane we can update the following one
+        updateNextCar(car);
+    }
+
+    /**
+     * Update the next car if any
+     *
+     * @param car the car that creates this notification
+     */
+    private void updateNextCar(Car car) {
+        Car nextCar = getNextCar(car);
+        if (nextCar != null) {
+            Logger.getInstance().logInfo(getId(), "Updating next car: " + nextCar.getName());
+            if (nextCar.isStopped()) {
+                car.getSimEngine().addEvent(new DelayedReactionEvent(nextCar, Duration.ofSeconds(2)));
+            } else if (nextCar.isDriving()) {
+                nextCar.update();
+            }
+        }
     }
 
     /**
@@ -147,6 +169,12 @@ public class Lane extends Edge {
         this.trafficSign = trafficSign;
     }
 
+    /**
+     * Get the car following the one in parameter
+     *
+     * @param car the current car
+     * @return the car following the current car
+     */
     public Car getNextCar(Car car) {
         if (carQueue.indexOf(car) == carQueue.size() - 1) {
             return null;

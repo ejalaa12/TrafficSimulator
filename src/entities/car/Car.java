@@ -6,6 +6,7 @@ import entities.RoadNetwork;
 import entities.zone.Zone;
 import graph_network.DijkstraAlgorithm;
 import graph_network.Node;
+import logging.LogLevel;
 import logging.Logger;
 import simulation.Entity;
 import simulation.SimEngine;
@@ -123,7 +124,7 @@ public class Car implements Entity {
      * 4. car has arrived at the final destination (in next step)
      * <p>
      * Which means that in any case a stop is called from update method. Which happens only when an event occur.
-     * But, when an event occur
+     * And, when an event occur the position is updated
      */
     public void stop() {
         // Set speed to zero
@@ -131,6 +132,12 @@ public class Car implements Entity {
         setCarState(CarState.STOPPED);
     }
 
+    /**
+     * This method is called by:
+     * 1. Another Car
+     * 2. An intersection
+     * 3. When a stop is expected
+     */
     public void update() {
         // if car was stopped before updating, and this car is the last one (and there is other cars) and one place just
         // got freed up
@@ -165,17 +172,9 @@ public class Car implements Entity {
     private void nextStep() {
         Node nextStep = currentLane.getDestination();
         if (nextStep instanceof Intersection) {
-            ((Intersection) nextStep).registerCar(this);
+            ((Intersection) nextStep).registerCar(this, getNextLane());
         } else if (nextStep instanceof Zone) {
-            // this should mean the car arrived, we'll check anyway
-            if (nextStep == destination) {
-                Logger.getInstance().logInfo(getName(), simEngine.getCurrentSimTime(), "I arrived at " + nextStep.getId());
-                currentLane.removeCar(this);
-                updateNextCar();
-                stop();
-                ((Zone) nextStep).addNewArrivedCar(this);
-                setCarState(CarState.ARRIVED);
-            }
+            ((Zone) nextStep).addNewArrivedCar(this);
         } else {
             Logger.getInstance().logWarning(getName(), simEngine.getCurrentSimTime(), "NextStep is nor an Intersection nor a Zone");
         }
@@ -183,30 +182,14 @@ public class Car implements Entity {
 
     public void changeLane(Lane nextLane) {
         currentLane.removeCar(this);
-        // notify the previous car on the current lane before changing
-        updateNextCar();
         nextLane.addCar(this);
         currentLane = nextLane;
-        Logger.getInstance().logInfo(getName(), simEngine.getCurrentSimTime(), "Changing Lane");
+        Logger.getInstance().log(getName(), simEngine.getCurrentSimTime(), "Changing Lane", LogLevel.EVENT);
         positionInLane = 0;
     }
 
-    private void updateNextCar() {
-        Car nextCar = currentLane.getNextCar(this);
-        if (nextCar != null) {
-            Logger.getInstance().logInfo(getName(), simEngine.getCurrentSimTime(), "Updating next car: " + nextCar.getName());
-            if (nextCar.isStopped()) {
-                simEngine.addEvent(new DelayedReactionEvent(nextCar, Duration.ofSeconds(2)));
-            } else if (nextCar.isDriving()) {
-                nextCar.update();
-            }
-        }
-    }
-
     public boolean isLaneNextStep(Lane lane) {
-        int indexOfNextNodeInPath = path.indexOf(currentLane.getDestination()) + 1;
-        Lane nextLane = roadNetwork.getLaneBetween(currentLane.getDestination(), path.get(indexOfNextNodeInPath));
-        return nextLane == lane;
+        return getNextLane() == lane;
     }
 
     private Duration calculateTravelTime(double position, double destination) {
@@ -251,11 +234,16 @@ public class Car implements Entity {
     * ##############################################################################################################
     */
 
-    private boolean isDriving() {
+    public Lane getNextLane() {
+        int indexOfNextNodeInPath = path.indexOf(currentLane.getDestination()) + 1;
+        return roadNetwork.getLaneBetween(currentLane.getDestination(), path.get(indexOfNextNodeInPath));
+    }
+
+    public boolean isDriving() {
         return carState == CarState.DRIVING;
     }
 
-    private boolean isStopped() {
+    public boolean isStopped() {
         return carState == CarState.STOPPED;
     }
 
@@ -268,8 +256,6 @@ public class Car implements Entity {
     }
 
     public void setCarState(CarState newCarState) {
-        if (newCarState == carState)
-            Logger.getInstance().logWarning(getName(), simEngine.getCurrentSimTime(), "Changing state to the same: " + carState);
         carState = newCarState;
     }
 

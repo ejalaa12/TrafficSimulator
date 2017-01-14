@@ -2,6 +2,7 @@ package entities.zone;
 
 import entities.RoadNetwork;
 import entities.car.Car;
+import entities.car.CarState;
 import graph_network.Node;
 import logging.LogLevel;
 import logging.Logger;
@@ -89,10 +90,17 @@ public class Zone extends Node implements Entity{
     }
 
     public void addNewArrivedCar(Car car) {
-        Logger.getInstance().log(getName(), simEngine.getCurrentSimTime(), "New Car arrived " + car.getName(), LogLevel.INFO);
+        car.getCurrentLane().removeCar(car);
+        car.stop();
+        if (this == car.getDestination()) {
+            Logger.getInstance().log(getName(), simEngine.getCurrentSimTime(), "New Car arrived " + car.getName(), LogLevel.EVENT);
+        } else {
+            Logger.getInstance().logWarning(getName(), "New Car arrived " + car.getName() + " but not correct destination");
+        }
         stats.numberOfCarArrived += 1;
         stats.totalDistanceTravelledByAllCars += car.getTotalTravelledDistance();
         stats.addCarFromZone(car.getSource());
+        car.setCarState(CarState.ARRIVED);
     }
 
     public void addDismissedCar(Car car) {

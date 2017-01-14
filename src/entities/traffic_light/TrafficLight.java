@@ -1,8 +1,8 @@
 package entities.traffic_light;
 
+import entities.Intersection;
 import entities.Lane;
-import entities.car.CarState;
-import logging.LogLevel;
+import entities.car.Car;
 import logging.Logger;
 import simulation.Entity;
 import simulation.SimEngine;
@@ -19,6 +19,7 @@ public class TrafficLight extends TrafficSign implements Entity {
     private Duration frequency;
     private Lane lane;
     private SimEngine simEngine;
+    private Car waitingCar;
 
     public TrafficLight(Lane lane, SimEngine simEngine) {
         this.state = TrafficLightState.GREEN;
@@ -32,22 +33,29 @@ public class TrafficLight extends TrafficSign implements Entity {
         getSimEngine().addEvent(new ChangeColorEvent(this, getSimEngine().getCurrentSimTime().plus(frequency)));
     }
 
+    public void registerCar(Car car) {
+        if (waitingCar != null) {
+            String msg = String.format("%s was already waiting, and you try to add %s", waitingCar.getName(), car.getName());
+            Logger.getInstance().logWarning(getName(), msg);
+        }
+        Logger.getInstance().logInfo(getName(), car.getName() + " is waiting...");
+        waitingCar = car;
+    }
+
     public void notifyFirstCarInLaneToChangeLane() {
-        long nocs = lane.getCarQueue().stream().filter(car -> car.getCarState() == CarState.STOPPED).count();
-        Logger.getInstance().logDebug(getName(), simEngine.getCurrentSimTime(), "car in lane that are stopped: " + nocs);
-        if (lane.getCarQueue().isEmpty()) {
-            String msg = lane.getId() + "'s car queue is empty, no car to notify";
-            Logger.getInstance().log(getName(), simEngine.getCurrentSimTime(), msg, LogLevel.INFO);
+        if (waitingCar == null) {
+            Logger.getInstance().logInfo(getName(), "No car waiting at red light");
         } else {
-            lane.getCarQueue().get(0).update();
+            boolean success = ((Intersection) waitingCar.getCurrentLane().getDestination()).tryToGetIntoIntersection(waitingCar);
+            if (success) waitingCar = null;
         }
     }
+
 
     @Override
     public void logStats() {
 
     }
-
 
     @Override
     public String getName() {

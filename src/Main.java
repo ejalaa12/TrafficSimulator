@@ -13,7 +13,7 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        Logger.getInstance().setLogLevel(LogLevel.INFO);
+        Logger.getInstance().setLogLevel(LogLevel.EVENT);
         /*
         * ##############################################################################################################
         * Simulation times
