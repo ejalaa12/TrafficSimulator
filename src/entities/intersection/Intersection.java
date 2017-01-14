@@ -1,5 +1,6 @@
-package entities;
+package entities.intersection;
 
+import entities.Lane;
 import entities.car.Car;
 import entities.traffic_light.StopSign;
 import entities.traffic_light.TrafficLight;
@@ -8,6 +9,8 @@ import entities.traffic_light.TrafficSign;
 import graph_network.Edge;
 import graph_network.Node;
 import logging.Logger;
+import simulation.Entity;
+import simulation.SimEngine;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,13 +19,18 @@ import java.util.List;
 /**
  * Created by ejalaa on 25/12/2016.
  */
-public class Intersection extends Node {
+public class Intersection extends Node implements Entity {
 
+    private static final int maxCarInIntersection = 1;
     private HashMap<Lane, ArrayList<Car>> waitingCarsForLaneCorrespondences;
     private List<Edge> connectedLanes;
+    private ArrayList<Car> carsInsideIntersection;
+    private SimEngine simEngine;
 
-    public Intersection(String id) {
+    public Intersection(String id, SimEngine simEngine) {
         super(id);
+        this.simEngine = simEngine;
+        carsInsideIntersection = new ArrayList<>();
         waitingCarsForLaneCorrespondences = new HashMap<>();
     }
 
@@ -95,23 +103,61 @@ public class Intersection extends Node {
      * @return true if insertion was successful
      */
     public boolean tryToGetIntoIntersection(Car car) {
-        Logger.getInstance().logInfo(car.getName(), "Trying to get into intersection");
+        Logger.getInstance().logInfo(car.getName(), "Trying to get into intersection: " + getName());
         Lane nextLane = car.getNextLane();
-        if (nextLane.hasSpace()) {
+        // in french driving system you don't get inside an intersection if the next lane is not free
+        if (nextLane.hasSpace() && carsInsideIntersection.size() < maxCarInIntersection) {
             Logger.getInstance().logInfo(car.getName(), "Intersection free");
             Lane tmp = car.getCurrentLane();
-            car.changeLane(nextLane);
             if (tmp.hasTrafficSign())
                 tmp.getTrafficSign().unregisterCar(car);
-            car.drive();
             unregisterCar(car, nextLane);
+            car.getIntoIntersection(this);
+            simEngine.addEvent(new ExitFromIntersectionEvent(this, car, tmp, nextLane));
+//            car.changeLane(nextLane);
+//            car.drive();
             return true;
+        } else if (carsInsideIntersection.size() >= maxCarInIntersection) {
+            String msg = String.format("Intersection %s is busy", getName());
+            Logger.getInstance().logInfo(getName(), msg);
+            car.stop();
+            return false;
         } else {
             String msg = String.format("Next lane is full, %s waiting at intersection %s", car.getName(), getName());
             Logger.getInstance().logInfo(getName(), msg);
             car.stop();
             return false;
         }
+    }
+
+    public void addCarInsideIntersection(Car car) {
+        if (carsInsideIntersection.contains(car)) {
+            Logger.getInstance().logWarning(getName(), car.getName() + " is already inside intersection " + getName());
+            throw new IllegalStateException("car already in intersection");
+        }
+        carsInsideIntersection.add(car);
+    }
+
+    public void removeCarFromInsideIntersection(Car car, Lane originLane) {
+        if (!carsInsideIntersection.contains(car)) {
+            Logger.getInstance().logWarning(getName(), car.getName() + " wasn't in intersection " + getName());
+            throw new IllegalStateException("car is not in intersection");
+        }
+        carsInsideIntersection.remove(car);
+        notifyCarsRegisteredFromLane(originLane);
+    }
+
+    private void notifyCarsRegisteredFromLane(Lane originLane) {
+        // the order of the arraylist in the hashmap creates a priority queue
+        Car tmp;
+        if (!originLane.getCarQueue().isEmpty()) {
+            tmp = originLane.getCarQueue().get(0);
+            if (tmp != null && wasRegistered(tmp)) {
+//                System.out.println("BOOOOOOOOM");
+                handle(tmp);
+            }
+        }
+
     }
 
     public void notifyCarsWithNextLane(Lane nextLaneToCheck) {
@@ -124,5 +170,29 @@ public class Intersection extends Node {
         for (Edge edge : connectedLanes) {
             waitingCarsForLaneCorrespondences.put((Lane) edge, new ArrayList<>());
         }
+    }
+
+    @Override
+    public void init() {
+        //no initialization, event are only created when car get into intersection
+    }
+
+    @Override
+    public void logStats() {
+
+    }
+
+    @Override
+    public SimEngine getSimEngine() {
+        return simEngine;
+    }
+
+    private boolean wasRegistered(Car car) {
+        for (ArrayList<Car> cars : waitingCarsForLaneCorrespondences.values()) {
+            if (cars.contains(car)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

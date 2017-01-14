@@ -1,5 +1,6 @@
 package entities;
 
+import entities.intersection.Intersection;
 import entities.traffic_light.TrafficLight;
 import entities.zone.TimePeriod;
 import entities.zone.Zone;
@@ -130,10 +131,10 @@ public class CoruscantNetwork extends RoadNetwork implements Entity {
         * ##############################################################################################################
         */
 
-        Intersection intersection1 = new Intersection("intersection1");
-        Intersection intersection2 = new Intersection("intersection2");
-        Intersection intersection3 = new Intersection("intersection3");
-        Intersection intersection4 = new Intersection("intersection4");
+        Intersection intersection1 = new Intersection("intersection1", simEngine);
+        Intersection intersection2 = new Intersection("intersection2", simEngine);
+        Intersection intersection3 = new Intersection("intersection3", simEngine);
+        Intersection intersection4 = new Intersection("intersection4", simEngine);
 
         addIntersection(intersection1);
         addIntersection(intersection2);

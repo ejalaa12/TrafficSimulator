@@ -1,8 +1,8 @@
 package entities.car;
 
-import entities.Intersection;
 import entities.Lane;
 import entities.RoadNetwork;
+import entities.intersection.Intersection;
 import entities.zone.Zone;
 import graph_network.DijkstraAlgorithm;
 import graph_network.Node;
@@ -180,6 +180,20 @@ public class Car implements Entity {
         }
     }
 
+    public void getIntoIntersection(Intersection intersection) {
+        currentLane.removeCar(this);
+        intersection.addCarInsideIntersection(this);
+        currentLane = null;
+    }
+
+    public void getOutOfIntersection(Intersection intersection, Lane originLane, Lane exitLane) {
+        intersection.removeCarFromInsideIntersection(this, originLane);
+        exitLane.addCar(this);
+        currentLane = exitLane;
+        positionInLane = 0;
+        drive();
+    }
+
     public void changeLane(Lane nextLane) {
         Logger.getInstance().log(getName(), simEngine.getCurrentSimTime(), "Changing Lane", LogLevel.EVENT);
         currentLane.removeCar(this);
@@ -275,6 +289,10 @@ public class Car implements Entity {
         return currentLane;
     }
 
+    public void setCurrentLane(Lane currentLane) {
+        this.currentLane = currentLane;
+    }
+
     public LinkedList<Node> getPath() {
         return path;
     }
@@ -283,4 +301,8 @@ public class Car implements Entity {
         return roadNetwork;
     }
 
+    @Override
+    public String toString() {
+        return getName();
+    }
 }
