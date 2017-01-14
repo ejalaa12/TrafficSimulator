@@ -2,6 +2,7 @@ package logging;
 
 import com.sun.tools.javac.util.FatalError;
 import simulation.Event;
+import simulation.SimEngine;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -40,6 +41,7 @@ public class Logger {
     private boolean csvOn;
     private String csvFile;
     private FileWriter writer;
+    private SimEngine simEngine;
 
     private Logger() {
         // exist only to defeat instanciation
@@ -89,16 +91,63 @@ public class Logger {
     * Log method with level of warning
     * ##############################################################################################################
     */
+    /*
+    * **************************************************************************************************************
+    * DEBUG
+    */
+
+    public void logDebug(String creatorName, String message) {
+        log(creatorName, simEngine.getCurrentSimTime(), message, LogLevel.DEBUG);
+    }
+
     public void logDebug(String creatorName, LocalDateTime logTime, String message) {
         log(creatorName, logTime, message, LogLevel.DEBUG);
+    }
+    /*
+    * **************************************************************************************************************
+    * INFO
+    */
+
+
+    public void logInfo(String creatorName, String message) {
+        log(creatorName, simEngine.getCurrentSimTime(), message, LogLevel.INFO);
     }
 
     public void logInfo(String creatorName, LocalDateTime logTime, String message) {
         log(creatorName, logTime, message, LogLevel.INFO);
     }
+    
+    /*
+    * **************************************************************************************************************
+    * EVENT
+    */
+
+
+    public void logEvent(String creatorName, String msg) {
+        log(creatorName, simEngine.getCurrentSimTime(), msg, LogLevel.EVENT);
+    }
+
+    /*
+    * **************************************************************************************************************
+    * WARNING
+    */
+
+    public void logWarning(String creatorName, String message) {
+        log(creatorName, simEngine.getCurrentSimTime(), message, LogLevel.WARNING);
+    }
 
     public void logWarning(String creatorName, LocalDateTime logTime, String message) {
         log(creatorName, logTime, message, LogLevel.WARNING);
+    }
+
+    /*
+    * **************************************************************************************************************
+    * FATAL
+    */
+
+    public void logFatal(String creatorName, String message) {
+        log(creatorName, simEngine.getCurrentSimTime(), message, LogLevel.FATAL);
+        throw new FatalError("Something went wrong");
     }
 
     public void logFatal(String creatorName, LocalDateTime logTime, String message) {
@@ -151,4 +200,7 @@ public class Logger {
         }
     }
 
+    public void setSimEngine(SimEngine simEngine) {
+        this.simEngine = simEngine;
+    }
 }
