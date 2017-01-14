@@ -116,6 +116,16 @@ public class Logger {
     public void logInfo(String creatorName, LocalDateTime logTime, String message) {
         log(creatorName, logTime, message, LogLevel.INFO);
     }
+    
+    /*
+    * **************************************************************************************************************
+    * EVENT
+    */
+
+
+    public void logEvent(String creatorName, String msg) {
+        log(creatorName, simEngine.getCurrentSimTime(), msg, LogLevel.EVENT);
+    }
 
     /*
     * **************************************************************************************************************

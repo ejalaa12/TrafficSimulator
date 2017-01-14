@@ -60,7 +60,7 @@ public class Intersection extends Node {
         if (trafficLight.getState() == TrafficLightState.RED) {
             car.stop();
             trafficLight.registerCar(car);
-            Logger.getInstance().logInfo(getName(), "Stopping at RedLight");
+            Logger.getInstance().logEvent(car.getName(), "Stopping at RedLight");
         } else {
             tryToGetIntoIntersection(car);
         }
@@ -68,6 +68,8 @@ public class Intersection extends Node {
     }
 
     private void stopSignBehavior(Car car, StopSign stopSign) {
+        car.stop();
+
         Logger.getInstance().logWarning(getId(), "Stop sign behavior not implemented");
     }
 
