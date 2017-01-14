@@ -183,6 +183,15 @@ public class Lane extends Edge {
         }
     }
 
+    /**
+     * Returns true if a this lane has a traffic sign
+     *
+     * @return true if a this lane has a traffic sign
+     */
+    public boolean hasTrafficSign() {
+        return trafficSign != null;
+    }
+
     private enum LaneState {
         empty,  // when there is no car
         free,   // when there is room

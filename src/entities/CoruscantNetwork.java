@@ -57,6 +57,8 @@ public class CoruscantNetwork extends RoadNetwork implements Entity {
         timeSlots2.add(new TimePeriod(LocalTime.of(19, 0), LocalTime.of(23, 59, 59, 99999), 30));
         ZoneSchedule zoneSchedule2 = new ZoneSchedule(timeSlots2);
 
+        // TODO: 14/01/2017 time slots for zones 3 to 7
+
         Zone zone1 = new Zone("zone1", zoneSchedule1, simEngine, this);
         Zone zone2 = new Zone("zone2", zoneSchedule2, simEngine, this);
         Zone zone3 = new Zone("zone3", zoneSchedule1, simEngine, this);

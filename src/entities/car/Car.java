@@ -181,10 +181,10 @@ public class Car implements Entity {
     }
 
     public void changeLane(Lane nextLane) {
+        Logger.getInstance().log(getName(), simEngine.getCurrentSimTime(), "Changing Lane", LogLevel.EVENT);
         currentLane.removeCar(this);
         nextLane.addCar(this);
         currentLane = nextLane;
-        Logger.getInstance().log(getName(), simEngine.getCurrentSimTime(), "Changing Lane", LogLevel.EVENT);
         positionInLane = 0;
     }
 
@@ -282,4 +282,5 @@ public class Car implements Entity {
     public RoadNetwork getRoadNetwork() {
         return roadNetwork;
     }
+
 }

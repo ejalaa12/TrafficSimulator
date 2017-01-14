@@ -41,6 +41,11 @@ public class Road {
     }
 
     public Lane getLaneWithDestination(Node node) {
+        if (node != connectedNode1 && node != connectedNode2) {
+            String error = String.format("This road (%s) is not connected to the node (%s)", id, node.getName());
+            throw new IllegalArgumentException(error
+            );
+        }
         return lane1.getDestination().equals(node) ? lane1 : lane2;
     }
 

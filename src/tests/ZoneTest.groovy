@@ -1,6 +1,10 @@
 package tests
 
-import entities.CustomRoadNetwork3
+import entities.CoruscantNetwork
+import entities.traffic_light.ChangeColorEvent
+import entities.traffic_light.TrafficLight
+import entities.zone.NewCarEvent
+import entities.zone.Zone
 import logging.LogLevel
 import logging.Logger
 import simulation.SimEngine
@@ -15,7 +19,6 @@ class ZoneTest extends GroovyTestCase {
     LocalDateTime startSim
     LocalDateTime endSim
     SimEngine simEngine
-    CustomRoadNetwork3 network
 
     @Override
     protected void setUp() throws Exception {
@@ -30,10 +33,10 @@ class ZoneTest extends GroovyTestCase {
         Logger.getInstance().setLogLevel(LogLevel.DEBUG)
         // Simple road network
 //        network = new CustomRoadNetwork0(simEngine, 1000, 10, 12)
-        network = new CustomRoadNetwork3(simEngine)
-        network.init()
+//        network = new CustomRoadNetwork3(simEngine)
+//        network.init()
 
-        simEngine.loop()
+//        simEngine.loop()
     }
 
     void testSimTimes() {
@@ -59,10 +62,14 @@ class ZoneTest extends GroovyTestCase {
     }
 
     void testCarTravel() {
-        int totalD = network.zone1.stats.totalDistanceTravelledByAllCars
-        int totalC = network.zone1.stats.numberOfCarArrived
-        print "distance travelled by " + totalC + " cars arrived:" + totalD
-        assertEquals(400, totalD / totalC)
+        CoruscantNetwork network = new CoruscantNetwork(simEngine)
+        NewCarEvent carEvent = new NewCarEvent((Zone) network.getNodes().get(0), LocalDateTime.of(2000, 1, 1, 12, 2, 1), "Flash")
+        ChangeColorEvent trafficEvent = new ChangeColorEvent((TrafficLight) network.roads.get(5).getLaneWithDestination(network.intersections.get(2)).getTrafficSign(), LocalDateTime.of(2000, 1, 1, 12, 10, 45))
+        simEngine.addEvent(carEvent)
+        simEngine.addEvent(trafficEvent)
+        simEngine.loop()
+        // car 1
+        assertEquals(carEvent.createdCar.totalTravelledDistance, 10300)
     }
 
 }

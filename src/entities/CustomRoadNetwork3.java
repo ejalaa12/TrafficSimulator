@@ -1,5 +1,6 @@
 package entities;
 
+import entities.traffic_light.TrafficLight;
 import entities.zone.TimePeriod;
 import entities.zone.Zone;
 import entities.zone.ZonePreference;
@@ -23,6 +24,13 @@ public class CustomRoadNetwork3 extends RoadNetwork implements Entity {
     public CustomRoadNetwork3(SimEngine simEngine) {
         super(simEngine);
         definition();
+        connectIntersections();
+    }
+
+    private void connectIntersections() {
+        for (Intersection intersection : intersections) {
+            intersection.addConnectedLanes(getConnections(intersection));
+        }
     }
 
     private void definition() {
@@ -39,7 +47,7 @@ public class CustomRoadNetwork3 extends RoadNetwork implements Entity {
 
         // Zone 1 schedule
         ArrayList<TimePeriod> timeSlots1 = new ArrayList<>();
-        timeSlots1.add(new TimePeriod(LocalTime.of(0, 0), LocalTime.of(12, 0), 1));
+        timeSlots1.add(new TimePeriod(LocalTime.of(0, 0), LocalTime.of(12, 0), 100));
         timeSlots1.add(new TimePeriod(LocalTime.of(12, 0), LocalTime.of(23, 59, 59, 99999), 1));
         ZoneSchedule zoneSchedule1 = new ZoneSchedule(timeSlots1);
 
@@ -131,8 +139,8 @@ public class CustomRoadNetwork3 extends RoadNetwork implements Entity {
         * ##############################################################################################################
         */
 
-//        Lane laneWithTrafficLight = roads.get(0).getLaneWithDestination(intersection1);
-//        laneWithTrafficLight.setTrafficSign(new TrafficLight(laneWithTrafficLight, simEngine));
+        Lane laneWithTrafficLight = R1.getLaneWithDestination(intersection);
+        laneWithTrafficLight.setTrafficSign(new TrafficLight(laneWithTrafficLight, simEngine));
     }
 
     /**

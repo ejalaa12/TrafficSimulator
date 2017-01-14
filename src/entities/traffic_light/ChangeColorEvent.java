@@ -1,5 +1,6 @@
 package entities.traffic_light;
 
+import entities.Intersection;
 import simulation.Event;
 
 import java.time.LocalDateTime;
@@ -22,9 +23,8 @@ public class ChangeColorEvent extends Event {
     @Override
     public void doAction() {
         trafficLight.setState(trafficLight.getState().getNextState());
-        if (trafficLight.getState() == TrafficLightState.GREEN) {
-            trafficLight.notifyFirstCarInLaneToChangeLane();
-        }
+        // update waiting car
+        ((Intersection) trafficLight.getLane().getDestination()).handle(trafficLight.getWaitingCar());
         // next changing state event
         LocalDateTime nextTime = trafficLight.getSimEngine().getCurrentSimTime().plus(trafficLight.getFrequency());
         trafficLight.getSimEngine().addEvent(new ChangeColorEvent(trafficLight, nextTime));
