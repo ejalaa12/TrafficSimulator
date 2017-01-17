@@ -1,7 +1,12 @@
 package tests.CarAlone;
 
+import entities.Lane;
 import entities.Road;
 import entities.RoadNetwork;
+import entities.intersection.Intersection;
+import entities.traffic_signs.StopSign;
+import entities.traffic_signs.TrafficLight;
+import entities.traffic_signs.TrafficLightState;
 import entities.zone.TimePeriod;
 import entities.zone.Zone;
 import entities.zone.ZonePreference;
@@ -9,18 +14,25 @@ import entities.zone.ZoneSchedule;
 import simulation.Entity;
 import simulation.SimEngine;
 
+import java.time.Duration;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
  * A custom crossroad for testing purposes
+ * Z1----I1----I2----I3----I4----Z2
+ *                  ^     ^
+ *                 STOP   TL
  */
 public class CustomCrossroad extends RoadNetwork implements Entity {
 
     public int length, zone1Cars, zone2Cars;
     public Zone zone1, zone2;
-    public Road R1, R2, R3;
+    public Road R1, R2, R3, R4, R5;
+    public Intersection intersection1, intersection2, intersection3, intersection4;
+    public StopSign stopSign;
+    public TrafficLight trafficLight;
 
     public CustomCrossroad(SimEngine simEngine, int length, int zone1Cars, int zone2Cars) {
         super(simEngine);
@@ -28,6 +40,13 @@ public class CustomCrossroad extends RoadNetwork implements Entity {
         this.zone1Cars = zone1Cars;
         this.zone2Cars = zone2Cars;
         definition();
+        connectIntersections();
+    }
+
+    private void connectIntersections() {
+        for (Intersection intersection : intersections) {
+            intersection.addConnectedLanes(getConnections(intersection));
+        }
     }
 
     private void definition() {
@@ -36,47 +55,80 @@ public class CustomCrossroad extends RoadNetwork implements Entity {
         * Zones
         * ##############################################################################################################
         */
+        zone1 = createZoneWithTimePeriod("zone1", 0, 0, 23, 59, 59, 9999, zone1Cars);
+        zone2 = createZoneWithTimePeriod("zone2", 0, 0, 23, 59, 59, 9999, zone2Cars);
 
-        // Zone 1 schedule
-        ArrayList<TimePeriod> timeSlots1 = new ArrayList<>();
-        timeSlots1.add(new TimePeriod(LocalTime.of(0, 0), LocalTime.of(23, 59, 59, 99999), zone1Cars));
-        ZoneSchedule zoneSchedule1 = new ZoneSchedule(timeSlots1);
-        // Zone 1
-        Zone zone1 = new Zone("zone1", zoneSchedule1, simEngine, this);
-        // Zone 2 schedule
-        ArrayList<TimePeriod> timeSlots2 = new ArrayList<>();
-        timeSlots2.add(new TimePeriod(LocalTime.of(0, 0), LocalTime.of(23, 59, 59, 99999), zone2Cars));
-        ZoneSchedule zoneSchedule2 = new ZoneSchedule(timeSlots2);
-        // zone 2
-        Zone zone2 = new Zone("zone2", zoneSchedule2, simEngine, this);
         // Preferences
-        // Preferences Zone1
-        ZonePreference zonePreference1 = new ZonePreference(simEngine.getRandom());
-        ArrayList<Zone> zones1 = new ArrayList<>(Arrays.asList(new Zone[]{zone2}));
-        ArrayList<Double> percentages1 = new ArrayList<>(Arrays.asList(new Double[]{1.}));
-        zonePreference1.addPreferences(zones1, percentages1);
-        zone1.setZonePreference(zonePreference1);
-
-        // Preferences Zone2
-        ZonePreference zonePreference2 = new ZonePreference(simEngine.getRandom());
-        ArrayList<Zone> zones2 = new ArrayList<>(Arrays.asList(new Zone[]{zone1}));
-        ArrayList<Double> percentages2 = new ArrayList<>(Arrays.asList(new Double[]{1.}));
-        zonePreference2.addPreferences(zones2, percentages2);
-        zone2.setZonePreference(zonePreference2);
+        setPreference(zone1, zone2, 1.);
+        setPreference(zone2, zone1, 1.);
 
         addArea(zone1);
         addArea(zone2);
 
         /*
         * ##############################################################################################################
+        * Intersections
+        * ##############################################################################################################
+        */
+        intersection1 = new Intersection("intersection1", simEngine);
+        intersection2 = new Intersection("intersection2", simEngine);
+        intersection3 = new Intersection("intersection3", simEngine);
+        intersection4 = new Intersection("intersection4", simEngine);
+        addIntersection(intersection1);
+        addIntersection(intersection2);
+        addIntersection(intersection3);
+        addIntersection(intersection4);
+
+        /*
+        * ##############################################################################################################
         * Roads
         * ##############################################################################################################
         */
+        R1 = new Road("R1", zone1, intersection1, length, 50 * 1000 / 3600.);
+        R2 = new Road("R2", intersection1, intersection2, length, 50 * 1000 / 3600.);
+        R3 = new Road("R3", intersection2, intersection3, length, 50 * 1000 / 3600.);
+        R4 = new Road("R4", intersection3, intersection4, length, 50 * 1000 / 3600.);
+        R5 = new Road("R4", intersection4, zone2, length, 50 * 1000 / 3600.);
 
-        addRoad(new Road("R1", zone1, zone2, length, 50 * 1000 / 3600.));
-        this.zone1 = zone1;
-        this.zone2 = zone2;
+        addRoad(R1);
+        addRoad(R2);
+        addRoad(R3);
+        addRoad(R4);
+        addRoad(R5);
 
+        /*
+        * ##############################################################################################################
+        * Traffic Signs
+        * ##############################################################################################################
+        */
+
+        Lane laneWithStop = R3.getLaneWithDestination(intersection3);
+        stopSign = new StopSign(laneWithStop, simEngine);
+        laneWithStop.setTrafficSign(stopSign);
+
+        Lane laneWithTL = R4.getLaneWithDestination(intersection4);
+        trafficLight = new TrafficLight(laneWithTL, simEngine);
+        trafficLight.setState(TrafficLightState.RED);
+        trafficLight.setFrequency(Duration.ofHours(1));
+        laneWithTL.setTrafficSign(trafficLight);
+
+    }
+
+    private void setPreference(Zone zone, Zone zone_pref, double percentage) {
+        ZonePreference zonePreference = new ZonePreference(simEngine.getRandom());
+        ArrayList<Zone> prefs = new ArrayList<>(Arrays.asList(new Zone[]{zone_pref}));
+        ArrayList<Double> percentages = new ArrayList<>(Arrays.asList(new Double[]{percentage}));
+        zonePreference.addPreferences(prefs, percentages);
+        zone.setZonePreference(zonePreference);
+    }
+
+    private Zone createZoneWithTimePeriod(String name, int h0, int m0, int h1, int m1, int s1, int ns1, int nCars) {
+        // Zone 1 schedule
+        ArrayList<TimePeriod> timeSlots = new ArrayList<>();
+        timeSlots.add(new TimePeriod(LocalTime.of(h0, m0), LocalTime.of(h1, m1, s1, ns1), nCars));
+        ZoneSchedule zoneSchedule = new ZoneSchedule(timeSlots);
+        // Zone 1
+        return new Zone(name, zoneSchedule, simEngine, this);
     }
 
     /**

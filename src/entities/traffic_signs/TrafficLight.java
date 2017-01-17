@@ -55,6 +55,10 @@ public class TrafficLight extends TrafficSign {
         return frequency;
     }
 
+    public void setFrequency(Duration newFrequency) {
+        frequency = newFrequency;
+    }
+
     public Lane getLane() {
         return lane;
     }
