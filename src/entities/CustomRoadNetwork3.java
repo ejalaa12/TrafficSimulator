@@ -1,5 +1,6 @@
 package entities;
 
+import entities.intersection.Intersection;
 import entities.traffic_light.TrafficLight;
 import entities.zone.TimePeriod;
 import entities.zone.Zone;
@@ -116,7 +117,7 @@ public class CustomRoadNetwork3 extends RoadNetwork implements Entity {
         * ##############################################################################################################
         */
 
-        intersection = new Intersection("intersection");
+        intersection = new Intersection("intersection", simEngine);
         addIntersection(intersection);
 
 

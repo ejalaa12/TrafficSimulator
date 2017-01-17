@@ -1,5 +1,6 @@
 package entities;
 
+import entities.intersection.Intersection;
 import entities.zone.TimePeriod;
 import entities.zone.Zone;
 import entities.zone.ZoneSchedule;
@@ -86,10 +87,10 @@ public class CustomRoadNetwork2 extends RoadNetwork implements Entity {
         * ##############################################################################################################
         */
 
-        intersection1 = new Intersection("intersection1");
+        intersection1 = new Intersection("intersection1", simEngine);
         addIntersection(intersection1);
 
-        intersection2 = new Intersection("intersection2");
+        intersection2 = new Intersection("intersection2", simEngine);
         addIntersection(intersection2);
 
         /*

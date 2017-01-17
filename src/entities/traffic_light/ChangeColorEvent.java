@@ -1,6 +1,6 @@
 package entities.traffic_light;
 
-import entities.Intersection;
+import entities.intersection.Intersection;
 import simulation.Event;
 
 import java.time.LocalDateTime;
