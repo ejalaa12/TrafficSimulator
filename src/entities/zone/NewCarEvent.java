@@ -49,8 +49,10 @@ public class NewCarEvent extends Event {
         source.setNumberOfProducedCars(source.getNumberOfProducedCars() + 1);
         // next car event
         LocalDateTime nextCarEvent = source.getSimEngine().getCurrentSimTime();
-        nextCarEvent = nextCarEvent.plus(source.getZoneSchedule().getCurrentFrequency(nextCarEvent.toLocalTime()));
-        source.getSimEngine().addEvent(new NewCarEvent(source, nextCarEvent));
+        if (source.getZoneSchedule().getCurrentFrequency(nextCarEvent.toLocalTime()) != null) {
+            nextCarEvent = nextCarEvent.plus(source.getZoneSchedule().getCurrentFrequency(nextCarEvent.toLocalTime()));
+            source.getSimEngine().addEvent(new NewCarEvent(source, nextCarEvent));
+        }
     }
 
     public Car getCreatedCar() {

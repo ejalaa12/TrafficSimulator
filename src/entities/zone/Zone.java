@@ -40,8 +40,10 @@ public class Zone extends Node implements Entity{
         }
         // time of the first car depends on the frequency
         // (we offset it by half so that the last car is still produced in the correct time period
-        Duration firstCarOffset = getZoneSchedule().getCurrentFrequency(simEngine.getCurrentSimTime().toLocalTime()).dividedBy(2);
-        simEngine.addEvent(new NewCarEvent(this, simEngine.getCurrentSimTime().plus(firstCarOffset)));
+        if (getZoneSchedule().getCurrentFrequency(simEngine.getCurrentSimTime().toLocalTime()) != null) {
+            Duration firstCarOffset = getZoneSchedule().getCurrentFrequency(simEngine.getCurrentSimTime().toLocalTime()).dividedBy(2);
+            simEngine.addEvent(new NewCarEvent(this, simEngine.getCurrentSimTime().plus(firstCarOffset)));
+        }
     }
 
     @Override

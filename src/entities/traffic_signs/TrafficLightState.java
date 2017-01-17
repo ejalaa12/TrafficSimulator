@@ -1,4 +1,4 @@
-package entities.traffic_light;
+package entities.traffic_signs;
 
 /**
  * Created by ejalaa on 05/01/2017.
@@ -9,14 +9,14 @@ public enum TrafficLightState {
     //        ORANGE,
     RED;
 
-    private TrafficLightState nextState;
-
     static {
         GREEN.nextState = RED;
 //            GREEN.nextState = ORANGE;
 //            ORANGE.nextState = RED;
         RED.nextState = GREEN;
     }
+
+    private TrafficLightState nextState;
 
     public TrafficLightState getNextState() {
         return nextState;

@@ -1,8 +1,8 @@
 package entities;
 
 import entities.intersection.Intersection;
-import entities.traffic_light.TrafficLight;
-import entities.traffic_light.TrafficSign;
+import entities.traffic_signs.TrafficLight;
+import entities.traffic_signs.TrafficSign;
 import entities.zone.Zone;
 import graph_network.Graph;
 import graph_network.Node;
@@ -83,6 +83,7 @@ public class RoadNetwork extends Graph implements Entity {
     public void init() {
         initZones();
         initTrafficLights();
+        // no need to init stops, they only create events when cars arrive
     }
 
     /**

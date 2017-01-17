@@ -1,4 +1,4 @@
-package entities.traffic_light;
+package entities.traffic_signs;
 
 import entities.Lane;
 import simulation.SimEngine;
@@ -53,6 +53,10 @@ public class TrafficLight extends TrafficSign {
 
     public Duration getFrequency() {
         return frequency;
+    }
+
+    public void setFrequency(Duration newFrequency) {
+        frequency = newFrequency;
     }
 
     public Lane getLane() {

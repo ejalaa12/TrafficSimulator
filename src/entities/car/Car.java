@@ -53,6 +53,9 @@ public class Car implements Entity {
         DijkstraAlgorithm dijkstraAlgorithm = new DijkstraAlgorithm(roadNetwork);
         dijkstraAlgorithm.execute(source);
         path = dijkstraAlgorithm.getPath(destination);
+        if (path == null) {
+            throw new IllegalStateException("Car didn't find path from " + source.getName() + " to " + destination.getName());
+        }
     }
 
     /*

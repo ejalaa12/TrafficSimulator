@@ -2,10 +2,10 @@ package entities.intersection;
 
 import entities.Lane;
 import entities.car.Car;
-import entities.traffic_light.StopSign;
-import entities.traffic_light.TrafficLight;
-import entities.traffic_light.TrafficLightState;
-import entities.traffic_light.TrafficSign;
+import entities.traffic_signs.StopSign;
+import entities.traffic_signs.TrafficLight;
+import entities.traffic_signs.TrafficLightState;
+import entities.traffic_signs.TrafficSign;
 import graph_network.Edge;
 import graph_network.Node;
 import logging.Logger;
@@ -90,10 +90,25 @@ public class Intersection extends Node implements Entity {
 
     }
 
+    /**
+     * The idea is that a car always stops for 3 seconds at a stop sign
+     * Then it is registered to the stop
+     * If the car is registered it can try to enter the intersection if the intersection is free
+     *
+     * @param car
+     * @param stopSign
+     */
     private void stopSignBehavior(Car car, StopSign stopSign) {
         car.stop();
-
-        Logger.getInstance().logWarning(getId(), "Stop sign behavior not implemented");
+        if (stopSign.getWaitingCar() == car) {
+            if (stopSign.isWaitFinish())
+                tryToGetIntoIntersection(car);
+        } else {
+            Logger.getInstance().logInfo(car.getName(), "Stop and wait at stop");
+            stopSign.registerCar(car);
+            simEngine.addEvent(new WaitAtStopEvent(stopSign, this, car));
+        }
+//        Logger.getInstance().logWarning(getId(), "Stop sign behavior not implemented");
     }
 
     /**
@@ -149,6 +164,7 @@ public class Intersection extends Node implements Entity {
 
     private void notifyCarsRegisteredFromLane(Lane originLane) {
         // the order of the arraylist in the hashmap creates a priority queue
+        // FIXME: 14/01/2017 maybe we should notify all cars that waited because the intersection was busy
         Car tmp;
         if (!originLane.getCarQueue().isEmpty()) {
             tmp = originLane.getCarQueue().get(0);

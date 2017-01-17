@@ -24,6 +24,7 @@ public class TimePeriod {
     }
 
     Duration getFrequency() {
+        if (nbOfCars == 0) return null;
         return slotDuration.dividedBy(nbOfCars);
     }
 }

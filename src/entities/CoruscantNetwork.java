@@ -1,7 +1,8 @@
 package entities;
 
 import entities.intersection.Intersection;
-import entities.traffic_light.TrafficLight;
+import entities.traffic_signs.StopSign;
+import entities.traffic_signs.TrafficLight;
 import entities.zone.TimePeriod;
 import entities.zone.Zone;
 import entities.zone.ZonePreference;
@@ -188,6 +189,16 @@ public class CoruscantNetwork extends RoadNetwork implements Entity {
         * Stops
         * ##############################################################################################################
         */
+
+        Lane lanesWithStop[] = new Lane[4];
+        lanesWithStop[0] = r31.getLaneWithDestination(intersection1);
+        lanesWithStop[1] = r31.getLaneWithDestination(intersection4);
+        lanesWithStop[2] = r32.getLaneWithDestination(intersection4);
+        lanesWithStop[3] = r2.getLaneWithDestination(intersection2);
+
+        for (Lane lane : lanesWithStop) {
+            lane.setTrafficSign(new StopSign(lane, simEngine));
+        }
 
     }
 

@@ -1,5 +1,7 @@
-package entities;
+package tests.custom_crossroads;
 
+import entities.Road;
+import entities.RoadNetwork;
 import entities.intersection.Intersection;
 import entities.zone.TimePeriod;
 import entities.zone.Zone;
@@ -13,13 +15,13 @@ import java.util.ArrayList;
 /**
  * This class models the Coruscant crossroads
  */
-public class CustomRoadNetwork2 extends RoadNetwork implements Entity {
+public class CustomRoadNetwork1 extends RoadNetwork implements Entity {
 
     public Zone zone1, zone2;
-    public Intersection intersection1, intersection2;
-    public Road R1, R2, R3;
+    public Intersection intersection1;
+    public Road R1, R2;
 
-    public CustomRoadNetwork2(SimEngine simEngine) {
+    public CustomRoadNetwork1(SimEngine simEngine) {
         super(simEngine);
         definition();
     }
@@ -69,7 +71,6 @@ public class CustomRoadNetwork2 extends RoadNetwork implements Entity {
         * Preferences
         */
 
-
 //        zone1.setPreferredDestination(zone2);
 //        zone2.setPreferredDestination(zone1);
 
@@ -88,10 +89,8 @@ public class CustomRoadNetwork2 extends RoadNetwork implements Entity {
         */
 
         intersection1 = new Intersection("intersection1", simEngine);
-        addIntersection(intersection1);
 
-        intersection2 = new Intersection("intersection2", simEngine);
-        addIntersection(intersection2);
+        addIntersection(intersection1);
 
         /*
         * ##############################################################################################################
@@ -100,11 +99,9 @@ public class CustomRoadNetwork2 extends RoadNetwork implements Entity {
         */
 
         R1 = new Road("R1", zone1, intersection1, 200, 50 * 1000 / 3600.);
-        R2 = new Road("R2", intersection1, intersection2, 300, 50 * 1000 / 3600.);
-        R3 = new Road("R3", intersection2, zone2, 300, 50 * 1000 / 3600.);
+        R2 = new Road("R2", zone2, intersection1, 300, 50 * 1000 / 3600.);
         addRoad(R1);
         addRoad(R2);
-        addRoad(R3);
 
         /*
         * ##############################################################################################################
