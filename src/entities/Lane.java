@@ -2,7 +2,7 @@ package entities;
 
 import entities.car.Car;
 import entities.car.DelayedReactionEvent;
-import entities.traffic_light.TrafficSign;
+import entities.traffic_signs.TrafficSign;
 import graph_network.Edge;
 import graph_network.Node;
 import logging.Logger;

@@ -2,10 +2,10 @@ package entities.intersection;
 
 import entities.Lane;
 import entities.car.Car;
-import entities.traffic_light.StopSign;
-import entities.traffic_light.TrafficLight;
-import entities.traffic_light.TrafficLightState;
-import entities.traffic_light.TrafficSign;
+import entities.traffic_signs.StopSign;
+import entities.traffic_signs.TrafficLight;
+import entities.traffic_signs.TrafficLightState;
+import entities.traffic_signs.TrafficSign;
 import graph_network.Edge;
 import graph_network.Node;
 import logging.Logger;

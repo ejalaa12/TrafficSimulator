@@ -1,7 +1,7 @@
 package entities.intersection;
 
 import entities.car.Car;
-import entities.traffic_light.StopSign;
+import entities.traffic_signs.StopSign;
 import simulation.Event;
 
 /**

@@ -1,8 +1,8 @@
 package entities;
 
 import entities.intersection.Intersection;
-import entities.traffic_light.StopSign;
-import entities.traffic_light.TrafficLight;
+import entities.traffic_signs.StopSign;
+import entities.traffic_signs.TrafficLight;
 import entities.zone.TimePeriod;
 import entities.zone.Zone;
 import entities.zone.ZonePreference;

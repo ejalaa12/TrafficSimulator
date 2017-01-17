@@ -1,4 +1,4 @@
-package entities.traffic_light;
+package entities.traffic_signs;
 
 import entities.Lane;
 import simulation.SimEngine;

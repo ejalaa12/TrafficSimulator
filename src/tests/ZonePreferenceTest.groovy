@@ -1,10 +1,10 @@
 package tests
 
-import entities.CustomRoadNetwork3
 import entities.zone.Zone
 import logging.LogLevel
 import logging.Logger
 import simulation.SimEngine
+import tests.custom_crossroads.CustomRoadNetwork3
 
 import java.time.LocalDateTime
 

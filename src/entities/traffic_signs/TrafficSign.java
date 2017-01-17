@@ -1,4 +1,4 @@
-package entities.traffic_light;
+package entities.traffic_signs;
 
 import entities.car.Car;
 import logging.Logger;

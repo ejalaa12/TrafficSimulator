@@ -1,8 +1,8 @@
 package tests
 
-import entities.CustomRoadNetwork0
 import logging.Logger
 import simulation.SimEngine
+import tests.custom_crossroads.CustomRoadNetwork0
 
 import java.time.LocalDateTime
 

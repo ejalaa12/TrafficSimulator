@@ -1,8 +1,8 @@
 package tests
 
 import entities.CoruscantNetwork
-import entities.traffic_light.ChangeColorEvent
-import entities.traffic_light.TrafficLight
+import entities.traffic_signs.ChangeColorEvent
+import entities.traffic_signs.TrafficLight
 import entities.zone.NewCarEvent
 import entities.zone.Zone
 import logging.LogLevel
