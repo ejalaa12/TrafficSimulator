@@ -5,6 +5,7 @@ import entities.lane.Lane;
 import entities.lane.Road;
 import entities.traffic_signs.StopSign;
 import entities.traffic_signs.TrafficLight;
+import entities.traffic_signs.TrafficLightState;
 import entities.zone.TimePeriod;
 import entities.zone.Zone;
 import entities.zone.ZonePreference;
@@ -169,9 +170,13 @@ public class CoruscantNetwork extends RoadNetwork implements Entity {
         lanesWithTL[1] = r4.getLaneWithDestination(intersection3);
         lanesWithTL[2] = r22.getLaneWithDestination(intersection3);
 
-        for (Lane lane : lanesWithTL) {
-            lane.setTrafficSign(new TrafficLight(lane, simEngine));
-        }
+        TrafficLight light1 = new TrafficLight(lanesWithTL[0], simEngine, "tl1");
+        TrafficLight light2 = new TrafficLight(lanesWithTL[1], simEngine, "tl2");
+        TrafficLight light3 = new TrafficLight(lanesWithTL[2], simEngine, "tl3");
+
+        lanesWithTL[0].setTrafficSign(light1);
+        lanesWithTL[1].setTrafficSign(light2);
+        lanesWithTL[2].setTrafficSign(light3);
 
         /*
         * ##############################################################################################################
@@ -224,6 +229,10 @@ public class CoruscantNetwork extends RoadNetwork implements Entity {
     @Override
     public void init() {
         super.init();
+        for (Intersection intersection :
+                intersections) {
+            intersection.init();
+        }
     }
 
     @Override
