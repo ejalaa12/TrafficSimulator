@@ -170,12 +170,9 @@ public class CoruscantNetwork extends RoadNetwork implements Entity {
         lanesWithTL[1] = r4.getLaneWithDestination(intersection3);
         lanesWithTL[2] = r22.getLaneWithDestination(intersection3);
 
-        TrafficLight light1 = new TrafficLight(lanesWithTL[0], simEngine, 0, "tl1");
-        TrafficLight light2 = new TrafficLight(lanesWithTL[1], simEngine, 33, "tl2");
-        TrafficLight light3 = new TrafficLight(lanesWithTL[2], simEngine, 66, "tl3");
-        light1.setState(TrafficLightState.RED);
-        light2.setState(TrafficLightState.RED);
-        light3.setState(TrafficLightState.RED);
+        TrafficLight light1 = new TrafficLight(lanesWithTL[0], simEngine, "tl1");
+        TrafficLight light2 = new TrafficLight(lanesWithTL[1], simEngine, "tl2");
+        TrafficLight light3 = new TrafficLight(lanesWithTL[2], simEngine, "tl3");
 
         lanesWithTL[0].setTrafficSign(light1);
         lanesWithTL[1].setTrafficSign(light2);
@@ -232,6 +229,10 @@ public class CoruscantNetwork extends RoadNetwork implements Entity {
     @Override
     public void init() {
         super.init();
+        for (Intersection intersection :
+                intersections) {
+            intersection.init();
+        }
     }
 
     @Override

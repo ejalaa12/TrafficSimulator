@@ -2,10 +2,7 @@ package entities.intersection;
 
 import entities.car.Car;
 import entities.lane.Lane;
-import entities.traffic_signs.StopSign;
-import entities.traffic_signs.TrafficLight;
-import entities.traffic_signs.TrafficLightState;
-import entities.traffic_signs.TrafficSign;
+import entities.traffic_signs.*;
 import graph_network.Edge;
 import graph_network.Node;
 import logging.Logger;
@@ -26,6 +23,8 @@ public class Intersection extends Node implements Entity {
     private HashMap<Lane, ArrayList<Car>> waitingCarsForLaneCorrespondences;
     private ArrayList<Car> priorityQueue;
     private List<Edge> connectedLanes;
+    private List<TrafficLight> trafficLights;
+    private int current_traffic_light_index;
     private ArrayList<Car> carsInsideIntersection;
     private SimEngine simEngine;
 
@@ -35,6 +34,8 @@ public class Intersection extends Node implements Entity {
         carsInsideIntersection = new ArrayList<>();
         priorityQueue = new ArrayList<>();
         waitingCarsForLaneCorrespondences = new HashMap<>();
+        trafficLights = new ArrayList<>();
+        current_traffic_light_index = -1;
     }
 
     public void registerCar(Car car, Lane nextLane) {
@@ -183,12 +184,21 @@ public class Intersection extends Node implements Entity {
         connectedLanes = connectionsThatArriveAt;
         for (Edge edge : connectedLanes) {
             waitingCarsForLaneCorrespondences.put((Lane) edge, new ArrayList<>());
+            if (edge.getDestination() == this){
+                if ((((Lane) edge).getTrafficSign() instanceof TrafficLight)) {
+                    trafficLights.add((TrafficLight) ((Lane) edge).getTrafficSign());
+                    current_traffic_light_index = 0;
+                }
+            }
         }
     }
 
     @Override
     public void init() {
         //no initialization, event are only created when car get into intersection
+        if (!trafficLights.isEmpty()) {
+            getSimEngine().addEvent(new ChangeColorEvent(trafficLights.get(current_traffic_light_index), getSimEngine().getCurrentSimTime()));
+        }
     }
 
     @Override
@@ -208,5 +218,11 @@ public class Intersection extends Node implements Entity {
             }
         }
         return false;
+    }
+
+    public TrafficLight getNextTrafficLight() {
+        current_traffic_light_index += 1;
+        current_traffic_light_index %= trafficLights.size();
+        return trafficLights.get(current_traffic_light_index);
     }
 }

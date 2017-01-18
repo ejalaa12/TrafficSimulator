@@ -13,33 +13,25 @@ public class TrafficLight extends TrafficSign {
     private TrafficLightState state;
     private Lane lane;
     private SimEngine simEngine;
-    private Duration offset;
     private String name;
 
     public TrafficLight(Lane lane, SimEngine simEngine) {
-        this.state = TrafficLightState.GREEN;
+        this.state = TrafficLightState.RED;
         this.lane = lane;
         this.simEngine = simEngine;
-        offset = Duration.ZERO;
         this.name = "TrafficLight on " + lane.getId();
     }
 
-    public TrafficLight(Lane lane, SimEngine simEngine, int delay) {
-        this.state = TrafficLightState.GREEN;
-        this.lane = lane;
-        this.simEngine = simEngine;
-        offset = Duration.ofSeconds(delay);
-        this.name = "TrafficLight on " + lane.getId();
-    }
 
-    public TrafficLight(Lane lane, SimEngine simEngine, int delay, String name) {
-        this(lane, simEngine, delay);
+    public TrafficLight(Lane lane, SimEngine simEngine, String name) {
+        this(lane, simEngine);
         this.name = name;
     }
 
     @Override
     public void init() {
-        getSimEngine().addEvent(new ChangeColorEvent(this, getSimEngine().getCurrentSimTime().plus(state.getDuration()).plus(offset)));
+        // traffic light is initialized by intersections
+//        getSimEngine().addEvent(new ChangeColorEvent(this, getSimEngine().getCurrentSimTime().plus(state.getDuration()).plus(offset)));
     }
 
     @Override
