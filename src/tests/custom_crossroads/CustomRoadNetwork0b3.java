@@ -1,8 +1,8 @@
 package tests.custom_crossroads;
 
-import entities.Road;
 import entities.RoadNetwork;
 import entities.intersection.Intersection;
+import entities.lane.Road;
 import entities.traffic_signs.StopSign;
 import entities.traffic_signs.TrafficLight;
 import entities.traffic_signs.TrafficLightState;

@@ -1,7 +1,7 @@
 package tests.custom_crossroads;
 
-import entities.Road;
 import entities.RoadNetwork;
+import entities.lane.Road;
 import entities.zone.TimePeriod;
 import entities.zone.Zone;
 import entities.zone.ZonePreference;

@@ -1,9 +1,9 @@
 package tests.CarAlone;
 
-import entities.Lane;
-import entities.Road;
 import entities.RoadNetwork;
 import entities.intersection.Intersection;
+import entities.lane.Lane;
+import entities.lane.Road;
 import entities.traffic_signs.StopSign;
 import entities.traffic_signs.TrafficLight;
 import entities.traffic_signs.TrafficLightState;
@@ -14,7 +14,6 @@ import entities.zone.ZoneSchedule;
 import simulation.Entity;
 import simulation.SimEngine;
 
-import java.time.Duration;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -109,7 +108,6 @@ public class CustomCrossroad extends RoadNetwork implements Entity {
         Lane laneWithTL = R4.getLaneWithDestination(intersection4);
         trafficLight = new TrafficLight(laneWithTL, simEngine);
         trafficLight.setState(TrafficLightState.RED);
-        trafficLight.setFrequency(Duration.ofHours(1));
         laneWithTL.setTrafficSign(trafficLight);
 
     }

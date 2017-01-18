@@ -1,8 +1,9 @@
 package entities.car;
 
-import entities.Lane;
 import entities.RoadNetwork;
 import entities.intersection.Intersection;
+import entities.lane.Lane;
+import entities.lane.LaneStats;
 import entities.zone.Zone;
 import graph_network.DijkstraAlgorithm;
 import graph_network.Node;
@@ -274,6 +275,8 @@ public class Car implements Entity {
 
     public void setCarState(CarState newCarState) {
         carState = newCarState;
+        if (currentLane != null)
+            LaneStats.log(currentLane);
     }
 
     public double getTotalTravelledDistance() {

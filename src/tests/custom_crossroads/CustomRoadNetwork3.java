@@ -1,9 +1,9 @@
 package tests.custom_crossroads;
 
-import entities.Lane;
-import entities.Road;
 import entities.RoadNetwork;
 import entities.intersection.Intersection;
+import entities.lane.Lane;
+import entities.lane.Road;
 import entities.traffic_signs.TrafficLight;
 import entities.zone.TimePeriod;
 import entities.zone.Zone;

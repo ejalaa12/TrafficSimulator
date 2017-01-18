@@ -1,6 +1,8 @@
 package entities;
 
 import entities.intersection.Intersection;
+import entities.lane.Lane;
+import entities.lane.Road;
 import entities.traffic_signs.StopSign;
 import entities.traffic_signs.TrafficLight;
 import entities.zone.TimePeriod;
@@ -18,6 +20,9 @@ import java.util.Arrays;
  * This class models Coruscant Carrefour
  */
 public class CoruscantNetwork extends RoadNetwork implements Entity {
+
+    // to make it easier to access the correct zones
+    private Zone zone1, zone2, zone3, zone4, zone5, zone6, zone7;
 
     public CoruscantNetwork(SimEngine simEngine) {
         super(simEngine);
@@ -43,81 +48,65 @@ public class CoruscantNetwork extends RoadNetwork implements Entity {
         * ##############################################################################################################
         */
 
-        ArrayList<TimePeriod> timeSlots1 = new ArrayList<>();
-        timeSlots1.add(new TimePeriod(LocalTime.of(0, 0), LocalTime.of(7, 0), 40));
-        timeSlots1.add(new TimePeriod(LocalTime.of(7, 0), LocalTime.of(9, 0), 300));
-        timeSlots1.add(new TimePeriod(LocalTime.of(9, 0), LocalTime.of(17, 0), 20));
-        timeSlots1.add(new TimePeriod(LocalTime.of(17, 0), LocalTime.of(19, 0), 100));
-        timeSlots1.add(new TimePeriod(LocalTime.of(19, 0), LocalTime.of(23, 59, 59, 99999), 20));
-        ZoneSchedule zoneSchedule1 = new ZoneSchedule(timeSlots1);
+        ArrayList<Integer> periods = new ArrayList<>(Arrays.asList(0, 7, 9, 17, 19));
 
-        ArrayList<TimePeriod> timeSlots2 = new ArrayList<>();
-        timeSlots2.add(new TimePeriod(LocalTime.of(0, 0), LocalTime.of(7, 0), 50));
-        timeSlots2.add(new TimePeriod(LocalTime.of(7, 0), LocalTime.of(9, 0), 200));
-        timeSlots2.add(new TimePeriod(LocalTime.of(9, 0), LocalTime.of(17, 0), 30));
-        timeSlots2.add(new TimePeriod(LocalTime.of(17, 0), LocalTime.of(19, 0), 150));
-        timeSlots2.add(new TimePeriod(LocalTime.of(19, 0), LocalTime.of(23, 59, 59, 99999), 30));
-        ZoneSchedule zoneSchedule2 = new ZoneSchedule(timeSlots2);
+        ArrayList<Integer> carsPerPeriod1 = new ArrayList<>(Arrays.asList(40, 300, 20, 100, 20));
+        ZoneSchedule zoneSchedule1 = createZoneSchedule(periods, carsPerPeriod1);
 
-        // TODO: 14/01/2017 time slots for zones 3 to 7
+        ArrayList<Integer> carsPerPeriod2 = new ArrayList<>(Arrays.asList(50, 200, 30, 150, 30));
+        ZoneSchedule zoneSchedule2 = createZoneSchedule(periods, carsPerPeriod2);
 
-        Zone zone1 = new Zone("zone1", zoneSchedule1, simEngine, this);
-        Zone zone2 = new Zone("zone2", zoneSchedule2, simEngine, this);
-        Zone zone3 = new Zone("zone3", zoneSchedule1, simEngine, this);
-        Zone zone4 = new Zone("zone4", zoneSchedule1, simEngine, this);
-        Zone zone5 = new Zone("zone5", zoneSchedule1, simEngine, this);
-        Zone zone6 = new Zone("zone6", zoneSchedule1, simEngine, this);
-        Zone zone7 = new Zone("zone7", zoneSchedule1, simEngine, this);
+        ArrayList<Integer> carsPerPeriod3 = new ArrayList<>(Arrays.asList(30, 100, 20, 300, 15));
+        ZoneSchedule zoneSchedule3 = createZoneSchedule(periods, carsPerPeriod3);
+
+        ArrayList<Integer> carsPerPeriod4 = new ArrayList<>(Arrays.asList(20, 100, 30, 200, 50));
+        ZoneSchedule zoneSchedule4 = createZoneSchedule(periods, carsPerPeriod4);
+
+        ArrayList<Integer> carsPerPeriod5 = new ArrayList<>(Arrays.asList(30, 400, 20, 150, 20));
+        ZoneSchedule zoneSchedule5 = createZoneSchedule(periods, carsPerPeriod5);
+
+        ArrayList<Integer> carsPerPeriod6 = new ArrayList<>(Arrays.asList(20, 50, 30, 100, 10));
+        ZoneSchedule zoneSchedule6 = createZoneSchedule(periods, carsPerPeriod6);
+
+        ArrayList<Integer> carsPerPeriod7 = new ArrayList<>(Arrays.asList(30, 30, 10, 100, 10));
+        ZoneSchedule zoneSchedule7 = createZoneSchedule(periods, carsPerPeriod7);
+
+
+        zone1 = new Zone("zone1", zoneSchedule1, simEngine, this);
+        zone2 = new Zone("zone2", zoneSchedule2, simEngine, this);
+        zone3 = new Zone("zone3", zoneSchedule3, simEngine, this);
+        zone4 = new Zone("zone4", zoneSchedule4, simEngine, this);
+        zone5 = new Zone("zone5", zoneSchedule5, simEngine, this);
+        zone6 = new Zone("zone6", zoneSchedule6, simEngine, this);
+        zone7 = new Zone("zone7", zoneSchedule7, simEngine, this);
 
         // Preferences Zone1
-        ZonePreference zonePreference1 = new ZonePreference(simEngine.getRandom());
-        ArrayList<Zone> zones1 = new ArrayList<>(Arrays.asList(new Zone[]{zone2, zone3, zone4, zone5, zone6, zone7}));
-        ArrayList<Double> percentages1 = new ArrayList<>(Arrays.asList(new Double[]{0.05, 0.1, 0.1, 0.05, 0.35, 0.35}));
-        zonePreference1.addPreferences(zones1, percentages1);
-        zone1.setZonePreference(zonePreference1);
+        ArrayList<Integer> attractions1 = new ArrayList<>(Arrays.asList(5, 10, 10, 5, 35, 35));
+        createPreference(zone1, attractions1);
 
         // Preferences Zone2
-        ZonePreference zonePreference2 = new ZonePreference(simEngine.getRandom());
-        ArrayList<Zone> zones2 = new ArrayList<>(Arrays.asList(new Zone[]{zone1, zone3, zone4, zone5, zone6, zone7}));
-        ArrayList<Double> percentages2 = new ArrayList<>(Arrays.asList(new Double[]{0.1, 0.05, 0.2, 0.2, 0.25, 0.20}));
-        zonePreference2.addPreferences(zones2, percentages2);
-        zone2.setZonePreference(zonePreference2);
+        ArrayList<Integer> attractions2 = new ArrayList<>(Arrays.asList(10, 5, 20, 20, 25, 20));
+        createPreference(zone2, attractions2);
 
         // Preferences Zone3
-        ZonePreference zonePreference3 = new ZonePreference(simEngine.getRandom());
-        ArrayList<Zone> zones3 = new ArrayList<>(Arrays.asList(new Zone[]{zone1, zone2, zone4, zone5, zone6, zone7}));
-        ArrayList<Double> percentages3 = new ArrayList<>(Arrays.asList(new Double[]{0.15, 0.15, 0.2, 0.2, 0.2, 0.1}));
-        zonePreference3.addPreferences(zones3, percentages3);
-        zone3.setZonePreference(zonePreference3);
+        ArrayList<Integer> attractions3 = new ArrayList<>(Arrays.asList(15, 15, 20, 20, 20, 10));
+        createPreference(zone3, attractions3);
 
         // Preferences Zone4
-        ZonePreference zonePreference4 = new ZonePreference(simEngine.getRandom());
-        ArrayList<Zone> zones4 = new ArrayList<>(Arrays.asList(new Zone[]{zone1, zone2, zone3, zone5, zone6, zone7}));
-        ArrayList<Double> percentages4 = new ArrayList<>(Arrays.asList(new Double[]{0.15, 0.1, 0.1, 0.2, 0.4, 0.05}));
-        zonePreference4.addPreferences(zones4, percentages4);
-        zone4.setZonePreference(zonePreference4);
+        ArrayList<Integer> attractions4 = new ArrayList<>(Arrays.asList(15, 10, 10, 20, 40, 5));
+        createPreference(zone4, attractions4);
 
         // Preferences Zone5
-        ZonePreference zonePreference5 = new ZonePreference(simEngine.getRandom());
-        ArrayList<Zone> zones5 = new ArrayList<>(Arrays.asList(new Zone[]{zone1, zone2, zone3, zone4, zone6, zone7}));
-        ArrayList<Double> percentages5 = new ArrayList<>(Arrays.asList(new Double[]{0.1, 0.3, 0.1, 0.1, 0.1, 0.3}));
-        zonePreference5.addPreferences(zones5, percentages5);
-        zone5.setZonePreference(zonePreference5);
+        ArrayList<Integer> attractions5 = new ArrayList<>(Arrays.asList(10, 30, 10, 10, 10, 30));
+        createPreference(zone5, attractions5);
 
         // Preferences Zone6
-        ZonePreference zonePreference6 = new ZonePreference(simEngine.getRandom());
-        ArrayList<Zone> zones6 = new ArrayList<>(Arrays.asList(new Zone[]{zone1, zone2, zone3, zone4, zone5, zone7}));
-        ArrayList<Double> percentages6 = new ArrayList<>(Arrays.asList(new Double[]{0.2, 0.1, 0.4, 0.1, 0.1, 0.1}));
-        zonePreference6.addPreferences(zones6, percentages6);
-        zone6.setZonePreference(zonePreference6);
+        ArrayList<Integer> attractions6 = new ArrayList<>(Arrays.asList(20, 10, 40, 10, 10, 10));
+        createPreference(zone6, attractions6);
 
         // Preferences Zone7
-        ZonePreference zonePreference7 = new ZonePreference(simEngine.getRandom());
-        ArrayList<Zone> zones7 = new ArrayList<>(Arrays.asList(new Zone[]{zone1, zone2, zone3, zone4, zone5, zone6}));
-        ArrayList<Double> percentages7 = new ArrayList<>(Arrays.asList(new Double[]{0.2, 0.2, 0.2, 0.2, 0.1, 0.1}));
-        zonePreference7.addPreferences(zones7, percentages7);
-        zone7.setZonePreference(zonePreference7);
-
+        ArrayList<Integer> attractions7 = new ArrayList<>(Arrays.asList(20, 20, 20, 20, 10, 10));
+        createPreference(zone7, attractions7);
 
         addArea(zone1);
         addArea(zone2);
@@ -200,6 +189,36 @@ public class CoruscantNetwork extends RoadNetwork implements Entity {
             lane.setTrafficSign(new StopSign(lane, simEngine));
         }
 
+    }
+
+    private void createPreference(Zone main_zone, ArrayList<Integer> attractions) {
+        ArrayList<Zone> all_zones = new ArrayList<>(Arrays.asList(zone1, zone2, zone3, zone4, zone5, zone6, zone7));
+        ArrayList<Zone> destinations = new ArrayList<>();
+        for (Zone zone : all_zones) {
+            if (zone != main_zone) destinations.add(zone);
+        }
+        ArrayList<Double> percentages = new ArrayList<>();
+        for (int att : attractions) {
+            percentages.add(att / 100.);
+        }
+        if (percentages.size() != destinations.size()) {
+            throw new IllegalStateException("destination size must be equal to percentages");
+        }
+
+        ZonePreference zonePreference = new ZonePreference(simEngine.getRandom());
+        zonePreference.addPreferences(destinations, percentages);
+        main_zone.setZonePreference(zonePreference);
+    }
+
+    private ZoneSchedule createZoneSchedule(ArrayList<Integer> periods, ArrayList<Integer> carsPerPeriod1) {
+        ArrayList<TimePeriod> timeSlots1 = new ArrayList<>();
+        timeSlots1.add(new TimePeriod(LocalTime.of(periods.get(0), 0), LocalTime.of(periods.get(1), 0), carsPerPeriod1.get(0)));
+        timeSlots1.add(new TimePeriod(LocalTime.of(periods.get(1), 0), LocalTime.of(periods.get(2), 0), carsPerPeriod1.get(1)));
+        timeSlots1.add(new TimePeriod(LocalTime.of(periods.get(2), 0), LocalTime.of(periods.get(3), 0), carsPerPeriod1.get(2)));
+        timeSlots1.add(new TimePeriod(LocalTime.of(periods.get(3), 0), LocalTime.of(periods.get(4), 0), carsPerPeriod1.get(3)));
+        timeSlots1.add(new TimePeriod(LocalTime.of(periods.get(4), 0), LocalTime.of(23, 59, 59, 999999999), carsPerPeriod1.get(4)));
+
+        return new ZoneSchedule(timeSlots1);
     }
 
     @Override

@@ -17,6 +17,8 @@ public class ZoneSchedule {
     }
 
     Duration getCurrentFrequency(LocalTime currentTime) {
+        if (getCurrentTimeSlot(currentTime) == null)
+            System.out.println("gnark");
         return getCurrentTimeSlot(currentTime).getFrequency();
     }
 

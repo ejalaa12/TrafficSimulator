@@ -1,4 +1,4 @@
-package entities;
+package entities.lane;
 
 import graph_network.Node;
 
@@ -14,8 +14,8 @@ public class Road {
     private double speed_limit;
 
     public Road(String id, Node node1, Node node2, int length, double speed_limit) {
-        lane1 = new Lane(id+"a", node1, node2, length, speed_limit);
-        lane2 = new Lane(id+"b", node2, node1, length, speed_limit);
+        lane1 = new Lane(id + "-to-" + node2.getName(), node1, node2, length, speed_limit);
+        lane2 = new Lane(id + "-to-" + node1.getName(), node2, node1, length, speed_limit);
         connectedNode1 = node1;
         connectedNode2 = node2;
         this.length = length;
