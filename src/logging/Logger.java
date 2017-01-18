@@ -210,11 +210,17 @@ public class Logger {
         this.simEngine = simEngine;
     }
 
-    public void logSpecial(String creatorName, String message) {
-        mlog(creatorName, simEngine.getCurrentSimTime(), message, LogLevel.SPECIAL);
+    public void logStat(String creatorName, String message) {
+        mlog(creatorName, simEngine.getCurrentSimTime(), message, LogLevel.STATISTICS);
+    }
+
+    public void logStat(String creatorName, String title, String message) {
+        mlog(creatorName, simEngine.getCurrentSimTime(), message, LogLevel.STATISTICS);
+
     }
 
     public void addCreatorFilter(String creatorFilter) {
         this.creatorFilter.add(creatorFilter);
     }
+
 }

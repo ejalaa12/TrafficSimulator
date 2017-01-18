@@ -13,7 +13,7 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        Logger.getInstance().setLogLevel(LogLevel.SPECIAL);
+        Logger.getInstance().setLogLevel(LogLevel.STATISTICS);
 //        Logger.getInstance().addCreatorFilter("R3.1-to-intersection4");
 //        Logger.getInstance().addCreatorFilter("intersection4");
 
