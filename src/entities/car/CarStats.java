@@ -46,5 +46,7 @@ public class CarStats {
     public void addNewRestartTime() {
         restartTime = car.getSimEngine().getCurrentSimTime();
         stopDurations.add(Duration.between(stopTime, restartTime));
+        // reset stop time
+        stopTime = null;
     }
 }
