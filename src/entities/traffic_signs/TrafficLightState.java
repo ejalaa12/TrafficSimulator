@@ -1,5 +1,7 @@
 package entities.traffic_signs;
 
+import java.time.Duration;
+
 /**
  * Created by ejalaa on 05/01/2017.
  */
@@ -20,5 +22,9 @@ public enum TrafficLightState {
 
     public TrafficLightState getNextState() {
         return nextState;
+    }
+
+    public Duration getDuration() {
+        return Duration.ofSeconds(30);
     }
 }

@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -43,6 +44,9 @@ public class Logger {
     private FileWriter writer;
     private SimEngine simEngine;
 
+    // attributes for filtering
+    private ArrayList<String> creatorFilter;
+
     private Logger() {
         // exist only to defeat instanciation
         on = true;
@@ -55,6 +59,7 @@ public class Logger {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        creatorFilter = new ArrayList<>();
     }
 
     public static Logger getInstance() {
@@ -173,7 +178,8 @@ public class Logger {
         String res = String.format("%s[%-10s] [%s] %-20s: %s", logLevel.getColor(), logLevel, timestamp, creatorName, message);
         if (on) {
             if (logLevel.ordinal() >= mlogLevel.ordinal()) {
-                System.out.println(res);
+                if (creatorFilter.isEmpty()) System.out.println(res);
+                else if (creatorFilter.contains(creatorName)) System.out.println(res);
             }
         }
         if (csvOn) {
@@ -202,5 +208,13 @@ public class Logger {
 
     public void setSimEngine(SimEngine simEngine) {
         this.simEngine = simEngine;
+    }
+
+    public void logSpecial(String creatorName, String message) {
+        mlog(creatorName, simEngine.getCurrentSimTime(), message, LogLevel.SPECIAL);
+    }
+
+    public void addCreatorFilter(String creatorFilter) {
+        this.creatorFilter.add(creatorFilter);
     }
 }

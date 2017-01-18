@@ -1,11 +1,8 @@
 package entities.intersection;
 
-import entities.Lane;
 import entities.car.Car;
-import entities.traffic_signs.StopSign;
-import entities.traffic_signs.TrafficLight;
-import entities.traffic_signs.TrafficLightState;
-import entities.traffic_signs.TrafficSign;
+import entities.lane.Lane;
+import entities.traffic_signs.*;
 import graph_network.Edge;
 import graph_network.Node;
 import logging.Logger;
@@ -22,8 +19,12 @@ import java.util.List;
 public class Intersection extends Node implements Entity {
 
     private static final int maxCarInIntersection = 1;
+    // create a hashmap that associates a car with the lane where it wants to go
     private HashMap<Lane, ArrayList<Car>> waitingCarsForLaneCorrespondences;
+    private ArrayList<Car> priorityQueue;
     private List<Edge> connectedLanes;
+    private List<TrafficLight> trafficLights;
+    private int current_traffic_light_index;
     private ArrayList<Car> carsInsideIntersection;
     private SimEngine simEngine;
 
@@ -31,7 +32,10 @@ public class Intersection extends Node implements Entity {
         super(id);
         this.simEngine = simEngine;
         carsInsideIntersection = new ArrayList<>();
+        priorityQueue = new ArrayList<>();
         waitingCarsForLaneCorrespondences = new HashMap<>();
+        trafficLights = new ArrayList<>();
+        current_traffic_light_index = -1;
     }
 
     public void registerCar(Car car, Lane nextLane) {
@@ -45,6 +49,7 @@ public class Intersection extends Node implements Entity {
                 throw new IllegalStateException("the car to register was already registered");
             }
             waitingCarsForLaneCorrespondences.get(nextLane).add(car);
+            priorityQueue.add(car);
             Logger.getInstance().logInfo(getId(), car.getName() + " registered");
             // If car can pursue it's path
             handle(car);
@@ -61,6 +66,7 @@ public class Intersection extends Node implements Entity {
             throw new NullPointerException("Trying to unregister a car that wasn't registered");
         } else {
             waitingCarsForLaneCorrespondences.get(registeredLane).remove(car);
+            priorityQueue.remove(car);
         }
     }
 
@@ -159,38 +165,40 @@ public class Intersection extends Node implements Entity {
             throw new IllegalStateException("car is not in intersection");
         }
         carsInsideIntersection.remove(car);
-        notifyCarsRegisteredFromLane(originLane);
-    }
-
-    private void notifyCarsRegisteredFromLane(Lane originLane) {
-        // the order of the arraylist in the hashmap creates a priority queue
-        // FIXME: 14/01/2017 maybe we should notify all cars that waited because the intersection was busy
-        Car tmp;
-        if (!originLane.getCarQueue().isEmpty()) {
-            tmp = originLane.getCarQueue().get(0);
-            if (tmp != null && wasRegistered(tmp)) {
-//                System.out.println("BOOOOOOOOM");
-                handle(tmp);
-            }
+        if (!priorityQueue.isEmpty()) {
+            handle(priorityQueue.get(0));
         }
-
     }
 
-    public void notifyCarsWithNextLane(Lane nextLaneToCheck) {
+    /**
+     * Notifies a car that wants to go to a specified lane
+     *
+     * @param destinationLane the destination lane from which we get the waiting list
+     */
+    public void notifyCarsWithNextLane(Lane destinationLane) {
         // the order of the arraylist in the hashmap creates a priority queue
-        handle(waitingCarsForLaneCorrespondences.get(nextLaneToCheck).get(0));
+        handle(waitingCarsForLaneCorrespondences.get(destinationLane).get(0));
     }
 
     public void addConnectedLanes(List<Edge> connectionsThatArriveAt) {
         connectedLanes = connectionsThatArriveAt;
         for (Edge edge : connectedLanes) {
             waitingCarsForLaneCorrespondences.put((Lane) edge, new ArrayList<>());
+            if (edge.getDestination() == this){
+                if ((((Lane) edge).getTrafficSign() instanceof TrafficLight)) {
+                    trafficLights.add((TrafficLight) ((Lane) edge).getTrafficSign());
+                    current_traffic_light_index = 0;
+                }
+            }
         }
     }
 
     @Override
     public void init() {
         //no initialization, event are only created when car get into intersection
+        if (!trafficLights.isEmpty()) {
+            getSimEngine().addEvent(new ChangeColorEvent(trafficLights.get(current_traffic_light_index), getSimEngine().getCurrentSimTime()));
+        }
     }
 
     @Override
@@ -210,5 +218,11 @@ public class Intersection extends Node implements Entity {
             }
         }
         return false;
+    }
+
+    public TrafficLight getNextTrafficLight() {
+        current_traffic_light_index += 1;
+        current_traffic_light_index %= trafficLights.size();
+        return trafficLights.get(current_traffic_light_index);
     }
 }

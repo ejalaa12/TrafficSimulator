@@ -1,7 +1,7 @@
 package entities.intersection;
 
-import entities.Lane;
 import entities.car.Car;
+import entities.lane.Lane;
 import simulation.Event;
 
 import java.time.Duration;

@@ -1,6 +1,6 @@
 package entities.traffic_signs;
 
-import entities.Lane;
+import entities.lane.Lane;
 import simulation.SimEngine;
 
 import java.time.Duration;
@@ -11,21 +11,27 @@ import java.time.Duration;
 public class TrafficLight extends TrafficSign {
 
     private TrafficLightState state;
-    // TODO: 01/01/2017 change frequency so that green and red light don't have same duration
-    private Duration frequency;
     private Lane lane;
     private SimEngine simEngine;
+    private String name;
 
     public TrafficLight(Lane lane, SimEngine simEngine) {
-        this.state = TrafficLightState.GREEN;
+        this.state = TrafficLightState.RED;
         this.lane = lane;
         this.simEngine = simEngine;
-        this.frequency = Duration.ofMinutes(20);
+        this.name = "TrafficLight on " + lane.getId();
+    }
+
+
+    public TrafficLight(Lane lane, SimEngine simEngine, String name) {
+        this(lane, simEngine);
+        this.name = name;
     }
 
     @Override
     public void init() {
-        getSimEngine().addEvent(new ChangeColorEvent(this, getSimEngine().getCurrentSimTime().plus(frequency)));
+        // traffic light is initialized by intersections
+//        getSimEngine().addEvent(new ChangeColorEvent(this, getSimEngine().getCurrentSimTime().plus(state.getDuration()).plus(offset)));
     }
 
     @Override
@@ -35,7 +41,7 @@ public class TrafficLight extends TrafficSign {
 
     @Override
     public String getName() {
-        return "TrafficLight on " + lane.getId();
+        return name;
     }
 
     @Override
@@ -49,14 +55,6 @@ public class TrafficLight extends TrafficSign {
 
     public void setState(TrafficLightState state) {
         this.state = state;
-    }
-
-    public Duration getFrequency() {
-        return frequency;
-    }
-
-    public void setFrequency(Duration newFrequency) {
-        frequency = newFrequency;
     }
 
     public Lane getLane() {

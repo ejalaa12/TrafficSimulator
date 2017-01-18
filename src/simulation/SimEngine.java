@@ -64,11 +64,12 @@ public class SimEngine {
      * Simulation loop
      */
     public void loop() {
-        Logger.getInstance().log(className, this.currentSimTime, "Simulation started !", LogLevel.INFO);
+        Logger.getInstance().log(className, this.currentSimTime, "Simulation started !", LogLevel.EVENT);
         while (!simHasEnded()) {
             simStep();
         }
-        Logger.getInstance().log(className, this.currentSimTime, "Simulation has ended !", LogLevel.INFO);
+        Logger.getInstance().log(className, this.currentSimTime, "Simulation has ended !", LogLevel.EVENT);
+        Logger.getInstance().log(className, this.currentSimTime, "Number of events: " + loops, LogLevel.EVENT);
     }
 
     private void simStep() {
