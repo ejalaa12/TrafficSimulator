@@ -1,7 +1,7 @@
+import entities.CoruscantNetwork;
 import logging.LogLevel;
 import logging.Logger;
 import simulation.SimEngine;
-import tests.custom_crossroads.CustomRoadNetwork0b3;
 
 import java.time.LocalDateTime;
 
@@ -13,14 +13,21 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        Logger.getInstance().setLogLevel(LogLevel.INFO);
+        Logger.getInstance().setLogLevel(LogLevel.SPECIAL);
+//        Logger.getInstance().addCreatorFilter("R3.1-to-intersection4");
+//        Logger.getInstance().addCreatorFilter("intersection4");
+//        Logger.getInstance().addCreatorFilter("StopSign on R3.2-to-intersection4");
+//        Logger.getInstance().addCreatorFilter("StopSign on R2.1-to-intersection4");
+//        Logger.getInstance().addCreatorFilter("StopSign on R3.1-to-intersection4");
+//        Logger.getInstance().addCreatorFilter("StopSign on R2.2-to-intersection4");
+//        Logger.getInstance().addCreatorFilter("Car-751 (zone1)");
         /*
         * ##############################################################################################################
         * Simulation times
         * ##############################################################################################################
         */
         LocalDateTime startSim = LocalDateTime.of(2000, 1, 1, 0, 0);
-        LocalDateTime endSim = LocalDateTime.of(2000, 1, 1, 0, 30);
+        LocalDateTime endSim = LocalDateTime.of(2000, 1, 3, 0, 1);
 
         SimEngine simEngine = new SimEngine(1, startSim, endSim);
 
@@ -30,9 +37,9 @@ public class Main {
         * Junction
         * ****************************************************************************************************************
         */
-//        CoruscantNetwork crossroads = new CoruscantNetwork(simEngine);
+        CoruscantNetwork crossroads = new CoruscantNetwork(simEngine);
 //        CustomRoadNetwork3 crossroads = new CustomRoadNetwork3(simEngine);
-        CustomRoadNetwork0b3 crossroads = new CustomRoadNetwork0b3(simEngine);
+//        CustomRoadNetwork0b3 crossroads = new CustomRoadNetwork0b3(simEngine);
 //        CustomRoadNetwork0 crossroads = new CustomRoadNetwork0(simEngine,1000, 10, 10);
         crossroads.init();
 

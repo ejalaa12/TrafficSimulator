@@ -21,7 +21,8 @@ public enum LogLevel {
     INFO("\u001B[37m"),
     EVENT("\u001B[0m"),
     WARNING("\u001B[33m"),
-    FATAL("\u001B[31m");
+    FATAL("\u001B[31m"),
+    SPECIAL("\u001B[36m");
 
 
     private String color;

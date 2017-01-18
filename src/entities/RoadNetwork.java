@@ -1,6 +1,8 @@
 package entities;
 
 import entities.intersection.Intersection;
+import entities.lane.Lane;
+import entities.lane.Road;
 import entities.traffic_signs.TrafficLight;
 import entities.traffic_signs.TrafficSign;
 import entities.zone.Zone;

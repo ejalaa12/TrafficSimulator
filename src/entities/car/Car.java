@@ -1,8 +1,8 @@
 package entities.car;
 
-import entities.Lane;
 import entities.RoadNetwork;
 import entities.intersection.Intersection;
+import entities.lane.Lane;
 import entities.zone.Zone;
 import graph_network.DijkstraAlgorithm;
 import graph_network.Node;
@@ -22,6 +22,7 @@ import java.util.LinkedList;
 public class Car implements Entity {
 
     public static final int length = 4;
+    public CarStats stats;
     private Zone source, destination;
     private double speed;
     private String Id;
@@ -43,6 +44,8 @@ public class Car implements Entity {
 
     public Car(String Id, Zone source, Zone destination, RoadNetwork roadNetwork, SimEngine simEngine) {
         setCarState(CarState.CREATED);
+        stats = new CarStats(this);
+        stats.creation = simEngine.getCurrentSimTime();
         this.Id = Id;
         this.source = source;
         this.destination = destination;
@@ -178,6 +181,7 @@ public class Car implements Entity {
             ((Intersection) nextStep).registerCar(this, getNextLane());
         } else if (nextStep instanceof Zone) {
             ((Zone) nextStep).addNewArrivedCar(this);
+            stats.arrival = simEngine.getCurrentSimTime();
         } else {
             Logger.getInstance().logWarning(getName(), simEngine.getCurrentSimTime(), "NextStep is nor an Intersection nor a Zone");
         }
@@ -273,7 +277,11 @@ public class Car implements Entity {
     }
 
     public void setCarState(CarState newCarState) {
+        if (carState == CarState.DRIVING && newCarState == CarState.STOPPED) stats.addNewStopTime();
+        else if (carState == CarState.STOPPED && newCarState == CarState.DRIVING) stats.addNewRestartTime();
         carState = newCarState;
+//        if (currentLane != null)
+//            LaneStats.log(currentLane);
     }
 
     public double getTotalTravelledDistance() {

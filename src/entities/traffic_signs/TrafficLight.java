@@ -1,9 +1,7 @@
 package entities.traffic_signs;
 
-import entities.Lane;
+import entities.lane.Lane;
 import simulation.SimEngine;
-
-import java.time.Duration;
 
 /**
  * Created by ejalaa on 01/01/2017.
@@ -11,8 +9,6 @@ import java.time.Duration;
 public class TrafficLight extends TrafficSign {
 
     private TrafficLightState state;
-    // TODO: 01/01/2017 change frequency so that green and red light don't have same duration
-    private Duration frequency;
     private Lane lane;
     private SimEngine simEngine;
 
@@ -20,12 +16,11 @@ public class TrafficLight extends TrafficSign {
         this.state = TrafficLightState.GREEN;
         this.lane = lane;
         this.simEngine = simEngine;
-        this.frequency = Duration.ofMinutes(20);
     }
 
     @Override
     public void init() {
-        getSimEngine().addEvent(new ChangeColorEvent(this, getSimEngine().getCurrentSimTime().plus(frequency)));
+        getSimEngine().addEvent(new ChangeColorEvent(this, getSimEngine().getCurrentSimTime().plus(state.getDuration())));
     }
 
     @Override
@@ -49,14 +44,6 @@ public class TrafficLight extends TrafficSign {
 
     public void setState(TrafficLightState state) {
         this.state = state;
-    }
-
-    public Duration getFrequency() {
-        return frequency;
-    }
-
-    public void setFrequency(Duration newFrequency) {
-        frequency = newFrequency;
     }
 
     public Lane getLane() {

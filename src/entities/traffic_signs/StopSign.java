@@ -1,7 +1,7 @@
 package entities.traffic_signs;
 
-import entities.Lane;
 import entities.car.Car;
+import entities.lane.Lane;
 import simulation.SimEngine;
 
 import java.time.Duration;

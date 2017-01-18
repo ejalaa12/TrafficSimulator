@@ -27,7 +27,7 @@ public class ChangeColorEvent extends Event {
         if (trafficLight.getWaitingCar() != null)
             ((Intersection) trafficLight.getLane().getDestination()).handle(trafficLight.getWaitingCar());
         // next changing state event
-        LocalDateTime nextTime = trafficLight.getSimEngine().getCurrentSimTime().plus(trafficLight.getFrequency());
+        LocalDateTime nextTime = trafficLight.getSimEngine().getCurrentSimTime().plus(trafficLight.getState().getDuration());
         trafficLight.getSimEngine().addEvent(new ChangeColorEvent(trafficLight, nextTime));
     }
 }

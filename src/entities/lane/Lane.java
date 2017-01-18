@@ -1,4 +1,4 @@
-package entities;
+package entities.lane;
 
 import entities.car.Car;
 import entities.car.DelayedReactionEvent;
@@ -22,6 +22,7 @@ public class Lane extends Edge {
     private double speed_limit;
     private TrafficSign trafficSign;
     private LaneState state;
+
     /**
      * @param id          the lane unique id
      * @param source      source of the lane
@@ -53,7 +54,17 @@ public class Lane extends Edge {
      */
     public void addCar(Car car) {
         carQueue.add(car);
-        state = hasSpace() ? LaneState.free : LaneState.full;
+        updateLaneState();
+    }
+
+    /**
+     * Updates the state of the lane to empty, free or full
+     */
+    private void updateLaneState() {
+        if (hasSpace()) {
+            if (carQueue.isEmpty()) state = LaneState.empty;
+            else state = LaneState.free;
+        } else state = LaneState.full;
     }
 
     /**
@@ -63,7 +74,7 @@ public class Lane extends Edge {
      */
     public void removeCar(Car car) {
         carQueue.remove(car);
-        state = carQueue.isEmpty() ? LaneState.empty : LaneState.free;
+        updateLaneState();
         // Since a car is removed from the lane we can update the following one
         updateNextCar(car);
     }
@@ -175,7 +186,7 @@ public class Lane extends Edge {
      * @param car the current car
      * @return the car following the current car
      */
-    public Car getNextCar(Car car) {
+    private Car getNextCar(Car car) {
         if (carQueue.indexOf(car) == carQueue.size() - 1) {
             return null;
         } else {
@@ -192,11 +203,18 @@ public class Lane extends Edge {
         return trafficSign != null;
     }
 
-    private enum LaneState {
+    /**
+     * Returns the state of the lane
+     *
+     * @return the state of the lane
+     */
+    public LaneState getState() {
+        return state;
+    }
+
+    enum LaneState {
         empty,  // when there is no car
         free,   // when there is room
         full    // when there is no room for more cars
-
-
     }
 }
