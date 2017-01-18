@@ -34,8 +34,8 @@ public class CarStats {
         if (stopDurations.size() > 0) {
             averageStopDuration.dividedBy(stopDurations.size());
         }
-//        String message2 = String.format("Average stop time %s", stopDurations);
-        String message2 = String.format("Average stop time %s", averageStopDuration);
+        String message2 = String.format("Average stop time %s", stopDurations);
+//        String message2 = String.format("Average stop time %s", averageStopDuration);
         Logger.getInstance().logSpecial(car.getName(), message2);
     }
 

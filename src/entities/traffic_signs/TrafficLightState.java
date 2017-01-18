@@ -20,7 +20,7 @@ public enum TrafficLightState {
 
     static {
         GREEN.duration = Duration.ofSeconds(30);
-        RED.duration = Duration.ofSeconds(36);
+        RED.duration = Duration.ofSeconds(69);
     }
 
     private TrafficLightState nextState;
