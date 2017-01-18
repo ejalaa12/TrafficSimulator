@@ -18,6 +18,7 @@ public class LaneStats {
         String message = String.format("%d, %d, %s", stoppedCars, drivingCars, lane.getState());
         if (lane.getState() == Lane.LaneState.full)
             Logger.getInstance().logSpecial(lane.getId(), message);
+        Logger.getInstance().logSpecial(lane.getId(), message);
         if (carQueue.size() > 0.1 * lane.maxQueue()) Logger.getInstance().logSpecial(lane.getId(), "bloque !");
     }
 
