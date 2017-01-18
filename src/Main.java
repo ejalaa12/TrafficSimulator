@@ -13,13 +13,13 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        Logger.getInstance().setLogLevel(LogLevel.INFO);
+        Logger.getInstance().setLogLevel(LogLevel.SPECIAL);
 //        Logger.getInstance().addCreatorFilter("R3.1-to-intersection4");
 //        Logger.getInstance().addCreatorFilter("intersection4");
 
-        Logger.getInstance().addCreatorFilter("tl1");
-        Logger.getInstance().addCreatorFilter("tl2");
-        Logger.getInstance().addCreatorFilter("tl3");
+//        Logger.getInstance().addCreatorFilter("tl1");
+//        Logger.getInstance().addCreatorFilter("tl2");
+//        Logger.getInstance().addCreatorFilter("tl3");
 //        Logger.getInstance().addCreatorFilter("StopSign on R2.1-to-intersection4");
 //        Logger.getInstance().addCreatorFilter("StopSign on R3.1-to-intersection4");
 //        Logger.getInstance().addCreatorFilter("StopSign on R2.2-to-intersection4");
@@ -30,7 +30,7 @@ public class Main {
         * ##############################################################################################################
         */
         LocalDateTime startSim = LocalDateTime.of(2000, 1, 1, 0, 0);
-        LocalDateTime endSim = LocalDateTime.of(2000, 1, 1, 0, 3);
+        LocalDateTime endSim = LocalDateTime.of(2000, 1, 2, 0, 3);
 
         SimEngine simEngine = new SimEngine(1, startSim, endSim);
 
