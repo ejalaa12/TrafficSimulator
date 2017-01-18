@@ -17,9 +17,9 @@ public class LaneStats {
         int drivingCars = countDrivingCars(carQueue);
         String message = String.format("%d, %d, %s", stoppedCars, drivingCars, lane.getState());
         if (lane.getState() == Lane.LaneState.full)
-            Logger.getInstance().logSpecial(lane.getId(), message);
-        Logger.getInstance().logSpecial(lane.getId(), message);
-        if (carQueue.size() > 0.1 * lane.maxQueue()) Logger.getInstance().logSpecial(lane.getId(), "bloque !");
+            Logger.getInstance().logStat(lane.getId(), message);
+        Logger.getInstance().logStat(lane.getId(), message);
+        if (carQueue.size() > 0.1 * lane.maxQueue()) Logger.getInstance().logStat(lane.getId(), "bloque !");
     }
 
     private static int countStoppedCars(List<Car> carQueue) {

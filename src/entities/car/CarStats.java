@@ -36,7 +36,7 @@ public class CarStats {
         }
         String message2 = String.format("Average stop time %s", stopDurations);
 //        String message2 = String.format("Average stop time %s", averageStopDuration);
-        Logger.getInstance().logSpecial(car.getName(), message2);
+        Logger.getInstance().logStat(car.getName(), message2);
     }
 
     public void addNewStopTime() {
