@@ -8,6 +8,7 @@ import graph_network.Node;
 import logging.Logger;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +23,7 @@ public class Lane extends Edge {
     private double speed_limit;
     private TrafficSign trafficSign;
     private LaneState state;
+    private LaneStats stats;
 
     /**
      * @param id          the lane unique id
@@ -35,6 +37,7 @@ public class Lane extends Edge {
         this.speed_limit = speed_limit;
         this.trafficSign = null;    // trafficSign is null if not set
         state = LaneState.empty;
+        stats = new LaneStats(this);
     }
 
     /**
@@ -54,17 +57,7 @@ public class Lane extends Edge {
      */
     public void addCar(Car car) {
         carQueue.add(car);
-        updateLaneState();
-    }
-
-    /**
-     * Updates the state of the lane to empty, free or full
-     */
-    private void updateLaneState() {
-        if (hasSpace()) {
-            if (carQueue.isEmpty()) state = LaneState.empty;
-            else state = LaneState.free;
-        } else state = LaneState.full;
+        updateLaneState(car.getSimEngine().getCurrentSimTime());
     }
 
     /**
@@ -74,9 +67,23 @@ public class Lane extends Edge {
      */
     public void removeCar(Car car) {
         carQueue.remove(car);
-        updateLaneState();
+        updateLaneState(car.getSimEngine().getCurrentSimTime());
         // Since a car is removed from the lane we can update the following one
         updateNextCar(car);
+    }
+
+    /**
+     * Updates the state of the lane to empty, free or full
+     */
+    private void updateLaneState(LocalDateTime dateTime) {
+        if (hasSpace()) {
+            if (carQueue.isEmpty()) state = LaneState.empty;
+            else state = LaneState.free;
+        } else state = LaneState.full;
+        // If more than 75% of the lane is occupied than log it as full
+        if (carQueue.size() > maxQueue() - 2) stats.wasJustBlocked(dateTime);
+        else stats.wasJustFreed(dateTime);
+        stats.logNumberOfCars(dateTime);
     }
 
     /**
@@ -210,6 +217,10 @@ public class Lane extends Edge {
      */
     public LaneState getState() {
         return state;
+    }
+
+    public LaneStats getStats() {
+        return stats;
     }
 
     enum LaneState {

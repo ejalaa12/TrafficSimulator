@@ -13,7 +13,10 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        Logger.getInstance().setLogLevel(LogLevel.STATISTICS);
+        Logger.getInstance().setLogLevel(LogLevel.INFO);
+        Logger.getInstance().turnCsvOn();
+//        Logger.getInstance().turnOff();
+//        Logger.getInstance().addCreatorFilter("R4-to-zone7");
 //        Logger.getInstance().addCreatorFilter("R3.1-to-intersection4");
 //        Logger.getInstance().addCreatorFilter("intersection4");
 
@@ -22,7 +25,6 @@ public class Main {
 //        Logger.getInstance().addCreatorFilter("tl3");
 //        Logger.getInstance().addCreatorFilter("StopSign on R2.1-to-intersection4");
 //        Logger.getInstance().addCreatorFilter("StopSign on R3.1-to-intersection4");
-//        Logger.getInstance().addCreatorFilter("StopSign on R2.2-to-intersection4");
 //        Logger.getInstance().addCreatorFilter("Car-751 (zone1)");
         /*
         * ##############################################################################################################

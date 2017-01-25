@@ -182,6 +182,7 @@ public class Car implements Entity {
         } else if (nextStep instanceof Zone) {
             ((Zone) nextStep).addNewArrivedCar(this);
             stats.arrival = simEngine.getCurrentSimTime();
+            stats.logFinish();
         } else {
             Logger.getInstance().logWarning(getName(), simEngine.getCurrentSimTime(), "NextStep is nor an Intersection nor a Zone");
         }

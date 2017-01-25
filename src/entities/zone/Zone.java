@@ -103,8 +103,6 @@ public class Zone extends Node implements Entity{
         stats.totalDistanceTravelledByAllCars += car.getTotalTravelledDistance();
         stats.addCarFromZone(car.getSource());
         car.setCarState(CarState.ARRIVED);
-        car.stats.arrival = simEngine.getCurrentSimTime();
-        car.stats.log();
     }
 
     public void addDismissedCar(Car car) {
