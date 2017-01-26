@@ -1,0 +1,21 @@
+# Simple network with one road connecting 2 zones through an intersection
+name: Network 1
+periods: [0, 7 , 9, 17, 19]
+
+zones:
+  - name: Paris
+    production: [10, 20, 30, 40, 50]
+    preferences:
+      - {zone: Lyon, attraction: 1.0}
+  - name: Lyon
+    production: [1, 2, 3, 4, 5]
+    preferences:
+      - {zone: Paris, attraction: 1.0}
+
+intersections: [auxerre]
+
+roads:
+  - {name: road1, z1: Paris, z2: auxerre, length: 100, speed_limit: 50}
+  - {name: road2, z1: auxerre, z2: Lyon, length: 100, speed_limit: 50}
+
+signs: []

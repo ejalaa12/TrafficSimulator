@@ -5,7 +5,6 @@ import entities.lane.Lane;
 import entities.lane.Road;
 import entities.traffic_signs.StopSign;
 import entities.traffic_signs.TrafficLight;
-import entities.traffic_signs.TrafficLightState;
 import entities.zone.TimePeriod;
 import entities.zone.Zone;
 import entities.zone.ZonePreference;
@@ -73,13 +72,13 @@ public class CoruscantNetwork extends RoadNetwork implements Entity {
         ZoneSchedule zoneSchedule7 = createZoneSchedule(periods, carsPerPeriod7);
 
 
-        zone1 = new Zone("zone1", zoneSchedule1, simEngine, this);
-        zone2 = new Zone("zone2", zoneSchedule2, simEngine, this);
-        zone3 = new Zone("zone3", zoneSchedule3, simEngine, this);
-        zone4 = new Zone("zone4", zoneSchedule4, simEngine, this);
-        zone5 = new Zone("zone5", zoneSchedule5, simEngine, this);
-        zone6 = new Zone("zone6", zoneSchedule6, simEngine, this);
-        zone7 = new Zone("zone7", zoneSchedule7, simEngine, this);
+        zone1 = new Zone("P1", zoneSchedule1, simEngine, this);
+        zone2 = new Zone("P2", zoneSchedule2, simEngine, this);
+        zone3 = new Zone("P3", zoneSchedule3, simEngine, this);
+        zone4 = new Zone("P4", zoneSchedule4, simEngine, this);
+        zone5 = new Zone("P5", zoneSchedule5, simEngine, this);
+        zone6 = new Zone("P6", zoneSchedule6, simEngine, this);
+        zone7 = new Zone("P7", zoneSchedule7, simEngine, this);
 
         // Preferences Zone1
         ArrayList<Integer> attractions1 = new ArrayList<>(Arrays.asList(5, 10, 10, 5, 35, 35));
@@ -122,10 +121,10 @@ public class CoruscantNetwork extends RoadNetwork implements Entity {
         * ##############################################################################################################
         */
 
-        Intersection intersection1 = new Intersection("intersection1", simEngine);
-        Intersection intersection2 = new Intersection("intersection2", simEngine);
-        Intersection intersection3 = new Intersection("intersection3", simEngine);
-        Intersection intersection4 = new Intersection("intersection4", simEngine);
+        Intersection intersection1 = new Intersection("I1", simEngine);
+        Intersection intersection2 = new Intersection("I2", simEngine);
+        Intersection intersection3 = new Intersection("I3", simEngine);
+        Intersection intersection4 = new Intersection("I4", simEngine);
 
         addIntersection(intersection1);
         addIntersection(intersection2);
@@ -229,10 +228,6 @@ public class CoruscantNetwork extends RoadNetwork implements Entity {
     @Override
     public void init() {
         super.init();
-        for (Intersection intersection :
-                intersections) {
-            intersection.init();
-        }
     }
 
     @Override

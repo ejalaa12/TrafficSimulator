@@ -100,4 +100,8 @@ public class SimEngine {
     public Random getRandom() {
         return random;
     }
+
+    public int getLoops() {
+        return loops;
+    }
 }

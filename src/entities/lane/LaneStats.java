@@ -3,39 +3,65 @@ package entities.lane;
 import entities.car.Car;
 import logging.Logger;
 
-import java.util.List;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 /**
- * Created by ejalaa on 17/01/2017.
+ * This class contains attributes that we use only for statistics
+ *
+ * we separated it from Lane to make it clearer
  */
 public class LaneStats {
 
+    // The lane that needs statistics
+    private Lane lane;
 
-    public static void log(Lane lane) {
-        List<Car> carQueue = lane.getCarQueue();
-        int stoppedCars = countStoppedCars(carQueue);
-        int drivingCars = countDrivingCars(carQueue);
-        String message = String.format("%d, %d, %s", stoppedCars, drivingCars, lane.getState());
-        if (lane.getState() == Lane.LaneState.full)
-            Logger.getInstance().logSpecial(lane.getId(), message);
-        Logger.getInstance().logSpecial(lane.getId(), message);
-        if (carQueue.size() > 0.1 * lane.maxQueue()) Logger.getInstance().logSpecial(lane.getId(), "bloque !");
+    private Duration blockedDuration;
+    private boolean blocked;
+    private LocalDateTime blockStart, blockEnd;
+    private int numberOfCarsStoppedMoreThan30Seconds;
+
+    public LaneStats(Lane lane) {
+        this.lane = lane;
+        blocked = false;
+        numberOfCarsStoppedMoreThan30Seconds = 0;
     }
 
-    private static int countStoppedCars(List<Car> carQueue) {
-        int total = 0;
-        for (Car car : carQueue) {
-            if (car.isStopped()) total += 1;
+
+    public void wasJustBlocked(LocalDateTime dateTime) {
+        blocked = true;
+        blockStart = dateTime;
+    }
+
+    public void wasJustFreed(LocalDateTime dateTime) {
+        if (blocked) {
+            blocked = false;
+            blockEnd = dateTime;
+            blockedDuration = Duration.between(blockStart, blockEnd);
+            Logger.getInstance().logStat(lane.getId(), "Blocked duration", blockedDuration.toString());
         }
-        return total;
     }
 
-    private static int countDrivingCars(List<Car> carQueue) {
-        int total = 0;
-        for (Car car : carQueue) {
-            if (car.isDriving()) total += 1;
+    public void logNumberOfCars(LocalDateTime dateTime) {
+        int stoppedCars;
+        int drivingCars;
+        stoppedCars = 0;
+        drivingCars = 0;
+        for (Car car : lane.getCarQueue()) {
+            if (car.isDriving()) drivingCars += 1;
+            if (car.isStopped()) stoppedCars += 1;
         }
-        return total;
+        Logger.getInstance().logStat(lane.getId(), "Stopped", String.valueOf(stoppedCars));
+        Logger.getInstance().logStat(lane.getId(), "Driving", String.valueOf(drivingCars));
+        Logger.getInstance().logStat(lane.getId(), "Total", String.valueOf(drivingCars + stoppedCars));
+        Logger.getInstance().logStat(lane.getId(), "Percentage", String.valueOf((double) (drivingCars + stoppedCars) / lane.maxQueue()));
+
     }
 
+    public void logNewCarStoppedMoreThan30Seconds(Duration stopDuration) {
+        numberOfCarsStoppedMoreThan30Seconds += 1;
+        Logger.getInstance().logStat(lane.getId(), "A car stop duration", stopDuration.toString());
+        Logger.getInstance().logStat(lane.getId(), "Number of car stopped more than 30 seconds", String.valueOf(numberOfCarsStoppedMoreThan30Seconds));
+
+    }
 }

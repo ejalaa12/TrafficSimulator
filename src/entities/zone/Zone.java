@@ -1,5 +1,6 @@
 package entities.zone;
 
+import configuration.NetworkConfiguration;
 import entities.RoadNetwork;
 import entities.car.Car;
 import entities.car.CarState;
@@ -10,6 +11,7 @@ import simulation.Entity;
 import simulation.SimEngine;
 
 import java.time.Duration;
+import java.util.ArrayList;
 
 
 /**
@@ -23,15 +25,40 @@ public class Zone extends Node implements Entity{
     private ZoneSchedule zoneSchedule;
     private ZonePreference zonePreference;
     private RoadNetwork roadNetwork;
+    private NetworkConfiguration.ZoneCfg cfg;    // used only if creating zone from config
 
-    public Zone(String id, ZoneSchedule zoneSchedule, SimEngine simEngine, RoadNetwork roadNetwork) {
+    /*
+    * ##############################################################################################################
+    * Constructors
+    * ##############################################################################################################
+    */
+
+    public Zone(String id, SimEngine simEngine, RoadNetwork roadNetwork) {
         super(id);
-        this.zoneSchedule = zoneSchedule;
         this.simEngine = simEngine;
         this.roadNetwork = roadNetwork;
         stats = new ZoneStats();
     }
 
+    public Zone(String id, ZoneSchedule zoneSchedule, SimEngine simEngine, RoadNetwork roadNetwork) {
+        this(id, simEngine, roadNetwork);
+        this.zoneSchedule = zoneSchedule;
+    }
+
+    public static Zone fromConfig(NetworkConfiguration.ZoneCfg zoneCfg, ArrayList<Integer> periods, SimEngine simEngine, RoadNetwork roadNetwork) {
+        Zone z = new Zone(zoneCfg.name, simEngine, roadNetwork);
+        z.setCfg(zoneCfg);
+        // Schedule (number of car per period)
+        ZoneSchedule schedule = new ZoneSchedule(periods, zoneCfg.production);
+        z.setZoneSchedule(schedule);
+        return z;
+    }
+
+    /*
+    * ##############################################################################################################
+    * Entity methods
+    * ##############################################################################################################
+    */
 
     @Override
     public void init() {
@@ -52,6 +79,12 @@ public class Zone extends Node implements Entity{
         System.out.println(string);
 
     }
+
+    /*
+    * ##############################################################################################################
+    * Zone Settings
+    * ##############################################################################################################
+    */
 
     /*
     * ****************************************************************************************************************
@@ -79,6 +112,10 @@ public class Zone extends Node implements Entity{
         return zoneSchedule;
     }
 
+    public void setZoneSchedule(ZoneSchedule zoneSchedule) {
+        this.zoneSchedule = zoneSchedule;
+    }
+
     public ZonePreference getZonePreference() {
         return zonePreference;
     }
@@ -103,8 +140,6 @@ public class Zone extends Node implements Entity{
         stats.totalDistanceTravelledByAllCars += car.getTotalTravelledDistance();
         stats.addCarFromZone(car.getSource());
         car.setCarState(CarState.ARRIVED);
-        car.stats.arrival = simEngine.getCurrentSimTime();
-        car.stats.log();
     }
 
     public void addDismissedCar(Car car) {
@@ -113,6 +148,14 @@ public class Zone extends Node implements Entity{
 
     public int getNumberOfDismissedCar() {
         return stats.numberOfDismissedCar;
+    }
+
+    public NetworkConfiguration.ZoneCfg getCfg() {
+        return cfg;
+    }
+
+    public void setCfg(NetworkConfiguration.ZoneCfg cfg) {
+        this.cfg = cfg;
     }
 
     public ZoneStats getStats() {

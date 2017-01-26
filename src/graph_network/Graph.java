@@ -2,6 +2,7 @@ package graph_network;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * This class models a simple undirected graph
@@ -77,4 +78,7 @@ public class Graph {
     }
 
 
+    public Node getNodeFromName(String name) {
+        return nodes.stream().filter(x -> Objects.equals(x.getName(), name)).findFirst().orElse(null);
+    }
 }

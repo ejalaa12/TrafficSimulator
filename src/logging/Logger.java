@@ -41,11 +41,14 @@ public class Logger {
     // File for csv
     private boolean csvOn;
     private String csvFile;
+    private String statCsvFile;
     private FileWriter writer;
+    private FileWriter statWriter;
     private SimEngine simEngine;
 
     // attributes for filtering
     private ArrayList<String> creatorFilter;
+    private ArrayList<String> messageFilters;
 
     private Logger() {
         // exist only to defeat instanciation
@@ -53,9 +56,12 @@ public class Logger {
         mlogLevel = LogLevel.INFO;
         csvOn = false;
         csvFile = "./results/logs.csv";
+        statCsvFile = "./results/logs_stat.csv";
         try {
             writer = new FileWriter(csvFile);
             CSVUtils.writeLine(writer, Arrays.asList("date", "creator", "message"));
+            statWriter = new FileWriter(statCsvFile);
+            CSVUtils.writeLine(statWriter, Arrays.asList("date", "creator", "message", "data"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -185,6 +191,8 @@ public class Logger {
         if (csvOn) {
             try {
                 CSVUtils.writeLine(writer, Arrays.asList(timestamp, creatorName, message));
+                if (logLevel == LogLevel.STATISTICS)
+                    CSVUtils.writeLine(statWriter, Arrays.asList(timestamp, creatorName, message));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -200,6 +208,9 @@ public class Logger {
             try {
                 writer.flush();
                 writer.close();
+
+                statWriter.flush();
+                statWriter.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -210,11 +221,17 @@ public class Logger {
         this.simEngine = simEngine;
     }
 
-    public void logSpecial(String creatorName, String message) {
-        mlog(creatorName, simEngine.getCurrentSimTime(), message, LogLevel.SPECIAL);
+    public void logStat(String creatorName, String stat_title, String message) {
+        mlog(creatorName, simEngine.getCurrentSimTime(), stat_title + ", " + message, LogLevel.STATISTICS);
+
     }
 
     public void addCreatorFilter(String creatorFilter) {
         this.creatorFilter.add(creatorFilter);
     }
+
+    public void addMessageFilter(String filter) {
+        messageFilters.add(filter);
+    }
+
 }
