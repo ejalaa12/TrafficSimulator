@@ -12,6 +12,7 @@ public class NewCarEvent extends Event {
 
     private Zone source, destination;
     private Car createdCar;
+    private String carName;
 
     public NewCarEvent(Zone source, LocalDateTime scheduledTime) {
         super(source.getName(), scheduledTime, "Creation of new car");
@@ -20,12 +21,11 @@ public class NewCarEvent extends Event {
         // car destination
         destination = source.getZonePreference().getDestination();
         //
-        String carName = String.format("Car-%d (%s)", source.getNumberOfProducedCars(), source.getName());
+        carName = String.format("Car-%d (%s)", source.getNumberOfProducedCars(), source.getName());
         // Update description with car name
         description = "Creation of ";
         description += carName + String.format("(%s -> %s)", source.getName(), destination.getName());
         // Create the car
-        createdCar = new Car(carName, source, destination, source.getRoadNetwork(), source.getSimEngine());
 
     }
 
@@ -39,12 +39,13 @@ public class NewCarEvent extends Event {
         description = "Creation of ";
         description += carName + String.format("(%s -> %s)", source.getName(), destination.getName());
         // Create the car
-        createdCar = new Car(carName, source, destination, source.getRoadNetwork(), source.getSimEngine());
+
 
     }
 
     @Override
     public void doAction() {
+        createdCar = new Car(carName, source, destination, source.getRoadNetwork(), source.getSimEngine());
         createdCar.init();
         source.setNumberOfProducedCars(source.getNumberOfProducedCars() + 1);
         // next car event

@@ -1,0 +1,31 @@
+# Simple network with one road connecting 3 zones through an intersection
+# the intersection has a stop
+name: Network 3
+periods: [0, 7 , 9, 17, 19]
+
+zones:
+  - name: Paris
+    production: [1, 0, 0, 0, 0]
+    preferences:
+      - {zone: Lyon, attraction: 0.7}
+      - {zone: Brest, attraction: 0.3}
+  - name: Lyon
+    production: [0, 0, 0, 0, 0]
+    preferences:
+      - {zone: Paris, attraction: 0.5}
+      - {zone: Brest, attraction: 0.5}
+  - name: Brest
+    production: [0, 0, 0, 0, 0]
+    preferences:
+      - {zone: Paris, attraction: 0.2}
+      - {zone: Lyon, attraction: 0.8}
+
+intersections: [auxerre]
+
+roads:
+  - {name: road1, z1: Paris, z2: auxerre, length: 100, speed_limit: 50}
+  - {name: road2, z1: Lyon, z2: auxerre, length: 100, speed_limit: 50}
+  - {name: road3, z1: Brest, z2: auxerre, length: 100, speed_limit: 50}
+
+signs:
+  - {type: Stop, road: road1, intersection: auxerre}

@@ -13,6 +13,7 @@ import simulation.SimEngine;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * This class models a road network based on a Graph.
@@ -83,6 +84,7 @@ public class RoadNetwork extends Graph implements Entity {
      */
     @Override
     public void init() {
+        initIntersections();
         initZones();
         initTrafficLights();
         // no need to init stops, they only create events when cars arrive
@@ -111,6 +113,18 @@ public class RoadNetwork extends Graph implements Entity {
         }
     }
 
+    /**
+     * Make sure the intersections know what they are connected to
+     */
+    protected void initIntersections() {
+        for (Intersection intersection : intersections) {
+            intersection.addConnectedLanes(getConnections(intersection));
+        }
+        for (Intersection intersection : intersections) {
+            intersection.init();
+        }
+    }
+
     @Override
     public void logStats() {
 
@@ -135,5 +149,13 @@ public class RoadNetwork extends Graph implements Entity {
 
     public List<Intersection> getIntersections() {
         return intersections;
+    }
+
+    public Zone getZoneFromName(String zone) {
+        return getZones().stream().filter(x -> Objects.equals(x.getName(), zone)).findFirst().orElse(null);
+    }
+
+    public Road getRoadByName(String roadName) {
+        return getRoads().stream().filter(x -> Objects.equals(x.getId(), roadName)).findFirst().orElse(null);
     }
 }

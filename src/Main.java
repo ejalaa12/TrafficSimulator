@@ -1,4 +1,5 @@
 import entities.CoruscantNetwork;
+import entities.zone.Zone;
 import logging.LogLevel;
 import logging.Logger;
 import simulation.SimEngine;
@@ -13,9 +14,9 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        Logger.getInstance().setLogLevel(LogLevel.INFO);
-        Logger.getInstance().turnCsvOn();
-//        Logger.getInstance().turnOff();
+        Logger.getInstance().setLogLevel(LogLevel.EVENT);
+//        Logger.getInstance().turnCsvOn();
+        Logger.getInstance().turnOff();
 //        Logger.getInstance().addCreatorFilter("R4-to-zone7");
 //        Logger.getInstance().addCreatorFilter("R3.1-to-intersection4");
 //        Logger.getInstance().addCreatorFilter("intersection4");
@@ -79,5 +80,10 @@ public class Main {
 //        crossroads.logStats();
 
         Logger.getInstance().close();
+        System.out.println("Total Produced cars");
+        for (Zone zone : crossroads.getZones()) {
+            System.out.println(String.format("%s: %d", zone.getName(), zone.getStats().numberOfProducedCars));
+        }
+        System.out.println(String.format("Number of events: %d", simEngine.getLoops()));
     }
 }

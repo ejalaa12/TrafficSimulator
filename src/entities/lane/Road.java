@@ -14,6 +14,7 @@ public class Road {
     private double speed_limit;
 
     public Road(String id, Node node1, Node node2, int length, double speed_limit) {
+        this.id = id;
         lane1 = new Lane(id + "-to-" + node2.getName(), node1, node2, length, speed_limit);
         lane2 = new Lane(id + "-to-" + node1.getName(), node2, node1, length, speed_limit);
         connectedNode1 = node1;
@@ -51,5 +52,9 @@ public class Road {
 
     public Lane getLaneWithSource(Node node) {
         return lane1.getSource().equals(node) ? lane1 : lane2;
+    }
+
+    public String getId() {
+        return id;
     }
 }

@@ -37,7 +37,7 @@ public class ZonePreference {
         double key[] = {percentage, cumul};
         keys.add(key);
         if (cumul > 1f) {
-            throw new IllegalArgumentException("Can't create preferences if the percentages don't add up to 1.");
+            throw new IllegalArgumentException("Can't create preferences if the percentages cumul is more than 1: " + cumul);
         }
         // if everything is ok
         preferenceTable.put(key, zone);
@@ -47,6 +47,7 @@ public class ZonePreference {
         if (cumul != 1) {
             throw new IllegalStateException(String.format("Not enough preferences, cumul of percentage(=%s)", cumul));
         }
+        // TODO: 26/01/2017 this is always random
         double r = random.nextDouble();
         if (r < keys.get(0)[1]) {
             return preferenceTable.get(keys.get(0));
@@ -78,7 +79,7 @@ public class ZonePreference {
      * @return the rounded value
      */
     private double mround(double value) {
-        return mround(value, 1e9);
+        return mround(value, 1e5);
     }
 
     private double mround(double value, double precision) {
