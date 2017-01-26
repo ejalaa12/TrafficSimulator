@@ -1,0 +1,89 @@
+# Description of the coruscant network
+name: Coruscant
+periods: [0, 7 , 9, 17, 19]
+
+zones:
+  - name: P1
+    production: [40, 300, 20, 100, 20]
+    preferences:
+      - {zone: P2, attraction: 0.05}
+      - {zone: P3, attraction: 0.10}
+      - {zone: P4, attraction: 0.10}
+      - {zone: P5, attraction: 0.05}
+      - {zone: P6, attraction: 0.35}
+      - {zone: P7, attraction: 0.35}
+  - name: P2
+    production: [50, 200, 30, 150, 30]
+    preferences:
+      - {zone: P1, attraction: 0.10}
+      - {zone: P3, attraction: 0.05}
+      - {zone: P4, attraction: 0.20}
+      - {zone: P5, attraction: 0.20}
+      - {zone: P6, attraction: 0.25}
+      - {zone: P7, attraction: 0.20}
+  - name: P3
+    production: [30, 100, 20, 300, 15]
+    preferences:
+      - {zone: P1, attraction: 0.15}
+      - {zone: P2, attraction: 0.15}
+      - {zone: P4, attraction: 0.20}
+      - {zone: P5, attraction: 0.20}
+      - {zone: P6, attraction: 0.20}
+      - {zone: P7, attraction: 0.10}
+  - name: P4
+    production: [20, 100, 30, 200, 50]
+    preferences:
+      - {zone: P1, attraction: 0.15}
+      - {zone: P2, attraction: 0.10}
+      - {zone: P3, attraction: 0.10}
+      - {zone: P5, attraction: 0.20}
+      - {zone: P6, attraction: 0.40}
+      - {zone: P7, attraction: 0.05}
+  - name: P5
+    production: [30, 400, 20, 150, 20]
+    preferences:
+      - {zone: P1, attraction: 0.10}
+      - {zone: P2, attraction: 0.30}
+      - {zone: P3, attraction: 0.10}
+      - {zone: P4, attraction: 0.10}
+      - {zone: P6, attraction: 0.10}
+      - {zone: P7, attraction: 0.30}
+  - name: P6
+    production: [20, 50, 30, 100, 10]
+    preferences:
+      - {zone: P1, attraction: 0.20}
+      - {zone: P2, attraction: 0.10}
+      - {zone: P3, attraction: 0.40}
+      - {zone: P4, attraction: 0.10}
+      - {zone: P5, attraction: 0.10}
+      - {zone: P7, attraction: 0.10}
+  - name: P7
+    production: [30, 30, 10, 100, 10]
+    preferences:
+      - {zone: P1, attraction: 0.20}
+      - {zone: P2, attraction: 0.20}
+      - {zone: P3, attraction: 0.20}
+      - {zone: P4, attraction: 0.20}
+      - {zone: P5, attraction: 0.10}
+      - {zone: P6, attraction: 0.10}
+
+intersections: [I1, I2, I3, I4]
+
+roads:
+  - {name: R1.1, z1: P1, z2: I1, length: 3000, speed_limit: 50}
+  - {name: R1.2, z1: I1, z2: I2, length: 1300, speed_limit: 50}
+  - {name: R1.3, z1: P3, z2: I2, length: 2000, speed_limit: 50}
+  - {name: R2, z1: P2, z2: I2, length: 4500, speed_limit: 50}
+  - {name: R2.1, z1: P5, z2: I4, length: 4500, speed_limit: 50}
+  - {name: R2.2, z1: I4, z2: I3, length: 800, speed_limit: 50}
+  - {name: R2.3, z1: P4, z2: I3, length: 1400, speed_limit: 50}
+  - {name: R3.1, z1: I1, z2: I4, length: 3500, speed_limit: 50}
+  - {name: R3.2, z1: P6, z2: I4, length: 1000, speed_limit: 50}
+  - {name: R4, z1: P7, z2: I3, length: 3000, speed_limit: 50}
+
+signs:
+  - {type: Stop, road: R3.1, intersection: I1}
+  - {type: Stop, road: R2, intersection: I2}
+  - {type: Stop, road: R3.1, intersection: I4}
+  - {type: Stop, road: R3.2, intersection: I4}
+  - {type: TrafficLight, road: R4, intersection: I3}
