@@ -5,7 +5,7 @@ import java.io.Writer;
 import java.util.List;
 
 /**
- * Created by ejalaa on 14/12/2016.
+ * A utility class to write CSV files.
  */
 public class CSVUtils {
     private static final char DEFAULT_SEPARATOR = ',';

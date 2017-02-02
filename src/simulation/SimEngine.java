@@ -1,5 +1,6 @@
 package simulation;
 
+import logging.LogLevel;
 import logging.Logger;
 
 import java.time.LocalDateTime;
@@ -27,36 +28,64 @@ public class SimEngine {
         this.currentSimTime = startSimTime;
         this.endSimTime = endSimTime;
         this.loops = 0;
-        Logger.getInstance().log(className, this.currentSimTime, "Simulation started !");
+        Logger.getInstance().log(className, this.currentSimTime, "Simulation initialized !", LogLevel.INFO);
+        Logger.getInstance().setSimEngine(this);
     }
 
+    /**
+     * Add event to the event queue and sort it to have event in chronological order
+     *
+     * @param newEvent the event to add
+     */
     public void addEvent(Event newEvent) {
         if (!this.events.contains(newEvent)) {
+            newEvent.setPostedTime(currentSimTime);
             this.events.add(newEvent);
             Collections.sort(this.events);
         } else {
-            System.out.println("the event is already here I don't know what to do !");
+            Logger.getInstance().log(newEvent.getCreator(), currentSimTime, "Trying to add already existing event (dismissed)", LogLevel.WARNING);
         }
     }
 
+    /**
+     * Remove an event from the queue
+     *
+     * @param event
+     */
+    public void removeEvent(Event event) {
+        if (events.contains(event)) {
+            events.remove(event);
+        } else {
+            Logger.getInstance().log(className, currentSimTime, "Trying to remove non-existing event", LogLevel.WARNING);
+        }
+    }
+
+    /**
+     * Simulation loop
+     */
     public void loop() {
+        Logger.getInstance().log(className, this.currentSimTime, "Simulation started !", LogLevel.EVENT);
         while (!simHasEnded()) {
             simStep();
         }
-        Logger.getInstance().log(className, this.currentSimTime, "Simulation has ended !");
+        Logger.getInstance().log(className, this.currentSimTime, "Simulation has ended !", LogLevel.EVENT);
+        Logger.getInstance().log(className, this.currentSimTime, "Number of events: " + loops, LogLevel.EVENT);
     }
 
+    /**
+     * This defines what the simEngine does at each step of the simulation
+     */
     private void simStep() {
         // Get first element
         Event currentEvent = this.events.get(0);
         this.events.remove(0);
+        // break if the event is after endSimTime
+        if (currentEvent.getScheduledTime().isAfter(endSimTime)) {
+            return;
+        }
         Logger.getInstance().log(currentEvent);
         // Update simulation time with current event time
         currentSimTime = currentEvent.getScheduledTime();
-        // break if the event is after endSimTime
-        if (currentSimTime.isAfter(endSimTime)) {
-            return;
-        }
         // Do the action of this event and get all generated events
         currentEvent.doAction();
         // Increment loops
@@ -73,5 +102,9 @@ public class SimEngine {
 
     public Random getRandom() {
         return random;
+    }
+
+    public int getLoops() {
+        return loops;
     }
 }

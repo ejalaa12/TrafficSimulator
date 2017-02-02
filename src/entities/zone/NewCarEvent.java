@@ -10,29 +10,53 @@ import java.time.LocalDateTime;
  */
 public class NewCarEvent extends Event {
 
-    private Zone zone;
+    private Zone source, destination;
     private Car createdCar;
+    private String carName;
 
-    NewCarEvent(Zone zone, LocalDateTime scheduledTime) {
-        super(zone.getName(), scheduledTime, "Creation of new car");
-        this.zone = zone;
+    public NewCarEvent(Zone source, LocalDateTime scheduledTime) {
+        super(source.getName(), scheduledTime, "Creation of new car");
+        this.source = source;
+
+        // car destination
+        destination = source.getZonePreference().getDestination();
+        //
+        carName = String.format("Car-%d (%s)", source.getNumberOfProducedCars(), source.getName());
         // Update description with car name
-        String description = "Creation of ";
-        String carName = "Car" + zone.getName() + "-";
-        carName += zone.getNumberOfProducedCars();
-        description += carName;
-        setDescription(description);
+        description = "Creation of ";
+        description += carName + String.format("(%s -> %s)", source.getName(), destination.getName());
         // Create the car
-        createdCar = new Car(carName, zone, zone.getPreferedDestination(), zone.getRoadNetwork());
+
+    }
+
+    public NewCarEvent(Zone source, LocalDateTime scheduledTime, String carName) {
+        super(source.getName(), scheduledTime, "Creation of new car");
+        this.source = source;
+
+        // car destination
+        destination = source.getZonePreference().getDestination();
+        // Update description with car name
+        description = "Creation of ";
+        description += carName + String.format("(%s -> %s)", source.getName(), destination.getName());
+        // Create the car
+
+
     }
 
     @Override
     public void doAction() {
+        createdCar = new Car(carName, source, destination, source.getRoadNetwork(), source.getSimEngine());
         createdCar.init();
-        zone.setNumberOfProducedCars(zone.getNumberOfProducedCars() + 1);
+        source.setNumberOfProducedCars(source.getNumberOfProducedCars() + 1);
         // next car event
-        LocalDateTime nextCarEvent = zone.getSimEngine().getCurrentSimTime();
-        nextCarEvent = nextCarEvent.plus(zone.getZoneSchedule().getCurrentFrequency(nextCarEvent.toLocalTime()));
-        zone.getSimEngine().addEvent(new NewCarEvent(zone, nextCarEvent));
+        LocalDateTime nextCarEvent = source.getSimEngine().getCurrentSimTime();
+        if (source.getZoneSchedule().getCurrentFrequency(nextCarEvent.toLocalTime()) != null) {
+            nextCarEvent = nextCarEvent.plus(source.getZoneSchedule().getCurrentFrequency(nextCarEvent.toLocalTime()));
+            source.getSimEngine().addEvent(new NewCarEvent(source, nextCarEvent));
+        }
+    }
+
+    public Car getCreatedCar() {
+        return createdCar;
     }
 }

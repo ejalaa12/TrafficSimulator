@@ -5,11 +5,29 @@ package simulation;
  */
 public interface Entity {
 
+    /**
+     * Initialize the Entity (generally by adding the first event of this entity to the simEngine)
+     */
     void init();
 
-    void printStats();
+    /**
+     * Print statistics about the entity
+     */
+    void logStats();
 
+    /**
+     * Each entity has a name
+     *
+     * @return entity name
+     */
     String getName();
+
+    /**
+     * Each entity must have a reference to the Simulator engine so that it can post events
+     *
+     * @return
+     */
+    SimEngine getSimEngine();
 
 
 }

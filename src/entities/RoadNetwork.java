@@ -1,12 +1,19 @@
 package entities;
 
+import entities.intersection.Intersection;
+import entities.lane.Lane;
+import entities.lane.Road;
+import entities.traffic_signs.TrafficLight;
+import entities.traffic_signs.TrafficSign;
 import entities.zone.Zone;
 import graph_network.Graph;
+import graph_network.Node;
 import simulation.Entity;
 import simulation.SimEngine;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * This class models a road network based on a Graph.
@@ -56,13 +63,70 @@ public class RoadNetwork extends Graph implements Entity {
         addNode(intersection);
     }
 
+    /**
+     * Returns the lane between two nodes of the road network
+     *
+     * @param start start node
+     * @param end   end node
+     * @return the lane that connects both
+     */
+    public Lane getLaneBetween(Node start, Node end) {
+        for (Road road : roads) {
+            if (road.connects(start, end)) {
+                return road.getLaneWithSource(start);
+            }
+        }
+        throw new NoSuchFieldError("no lane between " + start.toString() + "and " + end.toString());
+    }
+
+    /**
+     * Initiate all zones and traffic lights
+     */
     @Override
     public void init() {
+        initIntersections();
+        initZones();
+        initTrafficLights();
+        // no need to init stops, they only create events when cars arrive
+    }
 
+    /**
+     * Loops through all roads to get the traffic lights and init them
+     */
+    protected void initTrafficLights() {
+        for (Road road : roads) {
+            // traffic light on lane 1
+            TrafficSign tfs = road.getLane1().getTrafficSign();
+            if (tfs instanceof TrafficLight) tfs.init();
+            // traffic light on lane 2
+            tfs = road.getLane2().getTrafficSign();
+            if (tfs instanceof TrafficLight) tfs.init();
+        }
+    }
+
+    /**
+     * Loops through all zones and init them
+     */
+    protected void initZones() {
+        for (Zone zone : zones) {
+            zone.init();
+        }
+    }
+
+    /**
+     * Make sure the intersections know what they are connected to
+     */
+    protected void initIntersections() {
+        for (Intersection intersection : intersections) {
+            intersection.addConnectedLanes(getConnections(intersection));
+        }
+        for (Intersection intersection : intersections) {
+            intersection.init();
+        }
     }
 
     @Override
-    public void printStats() {
+    public void logStats() {
 
     }
 
@@ -73,5 +137,25 @@ public class RoadNetwork extends Graph implements Entity {
 
     public SimEngine getSimEngine() {
         return simEngine;
+    }
+
+    public List<Road> getRoads() {
+        return roads;
+    }
+
+    public List<Zone> getZones() {
+        return zones;
+    }
+
+    public List<Intersection> getIntersections() {
+        return intersections;
+    }
+
+    public Zone getZoneFromName(String zone) {
+        return getZones().stream().filter(x -> Objects.equals(x.getName(), zone)).findFirst().orElse(null);
+    }
+
+    public Road getRoadByName(String roadName) {
+        return getRoads().stream().filter(x -> Objects.equals(x.getId(), roadName)).findFirst().orElse(null);
     }
 }

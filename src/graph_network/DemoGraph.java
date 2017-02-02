@@ -1,8 +1,6 @@
 package graph_network;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 
 /**
  * @author Michael Levet
@@ -12,16 +10,16 @@ public class DemoGraph {
 
     private Graph graph = new Graph();
 
+    public static void main(String[] args) {
+        DemoGraph dg = new DemoGraph();
+        dg.demo();
+    }
+
     private void addDoubleEdge(String laneId, Node node1, Node node2, int length) {
         Edge lane1 = new Edge(laneId+"a", node1, node2, length);
         Edge lane2 = new Edge(laneId+"b", node2, node1, length);
         graph.addEdge(lane1);
         graph.addEdge(lane2);
-    }
-
-    public static void main(String[] args) {
-        DemoGraph dg = new DemoGraph();
-        dg.demo();
     }
 
     public void demo() {

@@ -1,0 +1,20 @@
+# Simple network with one road connecting 2 zones
+name: Network 0
+periods: [0, 7 , 9, 17, 19]
+
+zones:
+  - name: Bob
+    production: [10, 20, 30, 40, 50]
+    preferences:
+      - {zone: Alice, attraction: 1.0}
+  - name: Alice
+    production: [1, 2, 3, 4, 5]
+    preferences:
+      - {zone: Bob, attraction: 1.0}
+
+intersections: []
+
+roads:
+  - {name: road1, z1: Bob, z2: Alice, length: 100, speed_limit: 50}
+
+signs: []
