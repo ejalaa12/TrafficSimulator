@@ -47,7 +47,7 @@ public class ZonePreference {
         if (cumul != 1) {
             throw new IllegalStateException(String.format("Not enough preferences, cumul of percentage(=%s)", cumul));
         }
-        // TODO: 26/01/2017 this is always random
+        // FIXME: 26/01/2017 this is always random
         double r = random.nextDouble();
         if (r < keys.get(0)[1]) {
             return preferenceTable.get(keys.get(0));

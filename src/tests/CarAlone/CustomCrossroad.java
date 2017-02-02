@@ -124,7 +124,7 @@ public class CustomCrossroad extends RoadNetwork implements Entity {
         // Zone 1 schedule
         ArrayList<TimePeriod> timeSlots = new ArrayList<>();
         timeSlots.add(new TimePeriod(LocalTime.of(h0, m0), LocalTime.of(h1, m1, s1, ns1), nCars));
-        ZoneSchedule zoneSchedule = new ZoneSchedule(timeSlots);
+        ZoneSchedule zoneSchedule = new ZoneSchedule(timeSlots, simEngine.getRandom());
         // Zone 1
         return new Zone(name, zoneSchedule, simEngine, this);
     }

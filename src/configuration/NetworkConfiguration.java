@@ -103,7 +103,12 @@ public class NetworkConfiguration {
 
         @Override
         public String toString() {
-            String str = String.format("%s :", name);
+            int total_real_production = 0;
+            for (int prod :
+                    production) {
+                total_real_production += prod;
+            }
+            String str = String.format("%s(%d) :", name, total_real_production);
             String r = "Preferences: ";
             for (PreferenceCfg pref :
                     preferences) {

@@ -49,7 +49,7 @@ public class Zone extends Node implements Entity{
         Zone z = new Zone(zoneCfg.name, simEngine, roadNetwork);
         z.setCfg(zoneCfg);
         // Schedule (number of car per period)
-        ZoneSchedule schedule = new ZoneSchedule(periods, zoneCfg.production);
+        ZoneSchedule schedule = new ZoneSchedule(periods, zoneCfg.production, simEngine.getRandom());
         z.setZoneSchedule(schedule);
         return z;
     }
