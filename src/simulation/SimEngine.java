@@ -72,6 +72,9 @@ public class SimEngine {
         Logger.getInstance().log(className, this.currentSimTime, "Number of events: " + loops, LogLevel.EVENT);
     }
 
+    /**
+     * This defines what the simEngine does at each step of the simulation
+     */
     private void simStep() {
         // Get first element
         Event currentEvent = this.events.get(0);

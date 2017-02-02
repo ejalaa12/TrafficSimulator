@@ -3,8 +3,6 @@ package entities.traffic_signs;
 import entities.lane.Lane;
 import simulation.SimEngine;
 
-import java.time.Duration;
-
 /**
  * Created by ejalaa on 01/01/2017.
  */
@@ -16,7 +14,7 @@ public class TrafficLight extends TrafficSign {
     private String name;
 
     public TrafficLight(Lane lane, SimEngine simEngine) {
-        this.state = TrafficLightState.RED;
+        state = TrafficLightState.RED;
         this.lane = lane;
         this.simEngine = simEngine;
         this.name = "TrafficLight on " + lane.getId();

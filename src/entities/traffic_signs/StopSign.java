@@ -19,7 +19,9 @@ public class StopSign extends TrafficSign {
     public StopSign(Lane lane, SimEngine simEngine) {
         this.lane = lane;
         this.simEngine = simEngine;
-        stopDuration = Duration.ofSeconds(3);
+        // add some randomness to the stop duration ±1s
+        int offset = simEngine.getRandom().nextInt(2) * 2 - 1;
+        stopDuration = Duration.ofSeconds(4).plusSeconds(offset);
         waitFinish = false;
     }
 

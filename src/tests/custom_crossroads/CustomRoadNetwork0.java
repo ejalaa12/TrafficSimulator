@@ -39,13 +39,13 @@ public class CustomRoadNetwork0 extends RoadNetwork implements Entity {
         // Zone 1 schedule
         ArrayList<TimePeriod> timeSlots1 = new ArrayList<>();
         timeSlots1.add(new TimePeriod(LocalTime.of(0, 0), LocalTime.of(23, 59, 59, 99999), zone1Cars));
-        ZoneSchedule zoneSchedule1 = new ZoneSchedule(timeSlots1);
+        ZoneSchedule zoneSchedule1 = new ZoneSchedule(timeSlots1, simEngine.getRandom());
         // Zone 1
         Zone zone1 = new Zone("zone1", zoneSchedule1, simEngine, this);
         // Zone 2 schedule
         ArrayList<TimePeriod> timeSlots2 = new ArrayList<>();
         timeSlots2.add(new TimePeriod(LocalTime.of(0, 0), LocalTime.of(23, 59, 59, 99999), zone2Cars));
-        ZoneSchedule zoneSchedule2 = new ZoneSchedule(timeSlots2);
+        ZoneSchedule zoneSchedule2 = new ZoneSchedule(timeSlots2, simEngine.getRandom());
         // zone 2
         Zone zone2 = new Zone("zone2", zoneSchedule2, simEngine, this);
         // Preferences
