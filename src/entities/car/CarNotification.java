@@ -1,7 +1,7 @@
 package entities.car;
 
 /**
- * Created by ejalaa on 28/12/2016.
+ * An enumeration of the different type of notification that a car can receive
  */
 public enum CarNotification {
     GreenLight,

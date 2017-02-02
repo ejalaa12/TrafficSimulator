@@ -4,7 +4,7 @@ import entities.lane.Lane;
 import simulation.SimEngine;
 
 /**
- * Created by ejalaa on 01/01/2017.
+ * An implementation of traffic light at an intersection.
  */
 public class TrafficLight extends TrafficSign {
 

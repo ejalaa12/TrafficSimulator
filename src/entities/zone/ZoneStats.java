@@ -3,7 +3,7 @@ package entities.zone;
 import java.util.HashMap;
 
 /**
- * Created by ejalaa on 11/01/2017.
+ * A holder class for all the methods and parameters related to statistics about a zone.
  */
 public class ZoneStats {
 

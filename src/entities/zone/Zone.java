@@ -15,7 +15,13 @@ import java.util.ArrayList;
 
 
 /**
- * Created by ejalaa on 25/12/2016.
+ * An class tha implements a Zone.
+ *
+ * A Zone is a Node of the road network
+ *
+ * It handles creating cars, and receiving them.
+ * The schedule for creating cars is defined by the ZoneSchedule
+ * The preference of destination for cars created at a Zone is defined by the ZonePreference
  */
 public class Zone extends Node implements Entity{
 

@@ -7,7 +7,7 @@ import simulation.SimEngine;
 import java.time.Duration;
 
 /**
- * Created by ejalaa on 13/01/2017.
+ * An implementation of a stop sign at an intersection.
  */
 public class StopSign extends TrafficSign {
 

@@ -3,7 +3,8 @@ package entities.traffic_signs;
 import java.time.Duration;
 
 /**
- * Created by ejalaa on 05/01/2017.
+ * An enumeration of the states of a traffic light
+ * Contains the duration of a green light as well
  */
 public enum TrafficLightState {
     // Since no acceleration is implemented orange makes no sense (we can stop instantaneously)

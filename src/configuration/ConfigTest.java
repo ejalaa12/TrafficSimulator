@@ -14,7 +14,7 @@ import java.io.InputStream;
 import java.time.LocalDateTime;
 
 /**
- * Created by ejalaa on 26/01/2017.
+ * A main to test loading a YAML configuration file and build a network from it.
  */
 public class ConfigTest {
 

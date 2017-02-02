@@ -7,7 +7,7 @@ import tests.custom_crossroads.CustomRoadNetwork0
 import java.time.LocalDateTime
 
 /**
- * Created by ejalaa on 06/01/2017.
+ * A tentative to test some behavior of the simulation (also learning how a testCase works).
  */
 class CarTest extends groovy.util.GroovyTestCase {
     static LocalDateTime startSim = LocalDateTime.of(2000, 1, 1, 0, 0)

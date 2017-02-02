@@ -14,7 +14,11 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * Created by ejalaa on 25/12/2016.
+ * An class that implements a intersection.
+ * An intersection is a Node of a Road Graph.
+ *
+ * It handles car arriving at an intersection.
+ * It handles the traffic sign synchronization at an intersection
  */
 public class Intersection extends Node implements Entity {
 
@@ -38,6 +42,14 @@ public class Intersection extends Node implements Entity {
         current_traffic_light_index = -1;
     }
 
+    /**
+     * Register a car to the intersection
+     * A registered car is added to a dictionary
+     * We can update any registered car if an event happens inside the intersection
+     *
+     * @param car      the car to register
+     * @param nextLane the lane where the car wants to go
+     */
     public void registerCar(Car car, Lane nextLane) {
         if (connectedLanes == null)
             Logger.getInstance().logFatal(getName(), "Intersection was not connected during initialization");
@@ -59,6 +71,12 @@ public class Intersection extends Node implements Entity {
         }
     }
 
+    /**
+     * Unregister a car from the intersection
+     * This happends when a car enters the intersection.
+     * @param car the car to unregister
+     * @param registeredLane the lane where the car wanted to go
+     */
     public void unregisterCar(Car car, Lane registeredLane) {
         if (!waitingCarsForLaneCorrespondences.containsKey(registeredLane)) {
             throw new NullPointerException("Trying to unregister from a lane that is not connected");
@@ -70,6 +88,18 @@ public class Intersection extends Node implements Entity {
         }
     }
 
+    /**
+     * Handles a car when it is registered
+     * Handling a car depends on the presence of a traffic sign at the intersection:
+     * If no traffic sign:
+     *  @see entities.intersection.Intersection#tryToGetIntoIntersection(Car)
+     * If stop sign:
+     *  @see entities.intersection.Intersection#stopSignBehavior(Car, StopSign)
+     * If traffic light:
+     *  @see entities.intersection.Intersection#trafficLightBehavior(Car, TrafficLight)
+     *
+     * @param car the car to handle
+     */
     public void handle(Car car) {
         TrafficSign trafficSign = car.getCurrentLane().getTrafficSign();
         // If no trafficSign then let the car pass if intersection is free
@@ -84,6 +114,16 @@ public class Intersection extends Node implements Entity {
         }
     }
 
+    /**
+     * This implements the behavior to follow when there is a traffic light at the intersection
+     * If the light is red: stop
+     * else:
+     * @see entities.intersection.Intersection#tryToGetIntoIntersection(Car)
+     *
+     *
+     * @param car the car that is at the intersection
+     * @param trafficLight the traffic light on this intersection
+     */
     private void trafficLightBehavior(Car car, TrafficLight trafficLight) {
         trafficLight.registerCar(car);
         if (trafficLight.getState() == TrafficLightState.RED) {
@@ -97,6 +137,7 @@ public class Intersection extends Node implements Entity {
     }
 
     /**
+     * This implements the behavior to follow when there is a stop at the intersection
      * The idea is that a car always stops for 3 seconds at a stop sign
      * Then it is registered to the stop
      * If the car is registered it can try to enter the intersection if the intersection is free
@@ -118,9 +159,14 @@ public class Intersection extends Node implements Entity {
     }
 
     /**
-     * For the moment we just change to the next lane like previously
+     * When there is no traffic sign, or the light is green or the car has waited at a stop:
+     * We can try to get into the intersection.
+     * If the intersection is free, it can enter, and leave the intersection after X seconds
+     * @see entities.intersection.ExitFromIntersectionEvent
+     * Otherwise, the car will stop and wait for an event that frees the intersection
      *
-     * @param car the car to move
+     *
+     * @param car the car which want to get into the intersection
      * @return true if insertion was successful
      */
     public boolean tryToGetIntoIntersection(Car car) {
@@ -151,6 +197,10 @@ public class Intersection extends Node implements Entity {
         }
     }
 
+    /**
+     * add a car inside the intersection
+     * @param car the car to insert
+     */
     public void addCarInsideIntersection(Car car) {
         if (carsInsideIntersection.contains(car)) {
             Logger.getInstance().logWarning(getName(), car.getName() + " is already inside intersection " + getName());
@@ -159,7 +209,12 @@ public class Intersection extends Node implements Entity {
         carsInsideIntersection.add(car);
     }
 
-    public void removeCarFromInsideIntersection(Car car, Lane originLane) {
+    /**
+     * Removes a car from within the intersection
+     *
+     * @param car the car to remove
+     */
+    public void removeCarFromInsideIntersection(Car car) {
         if (!carsInsideIntersection.contains(car)) {
             Logger.getInstance().logWarning(getName(), car.getName() + " wasn't in intersection " + getName());
             throw new IllegalStateException("car is not in intersection");
@@ -180,6 +235,12 @@ public class Intersection extends Node implements Entity {
         handle(waitingCarsForLaneCorrespondences.get(destinationLane).get(0));
     }
 
+    /**
+     * This methods set the lanes that arrives at the interesection
+     * This is useful to create the dictionary of registered car and where they come from.
+     * It is also useful to deduce the list of traffic sign that are on this intersection
+     * @param connectionsThatArriveAt the list of lane(or edges) that arrive at this intersection(or node)
+     */
     public void addConnectedLanes(List<Edge> connectionsThatArriveAt) {
         connectedLanes = connectionsThatArriveAt;
         for (Edge edge : connectedLanes) {
@@ -193,6 +254,9 @@ public class Intersection extends Node implements Entity {
         }
     }
 
+    /**
+     * Initializing an intersection consist of initializing the traffic lights that are on this intersection
+     */
     @Override
     public void init() {
         //no initialization, event are only created when car get into intersection
@@ -211,6 +275,11 @@ public class Intersection extends Node implements Entity {
         return simEngine;
     }
 
+    /**
+     *
+     * @param car the car to check
+     * @return true if the car was registered to this intersection
+     */
     private boolean wasRegistered(Car car) {
         for (ArrayList<Car> cars : waitingCarsForLaneCorrespondences.values()) {
             if (cars.contains(car)) {
@@ -220,6 +289,11 @@ public class Intersection extends Node implements Entity {
         return false;
     }
 
+    /**
+     * When a light turns red on intersection, the next light must turn green 3 seconds after.
+     * This methods allows us to get the next traffic light.
+     * @return the next traffic light
+     */
     public TrafficLight getNextTrafficLight() {
         current_traffic_light_index += 1;
         current_traffic_light_index %= trafficLights.size();

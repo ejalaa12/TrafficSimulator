@@ -1,14 +1,13 @@
 package entities.traffic_signs;
 
 import entities.intersection.Intersection;
-import entities.zone.Zone;
 import simulation.Event;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 
 /**
- * Created by ejalaa on 01/01/2017.
+ * An event that changes the color of a traffic light.
  */
 public class ChangeColorEvent extends Event {
 
