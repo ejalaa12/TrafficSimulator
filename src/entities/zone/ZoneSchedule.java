@@ -3,6 +3,7 @@ package entities.zone;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * The ZoneSchedule contains all the timeSlot of the day.
@@ -11,36 +12,47 @@ import java.util.ArrayList;
 public class ZoneSchedule {
 
     private ArrayList<TimePeriod> timePeriods;
+    private Random random;
 
-    public ZoneSchedule(ArrayList<Integer> periods, ArrayList<Integer> productionPerPeriod) {
+    public ZoneSchedule(ArrayList<Integer> periods, ArrayList<Integer> productionPerPeriod, Random random) {
+        this.random = random;
         timePeriods = new ArrayList<>();
         for (int i = 0; i < periods.size() - 1; i++) {
-            timePeriods.add(new TimePeriod(LocalTime.of(periods.get(i), 0), LocalTime.of(periods.get(i + 1), 0), productionPerPeriod.get(i)));
+            int productionForThisPeriod = productionPerPeriod.get(i);
+            // randomized production is ± 5%
+            int randomized_production = (int) (productionForThisPeriod * ((95 + random.nextInt(105 - 95 + 1)) / 100.));
+            timePeriods.add(new TimePeriod(LocalTime.of(periods.get(i), 0), LocalTime.of(periods.get(i + 1), 0), randomized_production));
         }
-        timePeriods.add(new TimePeriod(LocalTime.of(periods.get(periods.size() - 1), 0), LocalTime.of(23, 59, 59, 999999999), productionPerPeriod.get(productionPerPeriod.size() - 1)));
-
+        int productionForLastPeriod = productionPerPeriod.get(productionPerPeriod.size() - 1);
+        int randomized_production = (int) (productionForLastPeriod * ((95 + random.nextInt(105 - 95 + 1)) / 100.));
+        timePeriods.add(new TimePeriod(LocalTime.of(periods.get(periods.size() - 1), 0), LocalTime.of(23, 59, 59, 999999999), randomized_production));
     }
 
-    public ZoneSchedule(ArrayList<TimePeriod> timePeriods) {
+    public ZoneSchedule(ArrayList<TimePeriod> timePeriods, Random random) {
+        this.random = random;
         this.timePeriods = timePeriods;
     }
-
-    Duration getCurrentFrequency(LocalTime currentTime) {
-        if (getCurrentTimeSlot(currentTime) == null)
-            System.out.println("gnark");
-        return getCurrentTimeSlot(currentTime).getFrequency();
-    }
-
-    private TimePeriod getCurrentTimeSlot(LocalTime currentTime) {
-        return timePeriods.stream().filter(x -> x.inTimeSlot(currentTime)).findFirst().orElse(null);
-    }
-
 
     /*
     * ****************************************************************************************************************
     * Getter and setters
     * ****************************************************************************************************************
     */
+
+    Duration getCurrentFrequency(LocalTime currentTime) {
+        if (getCurrentTimeSlot(currentTime) == null)
+            System.out.println("gnark");
+
+        Duration realFrequency = getCurrentTimeSlot(currentTime).getFrequency();
+        int randfact = 95 + random.nextInt(105 - 95 + 1);
+        Duration randomizedFrequency = realFrequency.multipliedBy(randfact).dividedBy(100);
+        return randomizedFrequency;
+    }
+
+
+    private TimePeriod getCurrentTimeSlot(LocalTime currentTime) {
+        return timePeriods.stream().filter(x -> x.inTimeSlot(currentTime)).findFirst().orElse(null);
+    }
 
 
 }

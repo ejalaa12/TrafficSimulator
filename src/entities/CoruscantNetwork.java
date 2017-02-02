@@ -222,7 +222,7 @@ public class CoruscantNetwork extends RoadNetwork implements Entity {
         timeSlots1.add(new TimePeriod(LocalTime.of(periods.get(3), 0), LocalTime.of(periods.get(4), 0), carsPerPeriod1.get(3)));
         timeSlots1.add(new TimePeriod(LocalTime.of(periods.get(4), 0), LocalTime.of(23, 59, 59, 999999999), carsPerPeriod1.get(4)));
 
-        return new ZoneSchedule(timeSlots1);
+        return new ZoneSchedule(timeSlots1, simEngine.getRandom());
     }
 
     @Override

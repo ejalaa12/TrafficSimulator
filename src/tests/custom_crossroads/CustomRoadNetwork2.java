@@ -45,7 +45,7 @@ public class CustomRoadNetwork2 extends RoadNetwork implements Entity {
         timeSlots1.add(new TimePeriod(LocalTime.of(9, 0), LocalTime.of(17, 0), 1));
         timeSlots1.add(new TimePeriod(LocalTime.of(17, 0), LocalTime.of(19, 0), 3));
         timeSlots1.add(new TimePeriod(LocalTime.of(19, 0), LocalTime.of(23, 59, 59, 99999), 1));
-        ZoneSchedule zoneSchedule1 = new ZoneSchedule(timeSlots1);
+        ZoneSchedule zoneSchedule1 = new ZoneSchedule(timeSlots1, simEngine.getRandom());
 
         // Zone 1
         zone1 = new Zone("zone1", zoneSchedule1, simEngine, this);
@@ -62,7 +62,7 @@ public class CustomRoadNetwork2 extends RoadNetwork implements Entity {
         timeSlots2.add(new TimePeriod(LocalTime.of(9, 0), LocalTime.of(17, 0), 30));
         timeSlots2.add(new TimePeriod(LocalTime.of(17, 0), LocalTime.of(19, 0), 150));
         timeSlots2.add(new TimePeriod(LocalTime.of(19, 0), LocalTime.of(23, 59, 59, 99999), 30));
-        ZoneSchedule zoneSchedule2 = new ZoneSchedule(timeSlots2);
+        ZoneSchedule zoneSchedule2 = new ZoneSchedule(timeSlots2, simEngine.getRandom());
         // zone 2
         zone2 = new Zone("zone2", zoneSchedule2, simEngine, this);
 
