@@ -5,7 +5,10 @@ import entities.traffic_signs.StopSign;
 import simulation.Event;
 
 /**
- * Created by ejalaa on 14/01/2017.
+ * An event of waiting at a stop.
+ *
+ * Every time a car arrives at a stop, it must wait at least ~3 seconds before
+ * trying to get into an intersection
  */
 public class WaitAtStopEvent extends Event {
 

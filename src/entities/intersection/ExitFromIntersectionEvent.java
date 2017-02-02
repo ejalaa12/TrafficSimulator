@@ -7,7 +7,7 @@ import simulation.Event;
 import java.time.Duration;
 
 /**
- * Created by ejalaa on 14/01/2017.
+ * An event to exit an intersection x seconds after entering it.
  */
 public class ExitFromIntersectionEvent extends Event {
 
@@ -27,7 +27,7 @@ public class ExitFromIntersectionEvent extends Event {
 
     @Override
     public void doAction() {
-        car.getOutOfIntersection(intersection, originLane, exitLane);
+        car.getOutOfIntersection(intersection, exitLane);
 
     }
 }

@@ -3,7 +3,8 @@ package entities.car;
 import java.time.Duration;
 
 /**
- * Created by ejalaa on 07/01/2017.
+ * An event that simulates a reaction time of a car.
+ * Such as the delay before restarting a car when we notice that the car in front has started.
  */
 public class DelayedReactionEvent extends CarEvent {
 

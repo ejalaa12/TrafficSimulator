@@ -5,12 +5,17 @@ import logging.Logger;
 import simulation.Entity;
 
 /**
- * Created by ejalaa on 04/01/2017.
+ * An abstract class implementing the common behaviors of a traffic sign
  */
 public abstract class TrafficSign implements Entity {
 
     protected Car waitingCar;
 
+    /**
+     * This implements how a car is registered when it arrives at a traffic sign
+     *
+     * @param car the car to register
+     */
     public void registerCar(Car car) {
         if (waitingCar == car) {
             Logger.getInstance().logInfo(getName(), car.getName() + " was waiting...");
@@ -24,6 +29,11 @@ public abstract class TrafficSign implements Entity {
         waitingCar = car;
     }
 
+    /**
+     * UNregister a car from the traffic sign
+     *
+     * @param car the car to unregister
+     */
     public void unregisterCar(Car car) {
         if (waitingCar == null) {
             throw new IllegalStateException("No car was registered, how can we unregister any ?...");

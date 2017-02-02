@@ -7,7 +7,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 /**
- * Created by ejalaa on 18/01/2017.
+ * A holder of the car statistics.
+ * This is used to separate the statistics methods and parameter of a car.
  */
 public class CarStats {
 

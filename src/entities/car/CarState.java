@@ -1,7 +1,7 @@
 package entities.car;
 
 /**
- * Created by ejalaa on 28/12/2016.
+ * An enumeration of the different possible states of a car
  */
 public enum CarState {
     CREATED, DRIVING, STOPPED, ARRIVED

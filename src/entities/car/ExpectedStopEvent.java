@@ -6,7 +6,9 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 
 /**
- * Created by ejalaa on 07/01/2017.
+ * An event that happens when a car was supposed to stop at this point.
+ * However, this event also checks if no new position was freed in the meantime.
+ * If so, the car is updated, and goes to the next position.
  */
 public class ExpectedStopEvent extends CarEvent {
 

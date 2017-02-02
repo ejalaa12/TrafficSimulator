@@ -45,8 +45,7 @@ public class ZoneSchedule {
 
         Duration realFrequency = getCurrentTimeSlot(currentTime).getFrequency();
         int randfact = 95 + random.nextInt(105 - 95 + 1);
-        Duration randomizedFrequency = realFrequency.multipliedBy(randfact).dividedBy(100);
-        return randomizedFrequency;
+        return realFrequency.multipliedBy(randfact).dividedBy(100);
     }
 
 

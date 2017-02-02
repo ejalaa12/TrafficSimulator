@@ -13,7 +13,7 @@ import simulation.SimEngine;
 import java.util.ArrayList;
 
 /**
- * Created by ejalaa on 26/01/2017.
+ * This class is used by SnakeYaml to load and parse a Yaml file into a RoadNetwork object.
  */
 public class NetworkConfiguration {
 
@@ -84,7 +84,7 @@ public class NetworkConfiguration {
     */
 
     /**
-     * Created by ejalaa on 26/01/2017.
+     * A Holder for the Traffic sign configuration.
      */
     public static class TrafficSignCfg {
 
@@ -94,7 +94,7 @@ public class NetworkConfiguration {
     }
 
     /**
-     * Created by ejalaa on 26/01/2017.
+     * A holder for the Zone configuration.
      */
     public static class ZoneCfg {
         public String name;
@@ -120,7 +120,7 @@ public class NetworkConfiguration {
     }
 
     /**
-     * Created by ejalaa on 26/01/2017.
+     * A Holder for a Road configuration
      */
     public static class RoadCfg {
         public String name;
@@ -139,7 +139,7 @@ public class NetworkConfiguration {
     }
 
     /**
-     * Created by ejalaa on 26/01/2017.
+     * A Holder for a Preference Configuration.
      */
     public static class PreferenceCfg {
 

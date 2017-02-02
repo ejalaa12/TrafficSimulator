@@ -1,7 +1,8 @@
 package logging;
 
 /**
- * Created by ejalaa on 27/12/2016.
+ * An enumeration of the possible log levels.
+ * This enumeration also includes the color for printing this level of log
  */
 public enum LogLevel {
 

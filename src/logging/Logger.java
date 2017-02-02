@@ -75,7 +75,6 @@ public class Logger {
         return instance;
     }
 
-    // TODO: 07/01/2017 addSimEngine to logger to avoid doing simEngine.getCurrentSimTime everywhere when logging
 
     public void turnOff() {
         on = false;

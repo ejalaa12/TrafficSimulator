@@ -9,7 +9,7 @@ import tests.custom_crossroads.CustomRoadNetwork3
 import java.time.LocalDateTime
 
 /**
- * Created by ejalaa on 13/01/2017.
+ * A test suite to test that the correct number of cars are created.
  */
 class ZonePreferenceTest extends GroovyTestCase {
 

@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Random;
 
 /**
- * Created by ejalaa on 13/01/2017.
+ * A zone preference defines the preference of destination of cars created from a certain zone.
  */
 public class ZonePreference {
 

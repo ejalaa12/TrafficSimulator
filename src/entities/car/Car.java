@@ -6,15 +6,12 @@ import entities.lane.Lane;
 import entities.zone.Zone;
 import graph_network.DijkstraAlgorithm;
 import graph_network.Node;
-import logging.LogLevel;
 import logging.Logger;
 import simulation.Entity;
 import simulation.SimEngine;
 
 import java.time.Duration;
 import java.util.LinkedList;
-
-// TODO: 05/01/2017 write methods documentation
 
 /**
  * This class models a car that moves in a roadNetwork
@@ -67,6 +64,9 @@ public class Car implements Entity {
     * ##############################################################################################################
     */
 
+    /**
+     * When initializing a Car we need to put it on the first lane if possible and start driving
+     */
     @Override
     public void init() {
         Lane firstLane = roadNetwork.getLaneBetween(path.get(0), path.get(1));
@@ -95,7 +95,7 @@ public class Car implements Entity {
         
         // update the position using the current event posted time and current speed
         if (currentEvent != null && !currentEvent.wasProcessed()) {
-            Logger.getInstance().logDebug(getName(), simEngine.getCurrentSimTime(), "there was a previous event not processed");
+            Logger.getInstance().logDebug(getName(), "there was a previous event not processed");
             Duration sinceLastPostedEvent = Duration.between(currentEvent.getPostedTime(), simEngine.getCurrentSimTime());
             double elapsed = sinceLastPostedEvent.getSeconds() + sinceLastPostedEvent.getNano() * 1e-9;
             double distance = Math.round(elapsed * speed);
@@ -158,16 +158,16 @@ public class Car implements Entity {
         }
         if (positionInLane == currentLane.getLength()) {
             // do next step of the path if we arrived at the end of the current lane
-            Logger.getInstance().logInfo(getName(), simEngine.getCurrentSimTime(), "i am at end of lane -> do next step");
+            Logger.getInstance().logInfo(getName(), "i am at end of lane -> do next step");
             nextStep();
         } else if (positionInLane == currentLane.getFreeSpotPositionForCar(this)) {
             // if arrived at the free spot then stop and wait for an event
-            Logger.getInstance().logInfo(getName(), simEngine.getCurrentSimTime(), "arrived at free spot -> stop");
-            Logger.getInstance().logDebug(getName(), simEngine.getCurrentSimTime(), "number of car in lane (including me): " + String.valueOf(currentLane.getCarQueue().size()));
+            Logger.getInstance().logInfo(getName(), "arrived at free spot -> stop");
+            Logger.getInstance().logDebug(getName(), "number of car in lane (including me): " + String.valueOf(currentLane.getCarQueue().size()));
             stop();
         } else {
             // Else we must update the destination and the driving period
-            Logger.getInstance().logInfo(getName(), simEngine.getCurrentSimTime(), "updating new destination: " + currentLane.getFreeSpotPositionForCar(this));
+            Logger.getInstance().logInfo(getName(), "updating new destination: " + currentLane.getFreeSpotPositionForCar(this));
             drive();
         }
     }
@@ -188,32 +188,46 @@ public class Car implements Entity {
         }
     }
 
+    /**
+     * This method moves a car inside an intersection
+     *
+     * @param intersection the intersection to get into
+     */
     public void getIntoIntersection(Intersection intersection) {
         currentLane.removeCar(this);
         intersection.addCarInsideIntersection(this);
         currentLane = null;
     }
 
-    public void getOutOfIntersection(Intersection intersection, Lane originLane, Lane exitLane) {
-        intersection.removeCarFromInsideIntersection(this, originLane);
+    /**
+     * Exit from an intersection to the next lane
+     *
+     * @param intersection the intersection where the car was
+     * @param exitLane     the lane where the car is going
+     */
+    public void getOutOfIntersection(Intersection intersection, Lane exitLane) {
+        intersection.removeCarFromInsideIntersection(this);
         exitLane.addCar(this);
         currentLane = exitLane;
         positionInLane = 0;
         drive();
     }
 
-    public void changeLane(Lane nextLane) {
-        Logger.getInstance().log(getName(), simEngine.getCurrentSimTime(), "Changing Lane", LogLevel.EVENT);
-        currentLane.removeCar(this);
-        nextLane.addCar(this);
-        currentLane = nextLane;
-        positionInLane = 0;
-    }
-
+    /**
+     * check if the lane given in paramter is the next step of the car
+     * @param lane the lane to check
+     * @return true if this lane is the next step of this car
+     */
     public boolean isLaneNextStep(Lane lane) {
         return getNextLane() == lane;
     }
 
+    /**
+     * Calculate the time to travel from one position on a lane to another
+     * @param position the start position
+     * @param destination the destination position
+     * @return the duration to travel from position to destination
+     */
     private Duration calculateTravelTime(double position, double destination) {
         double distance = destination - position;
         double time = distance / speed;
@@ -222,11 +236,16 @@ public class Car implements Entity {
         return Duration.ofSeconds(timeSec, timeNano);
     }
 
-    public void addTravel(double distanceTraveled) {
-        positionInLane += distanceTraveled;
+    /**
+     * Adds the distance travelled to its position and to the total distance travelled
+     *
+     * @param distanceTravelled the distance to add
+     */
+    public void addTravel(double distanceTravelled) {
+        positionInLane += distanceTravelled;
         Logger.getInstance().logDebug(getName(), simEngine.getCurrentSimTime(), "position in lane: " + positionInLane);
         // update total travelled distance
-        totalTravelledDistance += distanceTraveled;
+        totalTravelledDistance += distanceTravelled;
     }
 
     /*
@@ -256,27 +275,51 @@ public class Car implements Entity {
     * ##############################################################################################################
     */
 
+    /**
+     * Returns the next lane in the path to the destination
+     * @return the next lane in the path to the destination
+     */
     public Lane getNextLane() {
         int indexOfNextNodeInPath = path.indexOf(currentLane.getDestination()) + 1;
         return roadNetwork.getLaneBetween(currentLane.getDestination(), path.get(indexOfNextNodeInPath));
     }
 
+    /**
+     *
+     * @return true if the car is driving
+     */
     public boolean isDriving() {
         return carState == CarState.DRIVING;
     }
 
+    /**
+     *
+     * @return true if the car is stopped
+     */
     public boolean isStopped() {
         return carState == CarState.STOPPED;
     }
 
+    /**
+     *
+     * @return the current speed of the car
+     */
     public double getSpeed() {
         return speed;
     }
 
+    /**
+     *
+     * @return current car state
+     */
     public CarState getCarState() {
         return carState;
     }
 
+    /**
+     * Update the car state
+     * @param newCarState the new car state
+     */
     public void setCarState(CarState newCarState) {
         if (carState == CarState.DRIVING && newCarState == CarState.STOPPED) stats.addNewStopTime();
         else if (carState == CarState.STOPPED && newCarState == CarState.DRIVING) stats.addNewRestartTime();
@@ -285,30 +328,58 @@ public class Car implements Entity {
 //            LaneStats.log(currentLane);
     }
 
+    /**
+     *
+     * @return the total distance travelled by the car
+     */
     public double getTotalTravelledDistance() {
         return totalTravelledDistance;
     }
 
+    /**
+     *
+     * @return the zone where the car was created
+     */
     public Zone getSource() {
         return source;
     }
 
+    /**
+     *
+     * @return the zone where the car wants to go
+     */
     public Zone getDestination() {
         return destination;
     }
 
+    /**
+     *
+     * @return the lane on which car currently is
+     */
     public Lane getCurrentLane() {
         return currentLane;
     }
 
+    /**
+     * Update the current lane of the car
+     * @param currentLane the lane where the car is now
+     */
     public void setCurrentLane(Lane currentLane) {
         this.currentLane = currentLane;
     }
 
+    /**
+     *
+     * @return a list of nodes describing the path from the source node to the destination
+     */
     public LinkedList<Node> getPath() {
         return path;
     }
 
+    /**
+     *
+     * @return the road network where the car is evolving
+     */
     public RoadNetwork getRoadNetwork() {
         return roadNetwork;
     }
