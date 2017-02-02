@@ -86,4 +86,6 @@ signs:
   - {type: Stop, road: R2, intersection: I2}
   - {type: Stop, road: R3.1, intersection: I4}
   - {type: Stop, road: R3.2, intersection: I4}
-  - {type: TrafficLight, road: R4, intersection: I3}
+  - {type: Stop, road: R4, intersection: I3}
+  - {type: Stop, road: R2.2, intersection: I3}
+  - {type: Stop, road: R2.3, intersection: I3}

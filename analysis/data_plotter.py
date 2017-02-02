@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 import matplotlib.pyplot as plt
 from plt_helper import interactive_legend
 from time_helper import parse_duration
+import sys
 
 
 class Statisctics(object):
@@ -56,9 +57,11 @@ class DataPerPeriod(object):
         for t, v in zip(self.data.xvalues, self.data.yvalues):
             if more30:
                 if float(v) > 30:
-                    self.sorted_data[which_period(t, self.periods)].append(float(v))
+                    self.sorted_data[which_period(
+                        t, self.periods)].append(float(v))
             else:
-                self.sorted_data[which_period(t, self.periods)].append(float(v))
+                self.sorted_data[which_period(
+                    t, self.periods)].append(float(v))
 
     def f1(self):
         print 'Name:', self.data.label,
@@ -118,6 +121,7 @@ def plot_stat(stat):
             print data.yvalues
             raise e
 
+    ax.set_ylim([0, 1])
     ax.legend(loc='upper left', bbox_to_anchor=(1.05, 1),
               ncol=2, borderaxespad=0)
     fig.subplots_adjust(right=0.55)
@@ -156,10 +160,21 @@ def stat_per_period(stats, more30=False):
 
 
 if __name__ == '__main__':
+    log_file = sys.argv[1]
+    stat_name = sys.argv[2]
+    if stat_name not in ['Percentage', 'Stopped', 'Stop duration']:
+        print 'Stat Name must be one of these:'
+        print '* Percentage'
+        print '* Stopped'
+        print '* Stop duration'
+
+    # plt.figure('map')
+    # img = plt.imread('map.png')
+    # plt.imshow(img)
     logs = []
 
     # Read file and load logs
-    with open('../results/logs_stat.csv') as csvfile:
+    with open(log_file) as csvfile:
         reader = csv.reader(csvfile, delimiter=',')
         headers = reader.next()
         print headers, '<<<'
@@ -175,10 +190,10 @@ if __name__ == '__main__':
 
     # Total c'est le nombre de voiture par voix sur toute la journee
     # Stopped c'est le nombre de voiture arrete par voix sur toute la journee
-    # A car stop duration c'est la duree d'arret des voitures par voix sur toute la journee
+    # A car stop duration c'est la duree d'arret des voitures par voix sur
+    # toute la journee
 
-
-    stat = extract_data(logs, "Percentage")
+    stat = extract_data(logs, stat_name)
     print len(stat)
     plot_stat(stat)
 
