@@ -107,13 +107,16 @@ def extract_data(logs, stat_name):
 
 
 def plot_stat(stat):
+    global stat_name
 
     # plot
     fig, ax = plt.subplots()
+    # m = 0
     for data in stat:
         print data.label
         try:
             ax.plot(data.xvalues, data.yvalues, label=data.label)
+            # m = max(max(data.yvalues), m)
         except Exception as e:
             print '\n' * 3
             print data.label
@@ -121,7 +124,10 @@ def plot_stat(stat):
             print data.yvalues
             raise e
 
-    ax.set_ylim([0, 1])
+    if stat_name == "Percentage":
+        ax.set_ylim([0, 1])
+    ax.set_ylabel('statistique')
+    ax.set_xlabel('temps')
     ax.legend(loc='upper left', bbox_to_anchor=(1.05, 1),
               ncol=2, borderaxespad=0)
     fig.subplots_adjust(right=0.55)
@@ -162,11 +168,12 @@ def stat_per_period(stats, more30=False):
 if __name__ == '__main__':
     log_file = sys.argv[1]
     stat_name = sys.argv[2]
-    if stat_name not in ['Percentage', 'Stopped', 'Stop duration']:
+    if stat_name not in ['Percentage', 'Stopped', 'Stop duration', 'A car stop duration']:
         print 'Stat Name must be one of these:'
         print '* Percentage'
         print '* Stopped'
         print '* Stop duration'
+        print '* A car stop duration'
 
     # plt.figure('map')
     # img = plt.imread('map.png')

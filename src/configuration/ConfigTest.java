@@ -21,7 +21,7 @@ public class ConfigTest {
     public static void main(String args[]) throws FileNotFoundException {
         NetworkConfiguration netconf = null;
         Yaml yaml = new Yaml();
-        InputStream input = new FileInputStream(new File("./src/configuration/coruscant_bis.yml"));
+        InputStream input = new FileInputStream(new File("./src/configuration/coruscant.yml"));
         netconf = yaml.loadAs(input, NetworkConfiguration.class);
         System.out.println(netconf);
 
